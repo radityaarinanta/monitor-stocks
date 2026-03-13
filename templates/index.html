@@ -1,36 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IHSG Stock Tracker</title>
+    <title>StockPulse | IHSG Analytics</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #121212; color: white; }
-        .container { margin-top: 50px; }
-        .card { background-color: #1e1e1e; border: none; border-radius: 15px; }
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #22d3ee;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-label { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .form-control {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid #334155;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+
+        .form-control:focus {
+            background: rgba(15, 23, 42, 0.8);
+            color: white;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2);
+        }
+
+        .btn-analyze {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            border: none;
+            font-weight: 700;
+            padding: 10px 30px;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .btn-analyze:hover { transform: translateY(-2px); color: white; opacity: 0.9; }
+
+        .price-badge { font-size: 2rem; font-weight: 700; color: var(--accent-color); }
+
+        .status-box {
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .status-cuan { background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #4ade80; }
+        .status-boncos { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #f87171; }
+
+        .ticker-title { color: var(--text-muted); margin-bottom: 5px; }
     </style>
 </head>
 <body>
-    <div class="container text-center">
-        <h1 class="mb-4">📈 Monitoring Saham IHSG</h1>
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold"><span style="color: var(--accent-color)">Stock</span>Pulse</h1>
+            <p class="text-muted">IHSG Real-time Monitoring & Profit Calculator</p>
+        </div>
         
-        <div class="row justify-content-center mb-4">
-            <div class="col-md-6">
-                <form action="/" method="get" class="input-group">
-                    <input type="text" name="ticker" class="form-control" placeholder="Masukkan kode (Contoh: TLKM, ASII, BBRI)" aria-label="Ticker">
-                    <button class="btn btn-primary" type="submit">Cek Saham</button>
-                </form>
-                <p class="mt-2 text-muted">Menampilkan data untuk: <strong>{{ ticker }}</strong></p>
+        <div class="glass-card mb-4">
+            <form action="/" method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Kode Saham</label>
+                    <input type="text" name="ticker" class="form-control" placeholder="Contoh: BBRI" value="{{ ticker.replace('.JK', '') }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Harga Beli (Avg)</label>
+                    <input type="number" name="avg_price" class="form-control" placeholder="0" value="{{ avg_price if avg_price > 0 else '' }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Jumlah Lot</label>
+                    <input type="number" name="lots" class="form-control" placeholder="0" value="{{ lots if lots > 0 else '' }}">
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-analyze w-100 text-white">ANALYZE MARKET</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="glass-card h-100">
+                    <h6 class="ticker-title">DATA UNTUK {{ ticker }}</h6>
+                    <div class="price-badge">Rp {{ "{:,.0f}".format(current_price) }}</div>
+                    
+                    {% if profit_loss != 0 %}
+                    <div class="status-box {% if profit_loss > 0 %}status-cuan{% else %}status-boncos{% endif %}">
+                        <small class="d-block mb-1 fw-bold opacity-75">ESTIMASI {{ status_cuan }}</small>
+                        <h4 class="mb-0 fw-bold">
+                            {{ "▲" if profit_loss > 0 else "▼" }} Rp {{ "{:,.0f}".format(profit_loss) }}
+                        </h4>
+                    </div>
+                    {% else %}
+                    <div class="mt-4 text-muted small italic">
+                        * Masukkan harga beli & lot untuk menghitung profit.
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-4 pt-4 border-top border-secondary opacity-50 small">
+                        🕒 Data diperbarui otomatis dari Yahoo Finance.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="glass-card p-2 h-100">
+                    {{ plot | safe }}
+                </div>
             </div>
         </div>
 
-        <div class="card p-3 shadow">
-            {{ plot | safe }}
-        </div>
-        
-        <footer class="mt-5 text-muted small">
-            Dibuat untuk projek gabut-gabutan menggunakan Python & Flask
+        <footer class="text-center mt-5 text-muted small">
+            &copy; 2026 StockPulse Dashboard | Created by <strong>Raditya Tantra Arinanta</strong>
         </footer>
     </div>
 </body>
