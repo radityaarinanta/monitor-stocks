@@ -3,137 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockPulse | IHSG Analytics</title>
+    <title>StockPulse | AI Financial Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --accent-color: #22d3ee;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-        }
-
+        :root { --bg: #0f172a; --card: rgba(30, 41, 59, 0.7); --cyan: #22d3ee; --gold: #f59e0b; }
         body { 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
+            background-color: var(--bg); 
+            color: #f8fafc; 
             font-family: 'Inter', sans-serif;
             background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
             min-height: 100vh;
         }
-
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }
-
-        .form-label { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .glass { background: var(--card); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 25px; }
+        .form-label { color: #cbd5e1; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .form-control { background: rgba(15,23,42,0.8); border: 1px solid #334155; color: white; }
+        .form-control:focus { background: #0f172a; color: white; border-color: var(--cyan); box-shadow: none; }
+        .price-val { font-size: 2.5rem; font-weight: 700; color: var(--cyan); }
+        .btn-analyze { background: linear-gradient(135deg, #06b6d4, #3b82f6); border: none; font-weight: 700; border-radius: 8px; }
+        .indicator-card { border-left: 4px solid var(--cyan); background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; }
         
-        .form-control {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid #334155;
-            color: white;
-            border-radius: 8px;
-            padding: 10px 15px;
-        }
-
-        .form-control:focus {
-            background: rgba(15, 23, 42, 0.8);
-            color: white;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2);
-        }
-
-        .btn-analyze {
-            background: linear-gradient(135deg, #06b6d4, #3b82f6);
-            border: none;
-            font-weight: 700;
-            padding: 10px 30px;
-            border-radius: 8px;
-            transition: transform 0.2s;
-        }
-
-        .btn-analyze:hover { transform: translateY(-2px); color: white; opacity: 0.9; }
-
-        .price-badge { font-size: 2rem; font-weight: 700; color: var(--accent-color); }
-
-        .status-box {
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 20px;
-        }
-        .status-cuan { background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #4ade80; }
-        .status-boncos { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #f87171; }
-
-        .ticker-title { color: var(--text-muted); margin-bottom: 5px; }
+        /* CSS KHUSUS PERBAIKAN TEKS PANDUAN */
+        .edu-section { background: rgba(15,23,42,0.5); border-radius: 12px; border: 1px dashed #475569; }
+        .text-light-custom { color: #cbd5e1 !important; } /* Abu-abu terang agar kontras */
+        .text-white-custom { color: #ffffff !important; }
     </style>
 </head>
 <body>
     <div class="container py-5">
         <div class="text-center mb-5">
-            <h1 class="fw-bold"><span style="color: var(--accent-color)">Stock</span>Pulse</h1>
-            <p class="text-muted">IHSG Real-time Monitoring & Profit Calculator</p>
+            <h1 class="fw-bold"><span style="color: var(--cyan)">Stock</span>Pulse <span class="badge bg-info fs-6">AI PRO</span></h1>
+            <p class="text-muted">Informatics UMM Stock Project | Raditya Arinanta</p>
         </div>
-        
-        <div class="glass-card mb-4">
+
+        <div class="glass mb-4 shadow-lg">
             <form action="/" method="get" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Kode Saham</label>
+                    <label class="form-label">Ticker</label>
                     <input type="text" name="ticker" class="form-control" placeholder="Contoh: BBRI" value="{{ ticker.replace('.JK', '') }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Harga Beli (Avg)</label>
-                    <input type="number" name="avg_price" class="form-control" placeholder="0" value="{{ avg_price if avg_price > 0 else '' }}">
+                    <label class="form-label">Harga Beli</label>
+                    <input type="number" name="avg_price" class="form-control" value="{{ avg_price if avg_price > 0 else '' }}">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Jumlah Lot</label>
-                    <input type="number" name="lots" class="form-control" placeholder="0" value="{{ lots if lots > 0 else '' }}">
+                    <input type="number" name="lots" class="form-control" value="{{ lots if lots > 0 else '' }}">
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-analyze w-100 text-white">ANALYZE MARKET</button>
+                    <button type="submit" class="btn btn-analyze w-100 text-white shadow-sm">GENERATE ANALYSIS</button>
                 </div>
             </form>
         </div>
 
         <div class="row g-4">
             <div class="col-lg-4">
-                <div class="glass-card h-100">
-                    <h6 class="ticker-title">DATA UNTUK {{ ticker }}</h6>
-                    <div class="price-badge">Rp {{ "{:,.0f}".format(current_price) }}</div>
+                <div class="glass h-100">
+                    <small class="text-light-custom fw-bold d-block mb-1">LIVE PRICE: {{ ticker }}</small>
+                    <div class="price-val">Rp {{ "{:,.0f}".format(current_price) }}</div>
                     
                     {% if profit_loss != 0 %}
-                    <div class="status-box {% if profit_loss > 0 %}status-cuan{% else %}status-boncos{% endif %}">
-                        <small class="d-block mb-1 fw-bold opacity-75">ESTIMASI {{ status_cuan }}</small>
-                        <h4 class="mb-0 fw-bold">
-                            {{ "▲" if profit_loss > 0 else "▼" }} Rp {{ "{:,.0f}".format(profit_loss) }}
-                        </h4>
-                    </div>
-                    {% else %}
-                    <div class="mt-4 text-muted small italic">
-                        * Masukkan harga beli & lot untuk menghitung profit.
+                    <div class="mt-3 p-3 rounded {% if profit_loss > 0 %}bg-success{% else %}bg-danger{% endif %} bg-opacity-10 border border-{% if profit_loss > 0 %}success{% else %}danger{% endif %} text-center">
+                        <small class="fw-bold d-block text-white-custom">ESTIMASI {{ status_cuan }}</small>
+                        <h3 class="mb-0 fw-bold">Rp {{ "{:,.0f}".format(profit_loss) }}</h3>
                     </div>
                     {% endif %}
 
-                    <div class="mt-4 pt-4 border-top border-secondary opacity-50 small">
-                        🕒 Data diperbarui otomatis dari Yahoo Finance.
+                    <div class="indicator-card mt-4 shadow-sm">
+                        <h6 class="small fw-bold text-light-custom mb-3">AI PREDICTION VERDICT</h6>
+                        <span class="badge {{ warna_rekom }} mb-3 w-100 p-2 fs-6 shadow-sm">{{ rekomendasi }}</span>
+                        <div class="row text-center mt-2">
+                            <div class="col-6 border-end border-secondary">
+                                <small class="text-light-custom d-block small">RSI (14)</small>
+                                <span class="fw-bold text-white-custom">{{ "{:.1f}".format(current_rsi) }}</span>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-light-custom d-block small">MA (20)</small>
+                                <span class="fw-bold text-white-custom">{{ "{:,.0f}".format(ma20_last) }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-8">
-                <div class="glass-card p-2 h-100">
+                <div class="glass h-100 p-2 text-center">
                     {{ plot | safe }}
+                    <div class="d-flex justify-content-center gap-4 mt-2">
+                        <small style="color: var(--cyan)">● Harga Market</small>
+                        <small style="color: var(--gold)">● MA20 (Trend)</small>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <footer class="text-center mt-5 text-muted small">
-            &copy; 2026 StockPulse Dashboard | Created by <strong>Raditya Tantra Arinanta</strong>
+        <div class="glass mt-5 edu-section">
+            <h5 class="fw-bold mb-4" style="color: var(--cyan)">📖 Panduan Membaca Analisis</h5>
+            <div class="row g-4">
+                <div class="col-md-6 border-end border-secondary border-opacity-25">
+                    <h6 class="text-white-custom fw-bold">Momentum (RSI)</h6>
+                    <p class="text-light-custom mb-2">Indikator RSI mengukur kejenuhan pasar:</p>
+                    <ul class="mb-0 text-light-custom">
+                        <li><strong class="text-success">RSI < 30 (Oversold):</strong> Sinyal bahwa harga sudah "terlalu murah", potensi memantul naik.</li>
+                        <li><strong class="text-danger">RSI > 70 (Overbought):</strong> Sinyal bahwa harga sudah "terlalu mahal", waspada koreksi turun.</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-white-custom fw-bold">Trend (MA20)</h6>
+                    <p class="text-light-custom mb-2">Moving Average 20 digunakan untuk melihat arah tren:</p>
+                    <ul class="mb-0 text-light-custom">
+                        <li><strong class="text-info">Harga di atas MA20:</strong> Saham dalam kondisi <strong>Uptrend</strong> (Bullish/Kuat).</li>
+                        <li><strong class="text-secondary">Harga di bawah MA20:</strong> Saham dalam kondisi <strong>Downtrend</strong> (Bearish/Lemah).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-5 text-light-custom small">
+            &copy; 2026 StockPulse | <strong>Raditya Arinanta</strong> (Informatics UMM - 224)
         </footer>
     </div>
 </body>
