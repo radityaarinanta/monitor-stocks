@@ -1,26 +1,38 @@
-# 📈 StockPulse Ultimate (V3.0) - AI Stock Analytics
+# 📈 StockPulse Elite Pro (V4.0) - Advanced AI Stock Analytics
 
-**StockPulse** adalah aplikasi *Decision Support System* (DSS) berbasis web yang dirancang untuk memantau pergerakan saham IHSG secara *real-time*. Aplikasi ini menggabungkan analisis teknikal otomatis (RSI & MA20), perhitungan fundamental perusahaan, hingga deteksi tren *bullish* menggunakan Python.
+**StockPulse** adalah platform *Decision Support System* (DSS) canggih berbasis web yang dirancang khusus untuk memantau pasar saham IHSG secara real-time. Versi **Elite Pro** ini mengintegrasikan analisis multi-indikator teknikal, data fundamental, dan algoritma *Quick Insight* untuk membantu investor mengambil keputusan berbasis data.
 
 ---
 
-## 🚀 Fitur Unggulan (Gacor Version)
+## 🚀 Fitur Unggulan (Elite Version)
 
-* **AI Verdict Engine**: Memberikan rekomendasi otomatis (Strong Buy, Bullish, Bearish, Strong Sell) berdasarkan algoritma RSI dan Moving Average.
-* **Bullish Market Scanner**: Secara otomatis memindai daftar saham *Blue Chip* pilihan yang sedang dalam tren naik (*uptrend*).
-* **Real-time Stock News**: Menampilkan berita terkini yang relevan dengan emiten yang sedang dianalisis.
-* **Fundamental Scoreboard**: Menampilkan metrik krusial seperti P/E Ratio, EPS, Dividend Yield, dan Market Cap.
-* **Interactive Analytics Chart**: Visualisasi data harga 30 hari terakhir dengan indikator MA20 yang interaktif (Plotly).
-* **Profit/Loss Calculator**: Kalkulator instan untuk menghitung estimasi keuntungan atau kerugian berdasarkan harga beli dan jumlah lot.
+* **Multi-Indicator Analytics**: Menggabungkan tiga indikator teknikal utama:
+    * **RSI (Relative Strength Index)**: Mendeteksi area Jenuh Beli (Overbought) dan Jenuh Jual (Oversold).
+    * **MA20 (Moving Average)**: Menentukan arah tren harga rata-rata 20 hari.
+    * **Bollinger Bands**: Mengukur volatilitas harga dan menentukan batas atas (resisten) serta batas bawah (support).
+* **Trend Strength Meter**: Meteran visual (0-100%) yang menghitung kekuatan akumulasi harga secara real-time.
+* **AI Quick Insight**: Interpretasi data otomatis ke dalam bahasa manusia untuk memberikan saran cepat (Beli/Jual/Wait).
+* **Bullish Trend Scanner**: Pemindaian otomatis terhadap 10 saham *Blue Chip* IHSG yang sedang dalam fase *Uptrend*.
+* **Fundamental Scoreboard**: Ringkasan kesehatan finansial perusahaan (P/E Ratio, EPS, Div Yield, Market Cap).
+* **Enterprise UI**: Desain *Glassmorphism* modern dengan kontras tinggi yang optimal untuk penggunaan jangka panjang (Dark Mode).
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Backend**: Python 3.x (Flask Framework)
-* **Frontend**: HTML5, CSS3 (Glassmorphism UI), Bootstrap 5
-* **Data Source**: Yahoo Finance API (`yfinance`)
-* **Visualization**: Plotly Interactive Graphs
-* **Deployment**: Vercel (Serverless Functions)
+* **Engine**: Python 3.10+ (Flask Framework)
+* **Analysis Library**: `yfinance` (Real-time Market Data), `pandas` (Data Manipulation)
+* **Visualization**: Plotly Graph Objects (High-Performance Graphs)
+* **Frontend**: HTML5, CSS3, Bootstrap 5 (Responsive Design)
+* **Hosting**: Vercel (Serverless Edge Functions)
 
 ---
+
+## 📖 Panduan Teknis Indikator
+
+1.  **Bollinger Bands**: Jika harga menyentuh garis bawah transparan, ini sering menjadi sinyal **rebound**. Jika menembus garis atas, waspadai koreksi harga.
+2.  **RSI (14)**: Fokus pada angka **30 (Beli)** dan **70 (Jual)**.
+3.  **Trend Strength**: Skor di atas 50% menunjukkan dominasi pembeli (Bullish), di bawah 50% menunjukkan dominasi penjual (Bearish).
+
+---
+
