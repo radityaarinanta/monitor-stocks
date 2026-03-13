@@ -3,150 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockPulse Pro | Dashboard</title>
+    <title>StockPulse Pro | Ultimate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --card: rgba(30, 41, 59, 0.7); --cyan: #22d3ee; --gold: #f59e0b; }
+        :root { --bg: #020617; --card: #0f172a; --cyan: #22d3ee; }
         body { 
-            background: var(--bg); color: #f8fafc; font-family: 'Inter', sans-serif;
-            background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
-            min-height: 100vh;
+            background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: radial-gradient(circle at 0% 0%, #1e1b4b 0%, transparent 50%); min-height: 100vh;
         }
-        .glass { background: var(--card); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 25px; }
-        .form-label { color: #cbd5e1; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-        .form-control { background: rgba(15,23,42,0.8); border: 1px solid #334155; color: white; }
-        .price-val { font-size: 2.5rem; font-weight: 700; color: var(--cyan); }
-        .indicator-card { border-left: 4px solid var(--cyan); background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; }
+        .glass { background: var(--card); border: 1px solid #334155; border-radius: 20px; padding: 25px; }
         
-        .news-item { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 15px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); }
-        .news-link { text-decoration: none !important; color: #ffffff !important; font-size: 0.9rem; font-weight: 600; display: block; }
-        .news-link:hover { color: var(--cyan) !important; }
+        /* FIX TEKS: Memastikan semua label dan paragraf berwarna terang */
+        .form-label { color: #f8fafc !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
+        .text-light-custom { color: #f8fafc !important; line-height: 1.6; } /* Putih Salju */
+        .text-muted-custom { color: #cbd5e1 !important; font-size: 0.85rem; } /* Abu-abu Terang */
         
-        /* CSS KHUSUS PANDUAN LENGKAP */
-        .edu-section { background: rgba(15, 23, 42, 0.6); border-radius: 16px; border: 1px solid #334155; }
-        .edu-title { color: var(--cyan); font-weight: 700; border-bottom: 2px solid rgba(34, 211, 238, 0.2); display: inline-block; padding-bottom: 5px; margin-bottom: 15px; }
-        .text-light-custom { color: #cbd5e1 !important; line-height: 1.6; }
-        .text-white-custom { color: #ffffff !important; }
+        .price-val { font-size: 2.8rem; font-weight: 800; color: var(--cyan); }
+        .news-link { color: #ffffff !important; text-decoration: none !important; font-weight: 600; display: block; }
+        .news-link:hover { color: var(--cyan) !important; text-decoration: underline !important; }
+        
+        .edu-box { background: rgba(255, 255, 255, 0.05); border: 1px dashed #475569; border-radius: 15px; padding: 20px; }
+        .fun-box { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 10px; text-align: center; }
     </style>
 </head>
 <body>
     <div class="container py-5">
-        <div class="text-center mb-5">
-            <h1 class="fw-bold"><span style="color: var(--cyan)">Stock</span>Pulse <span class="badge bg-info fs-6">DSS PRO</span></h1>
-            <p class="text-muted">Decision Support System | Raditya Arinanta (NIM: ...224)</p>
-        </div>
+        <header class="text-center mb-5">
+            <h1 class="fw-bold"><span style="color: var(--cyan)">STOCK</span>PULSE PRO</h1>
+            <p class="text-white-50">High-Performance Stock Dashboard | Raditya Arinanta (224)</p>
+        </header>
 
-        <div class="glass mb-4 shadow-lg">
+        <div class="glass mb-4 shadow">
             <form action="/" method="get" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Ticker</label>
+                    <label class="form-label">Kode Ticker</label>
                     <input type="text" name="ticker" class="form-control" value="{{ ticker.replace('.JK', '') }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Harga Beli</label>
+                    <label class="form-label">Avg Harga Beli</label>
                     <input type="number" name="avg_price" class="form-control" value="{{ avg_price if avg_price > 0 else '' }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Lot</label>
+                    <label class="form-label">Jumlah Lot</label>
                     <input type="number" name="lots" class="form-control" value="{{ lots if lots > 0 else '' }}">
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-info w-100 text-white fw-bold">UPDATE DATA</button>
+                    <button type="submit" class="btn btn-info w-100 fw-bold text-white shadow">ANALISIS SEKARANG</button>
                 </div>
             </form>
         </div>
 
         <div class="row g-4">
             <div class="col-lg-4">
-                <div class="glass mb-4">
-                    <small class="text-light-custom fw-bold d-block mb-1">HARGA PASAR: {{ ticker }}</small>
-                    <div class="price-val">Rp {{ "{:,.0f}".format(current_price) }}</div>
-                    
-                    {% if profit_loss != 0 %}
-                    <div class="mt-3 p-3 rounded {% if profit_loss > 0 %}bg-success{% else %}bg-danger{% endif %} bg-opacity-10 border border-{% if profit_loss > 0 %}success{% else %}danger{% endif %} text-center">
-                        <small class="fw-bold d-block text-white">ESTIMASI {{ status_cuan }}</small>
-                        <h4 class="mb-0 fw-bold">Rp {{ "{:,.0f}".format(profit_loss) }}</h4>
-                    </div>
-                    {% endif %}
-
-                    <div class="indicator-card mt-4">
-                        <h6 class="small fw-bold text-light-custom mb-3">KESIMPULAN AI</h6>
-                        <span class="badge {{ warna_rekom }} mb-3 w-100 p-2 fs-6 shadow-sm">{{ rekomendasi }}</span>
-                        <div class="row text-center mt-1">
-                            <div class="col-6 border-end border-secondary border-opacity-25">
-                                <small class="text-light-custom d-block small">RSI (14)</small>
-                                <span class="fw-bold text-white">{{ "{:.1f}".format(current_rsi) }}</span>
-                            </div>
-                            <div class="col-6">
-                                <small class="text-light-custom d-block small">MA (20)</small>
-                                <span class="fw-bold text-white">{{ "{:,.0f}".format(ma20_last) }}</span>
-                            </div>
+                <div class="glass mb-4 border-success">
+                    <h6 class="fw-bold text-success mb-3">⚡ BULLISH SCANNER (MA20)</h6>
+                    {% for s in bullish_scanner %}
+                    <a href="/?ticker={{ s.symbol }}" class="text-decoration-none">
+                        <div class="d-flex justify-content-between p-2 mb-2 rounded bg-success bg-opacity-10 border border-success border-opacity-20">
+                            <span class="fw-bold text-white">{{ s.symbol }}</span>
+                            <span class="text-success fw-bold">+{{ "{:.2f}".format(s.change) }}%</span>
                         </div>
-                    </div>
+                    </a>
+                    {% endfor %}
                 </div>
 
-                <div class="glass shadow">
-                    <h6 class="fw-bold text-info mb-3">📰 Berita Terkait</h6>
+                <div class="glass">
+                    <h6 class="fw-bold text-info mb-3">📰 BERITA TERKAIT</h6>
                     {% for n in news %}
-                    <div class="news-item">
+                    <div class="mb-3 border-bottom border-secondary pb-2">
                         <a href="{{ n.link }}" target="_blank" class="news-link">{{ n.title }}</a>
-                        <small class="text-muted d-block mt-1">Sumber: {{ n.publisher }}</small>
+                        <small class="text-white-50 d-block mt-1">Sumber: {{ n.publisher }}</small>
                     </div>
-                    {% else %}
-                    <p class="text-light-custom small italic text-center">Berita tidak tersedia.</p>
                     {% endfor %}
                 </div>
             </div>
 
             <div class="col-lg-8">
-                <div class="glass p-2 mb-4 h-100 shadow">
+                <div class="row g-2 mb-4">
+                    <div class="col-3"><div class="fun-box"><small class="text-white-50 d-block small">P/E Ratio</small><b class="text-white">{{ fundamental.pe }}</b></div></div>
+                    <div class="col-3"><div class="fun-box"><small class="text-white-50 d-block small">EPS</small><b class="text-white">{{ fundamental.eps }}</b></div></div>
+                    <div class="col-3"><div class="fun-box"><small class="text-white-50 d-block small">Div %</small><b class="text-white">{{ "{:.2f}%".format(fundamental.div) }}</b></div></div>
+                    <div class="col-3"><div class="fun-box"><small class="text-white-50 d-block small">Market Cap</small><b class="text-white">{{ "{:,.0f}T".format(fundamental.cap) }}</b></div></div>
+                </div>
+
+                <div class="glass mb-4">
+                    <div class="row align-items-center mb-4 text-center text-md-start">
+                        <div class="col-md-7">
+                            <small class="text-light-custom fw-bold">HARGA {{ ticker }}</small>
+                            <div class="price-val">Rp {{ "{:,.0f}".format(current_price) }}</div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="p-3 rounded {{ warna_rekom }} shadow">
+                                <small class="fw-bold text-white d-block mb-1">AI VERDICT</small>
+                                <h5 class="mb-0 fw-bold text-white">{{ rekomendasi }}</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if profit_loss != 0 %}
+                    <div class="mb-4 p-3 rounded bg-white bg-opacity-5 border border-secondary text-center">
+                        <span class="text-light-custom small fw-bold">ESTIMASI UNTUNG/RUGI:</span>
+                        <h2 class="fw-bold {% if profit_loss > 0 %}text-success{% else %}text-danger{% endif %}">
+                            Rp {{ "{:,.0f}".format(profit_loss) }}
+                        </h2>
+                    </div>
+                    {% endif %}
+
                     {{ plot | safe }}
-                    <div class="d-flex justify-content-center gap-4 mt-2">
-                        <small style="color: var(--cyan)">● Harga Market</small>
-                        <small style="color: var(--gold)">● MA20 (Trend)</small>
+                </div>
+
+                <div class="edu-box">
+                    <h5 class="text-white fw-bold mb-4">📖 PANDUAN MEMBACA DASHBOARD</h5>
+                    <div class="row g-4">
+                        <div class="col-md-6 border-end border-secondary">
+                            <h6 class="text-info fw-bold">Momentum RSI</h6>
+                            <p class="text-light-custom small"><strong>RSI < 30 (Oversold):</strong> Harga sudah terlalu murah. Sinyal beli potensial.</p>
+                            <p class="text-light-custom small"><strong>RSI > 70 (Overbought):</strong> Harga sudah terlalu mahal. Waspada penurunan.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-warning fw-bold">Trend MA20</h6>
+                            <p class="text-light-custom small"><strong>Harga > Garis Kuning:</strong> Tren positif (Bullish). Kekuatan pembeli dominan.</p>
+                            <p class="text-light-custom small"><strong>Harga < Garis Kuning:</strong> Tren negatif (Bearish). Harga cenderung lemah.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="glass mt-5 edu-section shadow-lg">
-            <h4 class="edu-title">📖 Panduan Lengkap Analisis Dashboard</h4>
-            
-            <div class="row g-4 mt-2">
-                <div class="col-md-6 border-end border-secondary border-opacity-25">
-                    <h6 class="text-white-custom fw-bold"><i class="bi bi-graph-up"></i> Momentum: RSI (Relative Strength Index)</h6>
-                    <p class="text-light-custom">RSI adalah indikator yang mengukur apakah sebuah saham sudah terlalu banyak dibeli atau dijual dalam rentang 14 hari.</p>
-                    <div class="p-3 rounded bg-dark bg-opacity-50 mt-3">
-                        <ul class="mb-0 text-light-custom">
-                            <li><strong class="text-success">RSI di bawah 30 (Oversold):</strong> Kondisi di mana harga sudah turun tajam dan jenuh jual. Secara algoritma, ini adalah **Sinyal Beli** karena harga berpotensi memantul naik.</li>
-                            <li><strong class="text-danger">RSI di atas 70 (Overbought):</strong> Kondisi di mana harga sudah naik terlalu tinggi dan jenuh beli. Ini adalah **Sinyal Waspada** karena harga berpotensi turun (koreksi).</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <h6 class="text-white-custom fw-bold">📉 Trend: MA20 (Moving Average 20 Hari)</h6>
-                    <p class="text-light-custom">Garis kuning pada grafik menunjukkan harga rata-rata saham selama 20 hari terakhir untuk menentukan arah tren.</p>
-                    <div class="p-3 rounded bg-dark bg-opacity-50 mt-3">
-                        <ul class="mb-0 text-light-custom">
-                            <li><strong class="text-info">Harga di atas Garis Kuning:</strong> Menandakan tren **Uptrend (Bullish)**. Selama harga bertahan di atas garis ini, kekuatan pembeli masih sangat dominan.</li>
-                            <li><strong class="text-secondary">Harga di bawah Garis Kuning:</strong> Menandakan tren **Downtrend (Bearish)**. Ini berarti pasar sedang lesu dan harga cenderung terus melemah.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
-                <h6 class="text-white-custom fw-bold small uppercase">Cara Mengambil Keputusan:</h6>
-                <p class="text-light-custom italic small">
-                    Gunakan kombinasi keduanya. Keputusan terbaik biasanya diambil saat **RSI sudah rendah (murah)** dan harga mulai **memotong ke atas garis MA20**.
-                </p>
-            </div>
-        </div>
-
-        <footer class="text-center mt-5 text-light-custom small pb-5">
-            &copy; 2026 StockPulse DSS | <strong>Raditya Arinanta</strong> (Informatics UMM - 224)
+        <footer class="text-center mt-5 text-white-50 small pb-5">
+            &copy; 2026 StockPulse | <strong>Raditya Arinanta</strong> (NIM: ...224)
         </footer>
     </div>
 </body>
