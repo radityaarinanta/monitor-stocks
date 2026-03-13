@@ -8,7 +8,6 @@ app = Flask(__name__, template_folder='../templates')
 
 @app.route('/')
 def index():
-    # Ambil parameter input
     ticker = request.args.get('ticker', 'BBCA.JK').upper()
     if ".JK" not in ticker: ticker += ".JK"
     
@@ -17,7 +16,6 @@ def index():
 
     try:
         stock = yf.Ticker(ticker)
-        # Ambil data 3 bulan untuk akurasi MA20 dan RSI
         df = stock.history(period="3mo")
         
         if df.empty:
@@ -25,12 +23,10 @@ def index():
 
         current_price = df['Close'].iloc[-1]
         
-        # --- LOGIKA ANALISIS TEKNIKAL ---
-        # 1. Moving Average 20 Hari
+        # Analisis Teknikal
         df['MA20'] = df['Close'].rolling(window=20).mean()
         ma20_last = df['MA20'].iloc[-1]
 
-        # 2. RSI 14 Hari
         delta = df['Close'].diff()
         gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
         loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
@@ -38,37 +34,43 @@ def index():
         df['RSI'] = 100 - (100 / (1 + rs))
         current_rsi = df['RSI'].iloc[-1]
 
-        # 3. Verdict Analisis
+        # Verdict
         if current_rsi < 30:
-            rekomendasi = "OVERSOLD (Potensi Rebound)"
-            warna_rekom = "bg-success"
+            rekomendasi, warna_rekom = "OVERSOLD (Potensi Rebound)", "bg-success"
         elif current_rsi > 70:
-            rekomendasi = "OVERBOUGHT (Hati-hati Koreksi)"
-            warna_rekom = "bg-danger"
+            rekomendasi, warna_rekom = "OVERBOUGHT (Hati-hati Koreksi)", "bg-danger"
         elif current_price > ma20_last:
-            rekomendasi = "UPTREND (Bullish)"
-            warna_rekom = "bg-info"
+            rekomendasi, warna_rekom = "UPTREND (Kuat)", "bg-info"
         else:
-            rekomendasi = "DOWNTREND (Bearish)"
-            warna_rekom = "bg-secondary"
+            rekomendasi, warna_rekom = "DOWNTREND (Lemah)", "bg-secondary"
 
-        # --- KALKULATOR PROFIT ---
+        # Kalkulator Profit
         profit_loss = 0
         status_cuan = "Netral"
         if avg_price > 0 and lots > 0:
             profit_loss = (current_price - avg_price) * (lots * 100)
             status_cuan = "CUAN" if profit_loss > 0 else "BONCOS"
 
-        # --- VISUALISASI GRAFIK ---
-        df_plot = df.tail(30) # Tampilkan 30 hari terakhir di chart
+        # Berita
+        raw_news = stock.news
+        news_data = []
+        if raw_news:
+            for n in raw_news[:4]:
+                news_data.append({
+                    'title': n.get('title', 'Judul Tidak Tersedia'),
+                    'link': n.get('link', '#'),
+                    'publisher': n.get('publisher', 'Sumber Anonim')
+                })
+
+        # Grafik
+        df_plot = df.tail(30)
         fig = px.area(df_plot, x=df_plot.index, y=['Close', 'MA20'], 
-                     title=f'Market Analysis: {ticker}',
+                     title=f'Analisis Market: {ticker}',
                      color_discrete_map={'Close': '#22d3ee', 'MA20': '#f59e0b'})
         
         fig.update_layout(
-            template="plotly_dark",
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
+            template="plotly_dark", paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)', font_color="#cbd5e1",
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
         graph_html = pio.to_html(fig, full_html=False, config={'displayModeBar': False})
@@ -78,12 +80,12 @@ def index():
                                current_price=current_price, profit_loss=profit_loss,
                                status_cuan=status_cuan, avg_price=avg_price, lots=lots,
                                rekomendasi=rekomendasi, warna_rekom=warna_rekom,
-                               current_rsi=current_rsi, ma20_last=ma20_last)
+                               current_rsi=current_rsi, ma20_last=ma20_last,
+                               news=news_data)
     
     except Exception as e:
         return f"System Error: {str(e)}"
 
-# Jalankan Flask app
 app = app
 
 if __name__ == '__main__':

@@ -3,91 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockPulse | AI Financial Dashboard</title>
+    <title>StockPulse Pro | Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0f172a; --card: rgba(30, 41, 59, 0.7); --cyan: #22d3ee; --gold: #f59e0b; }
         body { 
-            background-color: var(--bg); 
-            color: #f8fafc; 
-            font-family: 'Inter', sans-serif;
+            background: var(--bg); color: #f8fafc; font-family: 'Inter', sans-serif;
             background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
             min-height: 100vh;
         }
         .glass { background: var(--card); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 25px; }
-        .form-label { color: #cbd5e1; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .form-label { color: #cbd5e1; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
         .form-control { background: rgba(15,23,42,0.8); border: 1px solid #334155; color: white; }
-        .form-control:focus { background: #0f172a; color: white; border-color: var(--cyan); box-shadow: none; }
         .price-val { font-size: 2.5rem; font-weight: 700; color: var(--cyan); }
-        .btn-analyze { background: linear-gradient(135deg, #06b6d4, #3b82f6); border: none; font-weight: 700; border-radius: 8px; }
-        .indicator-card { border-left: 4px solid var(--cyan); background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; }
+        .indicator-card { border-left: 4px solid var(--cyan); background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; }
         
-        /* CSS KHUSUS PERBAIKAN TEKS PANDUAN */
-        .edu-section { background: rgba(15,23,42,0.5); border-radius: 12px; border: 1px dashed #475569; }
-        .text-light-custom { color: #cbd5e1 !important; } /* Abu-abu terang agar kontras */
+        .news-item { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 15px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .news-link { text-decoration: none !important; color: #ffffff !important; font-size: 0.9rem; font-weight: 600; display: block; }
+        .news-link:hover { color: var(--cyan) !important; }
+        
+        /* CSS KHUSUS PANDUAN LENGKAP */
+        .edu-section { background: rgba(15, 23, 42, 0.6); border-radius: 16px; border: 1px solid #334155; }
+        .edu-title { color: var(--cyan); font-weight: 700; border-bottom: 2px solid rgba(34, 211, 238, 0.2); display: inline-block; padding-bottom: 5px; margin-bottom: 15px; }
+        .text-light-custom { color: #cbd5e1 !important; line-height: 1.6; }
         .text-white-custom { color: #ffffff !important; }
     </style>
 </head>
 <body>
     <div class="container py-5">
         <div class="text-center mb-5">
-            <h1 class="fw-bold"><span style="color: var(--cyan)">Stock</span>Pulse <span class="badge bg-info fs-6">AI PRO</span></h1>
-            <p class="text-muted">Informatics UMM Stock Project | Raditya Arinanta</p>
+            <h1 class="fw-bold"><span style="color: var(--cyan)">Stock</span>Pulse <span class="badge bg-info fs-6">DSS PRO</span></h1>
+            <p class="text-muted">Decision Support System | Raditya Arinanta (NIM: ...224)</p>
         </div>
 
         <div class="glass mb-4 shadow-lg">
             <form action="/" method="get" class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label">Ticker</label>
-                    <input type="text" name="ticker" class="form-control" placeholder="Contoh: BBRI" value="{{ ticker.replace('.JK', '') }}">
+                    <input type="text" name="ticker" class="form-control" value="{{ ticker.replace('.JK', '') }}">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Harga Beli</label>
                     <input type="number" name="avg_price" class="form-control" value="{{ avg_price if avg_price > 0 else '' }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Jumlah Lot</label>
+                    <label class="form-label">Lot</label>
                     <input type="number" name="lots" class="form-control" value="{{ lots if lots > 0 else '' }}">
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-analyze w-100 text-white shadow-sm">GENERATE ANALYSIS</button>
+                    <button type="submit" class="btn btn-info w-100 text-white fw-bold">UPDATE DATA</button>
                 </div>
             </form>
         </div>
 
         <div class="row g-4">
             <div class="col-lg-4">
-                <div class="glass h-100">
-                    <small class="text-light-custom fw-bold d-block mb-1">LIVE PRICE: {{ ticker }}</small>
+                <div class="glass mb-4">
+                    <small class="text-light-custom fw-bold d-block mb-1">HARGA PASAR: {{ ticker }}</small>
                     <div class="price-val">Rp {{ "{:,.0f}".format(current_price) }}</div>
                     
                     {% if profit_loss != 0 %}
                     <div class="mt-3 p-3 rounded {% if profit_loss > 0 %}bg-success{% else %}bg-danger{% endif %} bg-opacity-10 border border-{% if profit_loss > 0 %}success{% else %}danger{% endif %} text-center">
-                        <small class="fw-bold d-block text-white-custom">ESTIMASI {{ status_cuan }}</small>
-                        <h3 class="mb-0 fw-bold">Rp {{ "{:,.0f}".format(profit_loss) }}</h3>
+                        <small class="fw-bold d-block text-white">ESTIMASI {{ status_cuan }}</small>
+                        <h4 class="mb-0 fw-bold">Rp {{ "{:,.0f}".format(profit_loss) }}</h4>
                     </div>
                     {% endif %}
 
-                    <div class="indicator-card mt-4 shadow-sm">
-                        <h6 class="small fw-bold text-light-custom mb-3">AI PREDICTION VERDICT</h6>
+                    <div class="indicator-card mt-4">
+                        <h6 class="small fw-bold text-light-custom mb-3">KESIMPULAN AI</h6>
                         <span class="badge {{ warna_rekom }} mb-3 w-100 p-2 fs-6 shadow-sm">{{ rekomendasi }}</span>
-                        <div class="row text-center mt-2">
-                            <div class="col-6 border-end border-secondary">
+                        <div class="row text-center mt-1">
+                            <div class="col-6 border-end border-secondary border-opacity-25">
                                 <small class="text-light-custom d-block small">RSI (14)</small>
-                                <span class="fw-bold text-white-custom">{{ "{:.1f}".format(current_rsi) }}</span>
+                                <span class="fw-bold text-white">{{ "{:.1f}".format(current_rsi) }}</span>
                             </div>
                             <div class="col-6">
                                 <small class="text-light-custom d-block small">MA (20)</small>
-                                <span class="fw-bold text-white-custom">{{ "{:,.0f}".format(ma20_last) }}</span>
+                                <span class="fw-bold text-white">{{ "{:,.0f}".format(ma20_last) }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="glass shadow">
+                    <h6 class="fw-bold text-info mb-3">📰 Berita Terkait</h6>
+                    {% for n in news %}
+                    <div class="news-item">
+                        <a href="{{ n.link }}" target="_blank" class="news-link">{{ n.title }}</a>
+                        <small class="text-muted d-block mt-1">Sumber: {{ n.publisher }}</small>
+                    </div>
+                    {% else %}
+                    <p class="text-light-custom small italic text-center">Berita tidak tersedia.</p>
+                    {% endfor %}
+                </div>
             </div>
 
             <div class="col-lg-8">
-                <div class="glass h-100 p-2 text-center">
+                <div class="glass p-2 mb-4 h-100 shadow">
                     {{ plot | safe }}
                     <div class="d-flex justify-content-center gap-4 mt-2">
                         <small style="color: var(--cyan)">● Harga Market</small>
@@ -97,30 +110,43 @@
             </div>
         </div>
 
-        <div class="glass mt-5 edu-section">
-            <h5 class="fw-bold mb-4" style="color: var(--cyan)">📖 Panduan Membaca Analisis</h5>
-            <div class="row g-4">
+        <div class="glass mt-5 edu-section shadow-lg">
+            <h4 class="edu-title">📖 Panduan Lengkap Analisis Dashboard</h4>
+            
+            <div class="row g-4 mt-2">
                 <div class="col-md-6 border-end border-secondary border-opacity-25">
-                    <h6 class="text-white-custom fw-bold">Momentum (RSI)</h6>
-                    <p class="text-light-custom mb-2">Indikator RSI mengukur kejenuhan pasar:</p>
-                    <ul class="mb-0 text-light-custom">
-                        <li><strong class="text-success">RSI < 30 (Oversold):</strong> Sinyal bahwa harga sudah "terlalu murah", potensi memantul naik.</li>
-                        <li><strong class="text-danger">RSI > 70 (Overbought):</strong> Sinyal bahwa harga sudah "terlalu mahal", waspada koreksi turun.</li>
-                    </ul>
+                    <h6 class="text-white-custom fw-bold"><i class="bi bi-graph-up"></i> Momentum: RSI (Relative Strength Index)</h6>
+                    <p class="text-light-custom">RSI adalah indikator yang mengukur apakah sebuah saham sudah terlalu banyak dibeli atau dijual dalam rentang 14 hari.</p>
+                    <div class="p-3 rounded bg-dark bg-opacity-50 mt-3">
+                        <ul class="mb-0 text-light-custom">
+                            <li><strong class="text-success">RSI di bawah 30 (Oversold):</strong> Kondisi di mana harga sudah turun tajam dan jenuh jual. Secara algoritma, ini adalah **Sinyal Beli** karena harga berpotensi memantul naik.</li>
+                            <li><strong class="text-danger">RSI di atas 70 (Overbought):</strong> Kondisi di mana harga sudah naik terlalu tinggi dan jenuh beli. Ini adalah **Sinyal Waspada** karena harga berpotensi turun (koreksi).</li>
+                        </ul>
+                    </div>
                 </div>
+
                 <div class="col-md-6">
-                    <h6 class="text-white-custom fw-bold">Trend (MA20)</h6>
-                    <p class="text-light-custom mb-2">Moving Average 20 digunakan untuk melihat arah tren:</p>
-                    <ul class="mb-0 text-light-custom">
-                        <li><strong class="text-info">Harga di atas MA20:</strong> Saham dalam kondisi <strong>Uptrend</strong> (Bullish/Kuat).</li>
-                        <li><strong class="text-secondary">Harga di bawah MA20:</strong> Saham dalam kondisi <strong>Downtrend</strong> (Bearish/Lemah).</li>
-                    </ul>
+                    <h6 class="text-white-custom fw-bold">📉 Trend: MA20 (Moving Average 20 Hari)</h6>
+                    <p class="text-light-custom">Garis kuning pada grafik menunjukkan harga rata-rata saham selama 20 hari terakhir untuk menentukan arah tren.</p>
+                    <div class="p-3 rounded bg-dark bg-opacity-50 mt-3">
+                        <ul class="mb-0 text-light-custom">
+                            <li><strong class="text-info">Harga di atas Garis Kuning:</strong> Menandakan tren **Uptrend (Bullish)**. Selama harga bertahan di atas garis ini, kekuatan pembeli masih sangat dominan.</li>
+                            <li><strong class="text-secondary">Harga di bawah Garis Kuning:</strong> Menandakan tren **Downtrend (Bearish)**. Ini berarti pasar sedang lesu dan harga cenderung terus melemah.</li>
+                        </ul>
+                    </div>
                 </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
+                <h6 class="text-white-custom fw-bold small uppercase">Cara Mengambil Keputusan:</h6>
+                <p class="text-light-custom italic small">
+                    Gunakan kombinasi keduanya. Keputusan terbaik biasanya diambil saat **RSI sudah rendah (murah)** dan harga mulai **memotong ke atas garis MA20**.
+                </p>
             </div>
         </div>
 
-        <footer class="text-center mt-5 text-light-custom small">
-            &copy; 2026 StockPulse | <strong>Raditya Arinanta</strong> (Informatics UMM - 224)
+        <footer class="text-center mt-5 text-light-custom small pb-5">
+            &copy; 2026 StockPulse DSS | <strong>Raditya Arinanta</strong> (Informatics UMM - 224)
         </footer>
     </div>
 </body>
