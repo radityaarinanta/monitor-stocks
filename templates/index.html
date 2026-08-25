@@ -1,134 +1,41 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockPulse Pro | Multi-Indicator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg: #020617; --card: #0f172a; --cyan: #22d3ee; }
-        body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
-        .glass { background: var(--card); border: 1px solid #334155; border-radius: 20px; padding: 25px; }
-        .text-light-custom { color: #f8fafc !important; }
-        .price-val { font-size: 2.8rem; font-weight: 800; color: var(--cyan); }
-        .news-link { color: #ffffff !important; text-decoration: none !important; font-weight: 600; display: block; }
-        .news-link:hover { color: var(--cyan) !important; }
-        .strength-bar { height: 10px; background: #334155; border-radius: 5px; overflow: hidden; margin: 10px 0; }
-        .strength-fill { height: 100%; transition: 1.5s ease; }
-    </style>
-</head>
-<body>
-    <div class="container py-5">
-        <header class="text-center mb-5">
-            <h1 class="fw-bold"><span style="color: var(--cyan)">STOCK</span>PULSE PRO</h1>
-            <p class="text-white-50">Advanced Multi-Indicator Dashboard </p>
-        </header>
+{% extends 'base.html' %}
 
-        <div class="glass mb-4">
-            <form action="/" method="get" class="row g-3">
-                <div class="col-md-3">
-                    <label class="fw-bold text-white small mb-1 d-block">KODE TICKER</label>
-                    <input type="text" name="ticker" class="form-control bg-dark text-white border-secondary" value="{{ ticker.replace('.JK', '') }}">
-                </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-white small mb-1 d-block">AVG HARGA</label>
-                    <input type="number" name="avg_price" class="form-control bg-dark text-white border-secondary" value="{{ avg_price if avg_price > 0 else '' }}">
-                </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-white small mb-1 d-block">TOTAL LOT</label>
-                    <input type="number" name="lots" class="form-control bg-dark text-white border-secondary" value="{{ lots if lots > 0 else '' }}">
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-info w-100 fw-bold text-white">UPDATE ANALISIS</button>
-                </div>
-            </form>
-        </div>
+{% block title %}
+    {{ ticker_display if ticker_display else ticker }} | StockPulse Pro Multi-Indicator DSS
+{% endblock %}
 
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="glass mb-4">
-                    <h6 class="fw-bold text-white mb-2">⚡ TREND STRENGTH</h6>
-                    <div class="strength-bar"><div class="strength-fill {% if strength > 50 %}bg-success{% else %}bg-danger{% endif %}" style="width: {{ strength }}%;"></div></div>
-                    <small class="text-white-50">{{ strength }}% Bullish Power</small>
-                </div>
+{% block content %}
+    {% if error_message %}
+        {% include 'components/_error_banner.html' %}
+    {% else %}
+        <!-- TIER 1: Executive KPI Financial Scoreboard -->
+        {% include 'components/_fundamental.html' %}
 
-                <div class="glass mb-4 border-success">
-                    <h6 class="fw-bold text-success mb-3">🔥 BULLISH SCANNER</h6>
-                    {% for s in bullish_scanner %}
-                    <div class="d-flex justify-content-between p-2 mb-2 rounded bg-white bg-opacity-5">
-                        <span class="fw-bold">{{ s.symbol }}</span>
-                        <span class="text-success small">+{{ "{:.2f}".format(s.change) }}%</span>
-                        <a href="/?ticker={{ s.symbol }}" class="badge bg-info text-decoration-none">Cek</a>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <div class="glass">
-                    <h6 class="fw-bold text-info mb-3">📰 BERITA TERKAIT</h6>
-                    {% for n in news %}
-                    <div class="mb-3 border-bottom border-secondary pb-2">
-                        <a href="{{ n.link }}" target="_blank" class="news-link small">{{ n.title }}</a>
-                        <small class="text-white-50">Sumber: {{ n.pub }}</small>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
+        <!-- TIER 2: Main Split-View Analysis Grid -->
+        <div class="row g-4 mb-4">
+            <!-- Left Column (Analisis Teknikal Utama & Profil Perusahaan) -->
             <div class="col-lg-8">
-                <div class="row g-2 mb-4 text-white">
-                    <div class="col-3"><div class="glass p-2 text-center small">P/E<br><b>{{ fundamental.pe }}</b></div></div>
-                    <div class="col-3"><div class="glass p-2 text-center small">EPS<br><b>{{ fundamental.eps }}</b></div></div>
-                    <div class="col-3"><div class="glass p-2 text-center small">DIV %<br><b>{{ "{:.1f}".format(fundamental.div) }}%</b></div></div>
-                    <div class="col-3"><div class="glass p-2 text-center small">CAP<br><b>{{ "{:,.0f}T".format(fundamental.cap) }}</b></div></div>
+                <!-- Main Chart & Price Card -->
+                <div class="enterprise-card mb-4">
+                    {% include 'components/_price_banner.html' %}
+                    {% include 'components/_portfolio.html' %}
+                    {% include 'components/_insight.html' %}
+                    {% include 'components/_chart.html' %}
                 </div>
 
-                <div class="glass mb-4">
-                    <div class="row align-items-center mb-4">
-                        <div class="col-md-7">
-                            <small class="text-white-50 fw-bold d-block">HARGA {{ ticker }}</small>
-                            <div class="price-val">Rp {{ "{:,.0f}".format(current_price) }}</div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="badge {{ warna_rekom }} p-3 w-100 fs-6 shadow text-white">{{ rekomendasi }}</div>
-                        </div>
-                    </div>
-                    
-                    {% if profit_loss != 0 %}
-                    <div class="p-3 mb-4 rounded bg-white bg-opacity-5 border border-secondary text-center">
-                        <small class="text-white-50 d-block mb-1">ESTIMASI UNTUNG/RUGI</small>
-                        <h3 class="fw-bold {% if profit_loss > 0 %}text-success{% else %}text-danger{% endif %}">Rp {{ "{:,.0f}".format(profit_loss) }}</h3>
-                    </div>
-                    {% endif %}
+                <!-- Executive Company Profile (New Feature) -->
+                {% include 'components/_company_profile.html' %}
 
-                    <div class="p-3 bg-info bg-opacity-10 border-start border-info border-4 rounded mb-4">
-                        <small class="text-info fw-bold d-block mb-1">QUICK INSIGHT:</small>
-                        <p class="text-white small mb-0">{{ insight }}</p>
-                    </div>
+                <!-- Technical Reference Guide -->
+                {% include 'components/_indicator_guide.html' %}
+            </div>
 
-                    <div class="mt-4">{{ plot | safe }}</div>
-                    <div class="d-flex justify-content-center gap-3 mt-2">
-                        <small style="color: #22d3ee">● Harga</small>
-                        <small style="color: #f59e0b">● MA20</small>
-                        <small style="color: rgba(34, 211, 238, 0.3)">● Bollinger Band Area</small>
-                    </div>
-                </div>
-
-                <div class="glass shadow-sm" style="border: 1px dashed #475569;">
-                    <h6 class="text-info fw-bold mb-3">📖 EDUKASI INDIKATOR BARU</h6>
-                    <div class="row g-3 small text-white-50">
-                        <div class="col-md-6 border-end border-secondary border-opacity-25">
-                            <p><strong>Bollinger Bands:</strong> Area transparan di sekitar grafik. Jika harga menyentuh batas bawah, biasanya harga dianggap "terlalu murah" dan siap naik kembali.</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Trend Strength:</strong> Gabungan data MA20, RSI, dan Bollinger untuk mengukur seberapa kuat dorongan pasar saat ini.</p>
-                        </div>
-                    </div>
-                </div>
+            <!-- Right Column (Market Intelligence: Trend Strength, Scanner, News) -->
+            <div class="col-lg-4">
+                {% include 'components/_trend_strength.html' %}
+                {% include 'components/_bullish_scanner.html' %}
+                {% include 'components/_news.html' %}
             </div>
         </div>
-
-        <footer class="text-center mt-5 text-white-50 small pb-5">&copy; 2026 StockPulse</footer>
-    </div>
-</body>
-</html>
+    {% endif %}
+{% endblock %}

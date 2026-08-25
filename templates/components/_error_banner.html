@@ -1,0 +1,17 @@
+<!-- ERROR NOTIFICATION BANNER -->
+<div class="enterprise-card mb-4 border-danger border-opacity-50 text-center py-5 px-4">
+    <div class="d-inline-flex p-3 rounded-circle bg-danger-subtle text-danger mb-3">
+        <i class="bi bi-shield-exclamation fs-2"></i>
+    </div>
+    <h5 class="fw-bold text-primary mb-2">Instrumen Pasar Tidak Ditemukan</h5>
+    <p class="text-secondary small mb-4" style="max-width: 500px; margin: 0 auto;">
+        {{ error_message }}
+    </p>
+    <p class="small text-muted mb-3 font-mono" style="font-size: 0.78rem;">PILIH EMITEN BENCHMARK IHSG:</p>
+    <div class="d-flex justify-content-center flex-wrap gap-2">
+        <a href="/?ticker=BBCA" class="btn btn-sm btn-outline-secondary font-mono px-3">BBCA (BCA)</a>
+        <a href="/?ticker=BBRI" class="btn btn-sm btn-outline-secondary font-mono px-3">BBRI (BRI)</a>
+        <a href="/?ticker=BMRI" class="btn btn-sm btn-outline-secondary font-mono px-3">BMRI (Mandiri)</a>
+        <a href="/?ticker=TLKM" class="btn btn-sm btn-outline-secondary font-mono px-3">TLKM (Telkom)</a>
+    </div>
+</div>

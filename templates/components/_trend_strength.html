@@ -1,0 +1,22 @@
+<!-- 1. TREND STRENGTH METER -->
+<div class="enterprise-card mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <h6 class="fw-bold mb-0 text-primary d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+            <i class="bi bi-speedometer2 text-primary"></i> INDEKS KEKUATAN TREN
+        </h6>
+        <span class="badge {% if strength >= 70 %}bg-success-subtle text-success border border-success border-opacity-25{% elif strength >= 55 %}bg-primary-subtle text-primary border border-primary border-opacity-25{% elif strength <= 30 %}bg-danger-subtle text-danger border border-danger border-opacity-25{% elif strength <= 45 %}bg-warning-subtle text-warning border border-warning border-opacity-25{% else %}bg-secondary bg-opacity-10 text-secondary border border-color{% endif %} font-mono">
+            {{ strength }}%
+        </span>
+    </div>
+    
+    <div class="strength-track">
+        <div class="strength-bar-fill {% if strength >= 55 %}bg-success{% elif strength <= 45 %}bg-danger{% else %}bg-warning{% endif %}" 
+             style="width: {{ strength }}%;"></div>
+    </div>
+    
+    <div class="d-flex justify-content-between text-muted small mt-2" style="font-size: 0.76rem;">
+        <span>Bearish Tone (0%)</span>
+        <span class="text-primary fw-bold font-mono">{{ strength }}% Bullish Power</span>
+        <span>Bullish Tone (100%)</span>
+    </div>
+</div>

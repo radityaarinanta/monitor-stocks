@@ -1,0 +1,38 @@
+<!-- RINGKASAN EKSEKUTIF PROFIL PERUSAHAAN -->
+{% if fundamental.summary %}
+<div class="enterprise-card mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="fw-bold mb-0 d-flex align-items-center gap-2 text-primary" style="font-size: 0.9rem;">
+            <i class="bi bi-briefcase"></i> PROFIL & SEKTOR BISNIS EMITEN
+        </h6>
+        {% if fundamental.website %}
+        <a href="{{ fundamental.website }}" target="_blank" rel="noopener noreferrer" class="small text-muted text-decoration-none d-flex align-items-center gap-1" style="font-size: 0.78rem;">
+            <span>Website Resmi</span> <i class="bi bi-box-arrow-up-right"></i>
+        </a>
+        {% endif %}
+    </div>
+    
+    <p class="text-secondary small mb-3" style="line-height: 1.6; font-size: 0.85rem;">
+        {{ fundamental.summary }}
+    </p>
+
+    <div class="row g-2 pt-2 border-top border-color small text-muted" style="font-size: 0.78rem;">
+        <div class="col-6 col-md-3">
+            <span class="text-muted d-block">Sektor:</span>
+            <strong class="text-primary">{{ fundamental.sector }}</strong>
+        </div>
+        <div class="col-6 col-md-3">
+            <span class="text-muted d-block">Industri:</span>
+            <strong class="text-primary">{{ fundamental.industry }}</strong>
+        </div>
+        <div class="col-6 col-md-3">
+            <span class="text-muted d-block">Negara Domisili:</span>
+            <strong class="text-primary">{{ fundamental.country }}</strong>
+        </div>
+        <div class="col-6 col-md-3">
+            <span class="text-muted d-block">Mata Uang Acuan:</span>
+            <strong class="text-primary font-mono">{{ fundamental.currency }}</strong>
+        </div>
+    </div>
+</div>
+{% endif %}
