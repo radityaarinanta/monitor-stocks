@@ -5,11 +5,15 @@
 [![Visualization](https://img.shields.io/badge/charts-Plotly-3F4F75.svg)](https://plotly.com/)
 [![Market Data](https://img.shields.io/badge/data-yfinance-green.svg)](https://github.com/ranaroussi/yfinance)
 [![UI Theme](https://img.shields.io/badge/UI-Dual--Mode%20(Dark%2FLight)-6366F1.svg)](#dual-theme-design-system)
+[![Project Status](https://img.shields.io/badge/status-active%20development-orange.svg)](#development-status)
 [![Deployment](https://img.shields.io/badge/deployment-Vercel%20Serverless-000000.svg)](https://vercel.com/)
 
 StockPulse Pro is an institutional-grade Decision Support System (DSS) designed for equity market participants, analysts, and investors. It integrates multi-indicator technical analytics, fundamental metrics, quantitative trend scoring, portfolio return tracking, and AI-driven commentary to facilitate disciplined, data-backed financial decision-making.
 
 Optimized for both the Indonesia Stock Exchange (IDX / IHSG) and Global Equities (US Markets, Commodities, Indexes).
+
+> [!NOTE]
+> **Development Status**: This project is currently under active, phased development. New analytics modules, model optimizations, and feature enhancements are continuously being deployed in progressive releases.
 
 ---
 
@@ -155,16 +159,26 @@ http://127.0.0.1:5000
 
 ## Technical Indicator Methodology
 
-1. **Bollinger Bands ($N=20, K=2$)**:
-   $$\text{MA20} = \frac{1}{20}\sum_{i=1}^{20} \text{Close}_i$$
-   $$\sigma = \sqrt{\frac{1}{20}\sum_{i=1}^{20} (\text{Close}_i - \text{MA20})^2}$$
-   $$\text{Upper Band} = \text{MA20} + 2\sigma, \quad \text{Lower Band} = \text{MA20} - 2\sigma$$
+### 1. Bollinger Bands ($N = 20, K = 2$)
 
-2. **Relative Strength Index (RSI, 14-period)**:
-   $$\text{RS} = \frac{\text{Average Gain}}{\text{Average Loss}}, \quad \text{RSI} = 100 - \left(\frac{100}{1 + \text{RS}}\right)$$
+$$\text{MA20} = \frac{1}{20} \sum_{i=1}^{20} \text{Close}_i$$
 
-3. **Trend Strength Algorithm**:
-   A composite model combining price deviation from MA20, distance from Bollinger boundaries, and RSI momentum to score market strength from $0\%$ to $100\%$.
+$$\sigma = \sqrt{\frac{1}{20} \sum_{i=1}^{20} (\text{Close}_i - \text{MA20})^2}$$
+
+$$\text{Upper Band} = \text{MA20} + 2\sigma, \quad \text{Lower Band} = \text{MA20} - 2\sigma$$
+
+### 2. Relative Strength Index (RSI, 14-period)
+
+$$\text{RS} = \frac{\text{Average Gain}}{\text{Average Loss}}$$
+
+$$\text{RSI} = 100 - \left( \frac{100}{1 + \text{RS}} \right)$$
+
+### 3. Quantitative Trend Strength Algorithm
+
+A composite multi-factor scoring model ($0\% \text{ to } 100\%$) evaluating three core technical dimensions:
+- **Trend Baseline**: Price position relative to MA20 ($+20\% \text{ / } -15\%$).
+- **Momentum Filter**: RSI oversold bounce reward ($+20\%$) vs. overbought extension penalty ($-20\%$).
+- **Volatility Boundary**: Bollinger lower support proximity ($+10\%$) vs. upper resistance rejection ($-10\%$).
 
 ---
 
