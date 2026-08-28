@@ -7,6 +7,7 @@ function initTheme() {
     const savedTheme = localStorage.getItem('stockpulse_theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeButtonUI(savedTheme);
+    setTimeout(() => updatePlotlyTheme(savedTheme), 100);
 }
 
 function toggleTheme() {
@@ -16,6 +17,7 @@ function toggleTheme() {
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('stockpulse_theme', newTheme);
     updateThemeButtonUI(newTheme);
+    updatePlotlyTheme(newTheme);
 }
 
 function updateThemeButtonUI(theme) {
@@ -27,6 +29,33 @@ function updateThemeButtonUI(theme) {
     } else {
         btn.innerHTML = '<i class="bi bi-sun text-secondary"></i> <span>Light Mode</span>';
     }
+}
+
+function updatePlotlyTheme(theme) {
+    const gd = getPlotlyChartElement();
+    if (!gd || !window.Plotly) return;
+    
+    const isDark = theme === 'dark';
+    const textColor = isDark ? '#cbd5e1' : '#475569';
+    const gridColor = isDark ? 'rgba(148, 163, 184, 0.08)' : 'rgba(100, 116, 139, 0.12)';
+    const hoverBg = isDark ? '#0c2d33' : '#ffffff';
+    const hoverText = isDark ? '#ffffff' : '#0d1e16';
+    const hoverBorder = isDark ? '#2A835F' : '#216a4c';
+    
+    Plotly.relayout(gd, {
+        'font.color': textColor,
+        'xaxis.tickfont.color': textColor,
+        'xaxis.gridcolor': gridColor,
+        'xaxis2.tickfont.color': textColor,
+        'xaxis2.gridcolor': gridColor,
+        'yaxis.tickfont.color': textColor,
+        'yaxis.gridcolor': gridColor,
+        'yaxis2.tickfont.color': textColor,
+        'yaxis2.gridcolor': gridColor,
+        'hoverlabel.bgcolor': hoverBg,
+        'hoverlabel.font.color': hoverText,
+        'hoverlabel.bordercolor': hoverBorder
+    });
 }
 
 // 2. Simple One-Click Chart Timeframe & Zoom Controller

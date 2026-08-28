@@ -90,48 +90,48 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
     fig.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(family='Plus Jakarta Sans, Inter, sans-serif', size=11, color='#cbd5e1'),
+        font=dict(family='Plus Jakarta Sans, Inter, sans-serif', size=11, color='#475569'),
         margin=dict(l=10, r=10, t=10, b=10),
         height=480,
         hovermode='x unified',
         showlegend=False,
         dragmode='pan',
         hoverlabel=dict(
-            bgcolor='#0a1122',
-            bordercolor='#334155',
+            bgcolor='#ffffff',
+            bordercolor='#216a4c',
             font=dict(
                 family='JetBrains Mono, monospace',
                 size=11,
-                color='#f8fafc'
+                color='#0d1e16'
             ),
             align='left'
         ),
         xaxis=dict(
             rangeslider=dict(visible=False),
             showspikes=True, spikemode='across', spikesnap='cursor', spikethickness=1,
-            spikedash='dot', spikecolor='rgba(148, 163, 184, 0.35)',
-            gridcolor='rgba(148, 163, 184, 0.08)',
+            spikedash='dot', spikecolor='rgba(71, 85, 105, 0.35)',
+            gridcolor='rgba(100, 116, 139, 0.12)',
             type='category',
             nticks=7,
-            tickfont=dict(size=10, family='JetBrains Mono, monospace', color='#cbd5e1')
+            tickfont=dict(size=10, family='JetBrains Mono, monospace', color='#475569')
         ),
         xaxis2=dict(
             showspikes=True, spikemode='across', spikesnap='cursor', spikethickness=1,
-            spikedash='dot', spikecolor='rgba(148, 163, 184, 0.35)',
-            gridcolor='rgba(148, 163, 184, 0.08)',
+            spikedash='dot', spikecolor='rgba(71, 85, 105, 0.35)',
+            gridcolor='rgba(100, 116, 139, 0.12)',
             type='category',
             nticks=7,
-            tickfont=dict(size=10, family='JetBrains Mono, monospace', color='#cbd5e1')
+            tickfont=dict(size=10, family='JetBrains Mono, monospace', color='#475569')
         ),
         yaxis=dict(
             side='right', tickformat=',',
-            gridcolor='rgba(148, 163, 184, 0.08)',
-            tickfont=dict(size=10, family='JetBrains Mono, monospace', color='#cbd5e1')
+            gridcolor='rgba(100, 116, 139, 0.12)',
+            tickfont=dict(size=10, family='JetBrains Mono, monospace', color='#475569')
         ),
         yaxis2=dict(
             side='right', tickformat='.2s',
-            gridcolor='rgba(148, 163, 184, 0.08)',
-            tickfont=dict(size=9, family='JetBrains Mono, monospace', color='#cbd5e1')
+            gridcolor='rgba(100, 116, 139, 0.12)',
+            tickfont=dict(size=9, family='JetBrains Mono, monospace', color='#475569')
         )
     )
 
