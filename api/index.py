@@ -29,13 +29,22 @@ def serve_static(filename):
 @app.route('/api/index')
 @app.route('/api/index.py')
 def index():
-    raw_ticker_input = request.args.get('ticker', 'BBCA').strip()
+    bullish_stocks = scan_bullish_stocks()
+
+    raw_ticker_param = request.args.get('ticker')
+    if raw_ticker_param and raw_ticker_param.strip():
+        raw_ticker_input = raw_ticker_param.strip()
+    else:
+        # Opsi 2: Otomatis memuat saham #1 Bullish terkuat hari ini dari scanner
+        if bullish_stocks and len(bullish_stocks) > 0:
+            raw_ticker_input = bullish_stocks[0]['symbol']
+        else:
+            raw_ticker_input = 'BBCA'
+
     target_symbol, ticker_display = normalize_ticker(raw_ticker_input)
     
     avg_price = request.args.get('avg_price', type=float, default=0.0) or 0.0
     lots = request.args.get('lots', type=int, default=0) or 0
-
-    bullish_stocks = scan_bullish_stocks()
 
     try:
         analysis = analyze_stock(target_symbol, raw_ticker_input, avg_price=avg_price, lots=lots)
@@ -72,6 +81,9 @@ def index():
             avg_price=avg_price,
             lots=lots,
             portfolio=analysis['portfolio'],
+            broker_summary=analysis.get('broker_summary'),
+            trade_setup=analysis.get('trade_setup'),
+            foreign_flow=analysis.get('foreign_flow'),
             error_message=None
         )
 

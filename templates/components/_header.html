@@ -1,16 +1,19 @@
 <!-- ENTERPRISE TOP NAVBAR -->
-<header class="enterprise-header py-3 sticky-top mb-3">
+<header class="enterprise-header sticky-top mb-4">
     <div class="container-xl d-flex justify-content-between align-items-center">
-        <!-- Brand Logo & Institutional Subtitle -->
+        <!-- Minimalist Brand Logo & Institutional Subtitle -->
         <a href="/" class="d-flex align-items-center gap-3 text-decoration-none text-reset">
-            <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-1 px-2 py-1 fw-bold fs-6 font-mono">
-                SP
+            <div class="brand-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
             </div>
             <div>
-                <div class="fw-bold fs-5 text-tracking-tight" style="letter-spacing: -0.01em; line-height: 1.2;">
-                    STOCK<span class="text-primary">PULSE</span> <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 rounded-1 fs-7 fw-bold" style="font-size: 0.65rem; vertical-align: middle;">PRO</span>
+                <div class="d-flex align-items-center" style="line-height: 1.2;">
+                    <span class="brand-name">STOCK<span class="text-primary">PULSE</span></span>
+                    <span class="brand-tag">PRO</span>
                 </div>
-                <div class="small font-mono text-theme-muted" style="font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase;">
+                <div class="brand-sub">
                     Decision Support System
                 </div>
             </div>
@@ -18,9 +21,9 @@
 
         <!-- Right Action Items: Live Market Feed Indicator & Theme Switcher -->
         <div class="d-flex align-items-center gap-3">
-            <div class="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-1 bg-card-subtle border border-color small" style="font-size: 0.76rem;">
+            <div class="d-none d-md-flex align-items-center gap-2 px-3 py-1.5 rounded-2 border border-color small font-mono" style="font-size: 0.76rem; background: var(--bg-card);">
                 <span class="status-pulse-dot online"></span>
-                <span class="font-mono text-theme-secondary">IHSG / IDX MARKET DATA</span>
+                <span class="text-theme-secondary">IDX / IHSG MARKET FEED</span>
             </div>
 
             <!-- Theme Toggle Button -->

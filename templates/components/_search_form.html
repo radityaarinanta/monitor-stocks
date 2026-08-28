@@ -1,37 +1,64 @@
 <!-- ENTERPRISE SEARCH & PORTFOLIO CALCULATOR FORM -->
 <div class="enterprise-card mb-4">
-    <form action="/" method="get" class="row g-3 align-items-end">
-        <div class="col-12 col-md-4 col-lg-3">
-            <label class="form-label-formal">
-                SIMBOL TICKER
-            </label>
-            <input type="text" name="ticker" class="form-control form-control-enterprise font-mono text-uppercase" placeholder="Contoh: BBCA, BBRI, NVDA" value="{{ ticker_display if ticker_display else ticker.replace('.JK', '') }}" required>
+    <form action="/" method="get">
+        <!-- Main Single-Focus Search Bar -->
+        <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-8 col-lg-9">
+                <label class="form-label-formal">
+                    <i class="bi bi-search text-primary"></i> SIMBOL EMITEN / KODE SAHAM
+                </label>
+                <input type="text" name="ticker" class="form-control form-control-enterprise font-mono text-uppercase" 
+                       placeholder="Ketik kode saham (contoh: BBCA, BBRI, BMRI, NVDA, AAPL)" 
+                       value="{{ ticker_display if ticker_display else ticker.replace('.JK', '') }}" required>
+            </div>
+            
+            <div class="col-12 col-md-4 col-lg-3">
+                <button type="submit" class="btn btn-enterprise-primary w-100 d-flex align-items-center justify-content-center gap-2" style="padding: 11px 14px;">
+                    <i class="bi bi-graph-up-arrow"></i> Analisis Saham
+                </button>
+            </div>
         </div>
-        
-        <div class="col-6 col-md-4 col-lg-3">
-            <label class="form-label-formal">
-                AVG. HARGA BELI (OPSIONAL)
-            </label>
-            <input type="number" step="any" name="avg_price" class="form-control form-control-enterprise font-mono" placeholder="Rp 0" value="{{ avg_price if avg_price > 0 else '' }}">
-        </div>
-        
-        <div class="col-6 col-md-4 col-lg-3">
-            <label class="form-label-formal">
-                TOTAL LOT (OPSIONAL)
-            </label>
-            <input type="number" name="lots" class="form-control form-control-enterprise font-mono" placeholder="0 lot" value="{{ lots if lots > 0 else '' }}">
-        </div>
-        
-        <div class="col-12 col-lg-3">
-            <button type="submit" class="btn btn-enterprise-primary w-100 d-flex align-items-center justify-content-center gap-2">
-                Analisis Emiten
+
+        <!-- Collapsible Portfolio Tracker Trigger -->
+        <div class="mt-3">
+            <button class="btn-portfolio-toggle" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#portfolioFields" 
+                    aria-expanded="{% if avg_price > 0 or lots > 0 %}true{% else %}false{% endif %}" 
+                    aria-controls="portfolioFields">
+                <span class="toggle-icon">
+                    <i class="bi bi-sliders"></i>
+                </span>
+                <span>Kalkulator Portofolio & Simulasi Profit (Opsional)</span>
             </button>
+        </div>
+
+        <!-- Collapsible Portfolio Inputs -->
+        <div class="collapse {% if avg_price > 0 or lots > 0 %}show{% endif %} mt-3 pt-3 border-top border-color" id="portfolioFields">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label class="form-label-formal">
+                        <i class="bi bi-cash-stack text-warning"></i> AVG. HARGA BELI (RP)
+                    </label>
+                    <input type="number" step="any" name="avg_price" class="form-control form-control-enterprise font-mono" 
+                           placeholder="Masukkan harga beli rata-rata (misal: 6200)" value="{{ avg_price if avg_price > 0 else '' }}">
+                </div>
+                
+                <div class="col-12 col-md-6">
+                    <label class="form-label-formal">
+                        <i class="bi bi-pie-chart text-info"></i> JUMLAH KEPEMILIKAN (LOT)
+                    </label>
+                    <input type="number" name="lots" class="form-control form-control-enterprise font-mono" 
+                           placeholder="Masukkan jumlah lot (misal: 25)" value="{{ lots if lots > 0 else '' }}">
+                </div>
+            </div>
         </div>
     </form>
 
     <!-- Quick Ticker Suggestions -->
     <div class="d-flex flex-wrap align-items-center gap-2 mt-3 pt-3 border-top border-color">
-        <span class="me-2 font-mono fw-bold text-theme-muted" style="font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase;">PINTASAN:</span>
+        <span class="me-2 font-mono fw-bold text-theme-muted" style="font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase;">PINTASAN CEPAT:</span>
         {% for sym in ['BBCA', 'BBRI', 'BMRI', 'BBNI', 'TLKM', 'ASII', 'ICBP', 'AMRT', 'UNTR', 'KLBF', 'ADRO', 'AAPL', 'NVDA'] %}
         <a href="/?ticker={{ sym }}{% if avg_price > 0 %}&avg_price={{ avg_price }}{% endif %}{% if lots > 0 %}&lots={{ lots }}{% endif %}" 
            class="quick-ticker-pill {% if ticker_display == sym or ticker.replace('.JK', '') == sym %}active{% endif %}">

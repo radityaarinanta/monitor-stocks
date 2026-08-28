@@ -182,7 +182,53 @@ body {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-color);
+    padding: 16px 0;
     transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Minimalist Institutional Brand Typography */
+.brand-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(2, 132, 199, 0.25));
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: #38bdf8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.18);
+    flex-shrink: 0;
+}
+
+.brand-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+}
+
+.brand-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(37, 99, 235, 0.12);
+    border: 1px solid rgba(37, 99, 235, 0.3);
+    color: var(--primary);
+    margin-left: 7px;
+}
+
+.brand-sub {
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 3px;
 }
 
 /* ---------------------------------------------------------
@@ -220,6 +266,43 @@ body {
 .form-control-enterprise::placeholder {
     color: var(--text-dim) !important;
     font-weight: 400;
+}
+
+/* Portfolio Collapsible Trigger Button */
+.btn-portfolio-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-portfolio-toggle:hover {
+    background-color: var(--bg-card-hover);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+}
+
+.btn-portfolio-toggle:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-subtle);
+}
+
+.btn-portfolio-toggle .toggle-icon {
+    color: var(--primary);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
 }
 
 .btn-enterprise-primary {
@@ -535,6 +618,54 @@ body {
     font-size: 0.9rem;
 }
 
+/* Market Bias Status Badges (High Contrast in Dark & Light) */
+.badge-market-bias {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.70rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+.bias-bullish {
+    background: rgba(16, 185, 129, 0.15) !important;
+    border: 1px solid rgba(16, 185, 129, 0.5) !important;
+    color: #10b981 !important;
+}
+
+.bias-buy {
+    background: rgba(37, 99, 235, 0.15) !important;
+    border: 1px solid rgba(56, 189, 248, 0.5) !important;
+    color: #38bdf8 !important;
+}
+
+.bias-rebound {
+    background: rgba(6, 182, 212, 0.15) !important;
+    border: 1px solid rgba(6, 182, 212, 0.5) !important;
+    color: #06b6d4 !important;
+}
+
+.bias-warning {
+    background: rgba(245, 158, 11, 0.15) !important;
+    border: 1px solid rgba(245, 158, 11, 0.5) !important;
+    color: #f59e0b !important;
+}
+
+.bias-caution {
+    background: rgba(244, 63, 94, 0.15) !important;
+    border: 1px solid rgba(244, 63, 94, 0.5) !important;
+    color: #f43f5e !important;
+}
+
+.bias-neutral {
+    background: rgba(148, 163, 184, 0.15) !important;
+    border: 1px solid rgba(148, 163, 184, 0.4) !important;
+    color: #cbd5e1 !important;
+}
+
 .guide-box {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -567,3 +698,28 @@ body {
     background-color: var(--success);
     box-shadow: 0 0 0 2px var(--success-subtle);
 }
+
+/* Timeframe & Zoom Buttons */
+.chart-zoom-btn {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+    padding: 3px 10px !important;
+    border-radius: 4px !important;
+    transition: all 0.15s ease !important;
+}
+
+.chart-zoom-btn:hover {
+    background-color: var(--bg-card-hover) !important;
+    border-color: var(--border-strong) !important;
+    color: var(--text-primary) !important;
+}
+
+.chart-zoom-btn.active {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+}
+

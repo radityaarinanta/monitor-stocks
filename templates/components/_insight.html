@@ -1,11 +1,78 @@
-<!-- AI EXECUTIVE QUICK INSIGHT -->
-<div class="insight-box mb-4">
-    <div class="d-flex align-items-center gap-2 mb-2">
-        <span class="insight-box-title">
-            Wawasan Analisis Teknikal DSS
+<!-- AI EXECUTIVE QUANTITATIVE & TACTICAL INTELLIGENCE -->
+<div class="enterprise-card mb-4 p-3.5" style="border-left: 3px solid var(--primary); background: var(--insight-bg);">
+    <!-- Header: Title & Market Bias Tag -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom" style="border-color: var(--border-color) !important;">
+        <div class="d-flex align-items-center gap-2">
+            <span class="font-mono fw-bold text-uppercase" style="font-size: 0.78rem; letter-spacing: 0.08em; color: var(--insight-title);">
+                WAWASAN ANALISIS TEKNIKAL DSS
+            </span>
+        </div>
+        <span class="badge-market-bias {{ insight.bias_badge_class if insight.bias_badge_class else 'bias-buy' }}">
+            {{ insight.market_bias if insight.market_bias else 'MARKET INTELLIGENCE' }}
         </span>
     </div>
-    <p class="insight-box-text small mb-0">
-        {{ insight }}
-    </p>
+
+    <!-- 3 Core Quantitative Pillars -->
+    <div class="d-flex flex-column gap-2.5 mb-3" style="font-size: 0.86rem; line-height: 1.6; color: var(--insight-text);">
+        <!-- Pillar 1: Trend -->
+        <div class="d-flex align-items-start gap-2.5">
+            <span class="text-primary font-mono fw-bold mt-0.5" style="font-size: 0.80rem;">[1]</span>
+            <div>
+                <strong class="text-theme-primary font-mono" style="font-size: 0.80rem;">STRUKTUR TREN (MA20 & MA50):</strong> 
+                <span>{{ insight.trend_point if insight.trend_point else insight }}</span>
+            </div>
+        </div>
+
+        <!-- Pillar 2: Momentum -->
+        <div class="d-flex align-items-start gap-2.5">
+            <span class="text-primary font-mono fw-bold mt-0.5" style="font-size: 0.80rem;">[2]</span>
+            <div>
+                <strong class="text-theme-primary font-mono" style="font-size: 0.80rem;">MOMENTUM KUANTITATIF (RSI 14-D):</strong> 
+                <span>{{ insight.momentum_point if insight.momentum_point else '' }}</span>
+            </div>
+        </div>
+
+        <!-- Pillar 3: Volatility -->
+        <div class="d-flex align-items-start gap-2.5">
+            <span class="text-primary font-mono fw-bold mt-0.5" style="font-size: 0.80rem;">[3]</span>
+            <div>
+                <strong class="text-theme-primary font-mono" style="font-size: 0.80rem;">VOLATILITAS HARGA (BOLLINGER BANDS):</strong> 
+                <span>{{ insight.volatility_point if insight.volatility_point else '' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personal Portfolio Decision Recommendation (Active if user inputs Price & Lots) -->
+    {% if insight.portfolio_advice %}
+    <div class="p-3 rounded-2 mb-3" style="background: var(--bg-card); border: 1px solid var(--border-color); border-left: 3px solid var(--primary);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2 pb-1.5 border-bottom border-color border-opacity-40">
+            <span class="font-mono fw-bold text-primary text-uppercase small" style="font-size: 0.76rem; letter-spacing: 0.06em;">
+                [SARAN KEPUTUSAN PORTOFOLIO ANDA]:
+            </span>
+            {% if insight.portfolio_action_tag %}
+            <span class="badge-market-bias {% if portfolio.is_profit %}bias-bullish{% else %}bias-caution{% endif %}">
+                {{ insight.portfolio_action_tag }}
+            </span>
+            {% endif %}
+        </div>
+        <div class="text-theme-primary font-mono" style="font-size: 0.84rem; line-height: 1.6;">
+            {{ insight.portfolio_advice }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Tactical Strategy Takeaway -->
+    <div class="p-2.5 rounded-2 d-flex align-items-center flex-wrap gap-2.5 mb-2.5" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+        <span class="badge bg-primary text-white font-mono px-2 py-1 rounded-1" style="font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase;">
+            Strategi Taktis Pasar
+        </span>
+        <span class="small font-mono fw-bold text-theme-primary" style="font-size: 0.82rem;">
+            {{ insight.tactical_strategy if insight.tactical_strategy else '' }}
+        </span>
+    </div>
+
+    <!-- DYOR Disclaimer (No Emotes, 100% Formal) -->
+    <div class="font-mono text-theme-muted pt-2 border-top border-color border-opacity-50" style="font-size: 0.70rem; line-height: 1.5; letter-spacing: 0.02em;">
+        <span class="fw-bold text-warning">[DISCLAIMER DYOR]:</span> Seluruh analisis dan saran keputusan DSS ini bersifat indikatif berbasis algoritma kuantitatif dan bukan merupakan ajakan mutlak jual/beli. Sesuaikan selalu dengan profil risiko, horizon investasi, dan manajemen modal Anda.
+    </div>
 </div>

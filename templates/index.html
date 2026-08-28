@@ -23,17 +23,28 @@
                     {% include 'components/_chart.html' %}
                 </div>
 
-                <!-- Executive Company Profile (New Feature) -->
+                <!-- Trade Setup & Risk-Reward Planner (New Feature #1) -->
+                {% if trade_setup %}
+                    {% include 'components/_trade_setup.html' %}
+                {% endif %}
+
+                <!-- Executive Company Profile -->
                 {% include 'components/_company_profile.html' %}
 
                 <!-- Technical Reference Guide -->
                 {% include 'components/_indicator_guide.html' %}
             </div>
 
-            <!-- Right Column (Market Intelligence: Trend Strength, Scanner, News) -->
+            <!-- Right Column (Market Intelligence: Trend Strength, Scanner, Broker Flow, Foreign Flow, News) -->
             <div class="col-lg-4">
                 {% include 'components/_trend_strength.html' %}
                 {% include 'components/_bullish_scanner.html' %}
+                {% if broker_summary %}
+                    {% include 'components/_broker_summary.html' %}
+                {% endif %}
+                {% if foreign_flow %}
+                    {% include 'components/_foreign_flow.html' %}
+                {% endif %}
                 {% include 'components/_news.html' %}
             </div>
         </div>

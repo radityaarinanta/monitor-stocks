@@ -1,3 +1,30 @@
+<!-- CHART HEADER & ONE-CLICK TIMEFRAME / ZOOM CONTROLLER -->
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pb-2 mb-2 border-bottom border-color">
+    <div class="d-flex align-items-center gap-2">
+        <span class="text-theme-muted font-mono small" style="font-size: 0.76rem; letter-spacing: 0.05em; text-transform: uppercase;">Rentang:</span>
+        <div class="btn-group font-mono" role="group" id="timeframe-buttons">
+            <button type="button" class="chart-zoom-btn" onclick="setChartRange(20, this)" title="Tampilkan 1 Bulan Terakhir (20 Hari Bursa)">1B</button>
+            <button type="button" class="chart-zoom-btn" onclick="setChartRange(40, this)" title="Tampilkan 2 Bulan Terakhir">2B</button>
+            <button type="button" class="chart-zoom-btn active" data-range="all" onclick="setChartRange(60, this)" title="Tampilkan Seluruh Data">Semua</button>
+        </div>
+    </div>
+    
+    <div class="d-flex align-items-center gap-2">
+        <span class="text-theme-muted font-mono small" style="font-size: 0.76rem; letter-spacing: 0.05em; text-transform: uppercase;">Navigasi:</span>
+        <div class="btn-group font-mono" role="group">
+            <button type="button" class="chart-zoom-btn px-2" onclick="zoomChartStep(1)" title="Perbesar Tampilan (+)">
+                <i class="bi bi-zoom-in"></i> In
+            </button>
+            <button type="button" class="chart-zoom-btn px-2" onclick="zoomChartStep(-1)" title="Perkecil Tampilan (-)">
+                <i class="bi bi-zoom-out"></i> Out
+            </button>
+            <button type="button" class="chart-zoom-btn px-2" onclick="resetChartZoom()" title="Reset Tampilan Penuh">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- INTERACTIVE CANDLESTICK & BOLLINGER BANDS CHART -->
 <div class="chart-wrapper my-2">
     {{ plot | safe }}
