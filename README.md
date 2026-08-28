@@ -106,7 +106,14 @@ The codebase adheres to a modular, decoupled architecture separating business lo
 monitor stocks/
 ├── api/
 │   ├── index.py                  # Flask application controller & HTTP routing
-│   └── stock_service.py          # Data ingestion, indicator calculus, broker flow & DSS engine
+│   ├── stock_service.py          # Master Facade Hub orchestrating modular service execution
+│   └── services/                 # Decoupled domain service modules
+│       ├── __init__.py           # Package exports
+│       ├── market_data.py        # yfinance ingestion, ticker normalization, fundamentals, news, scanner
+│       ├── indicators.py         # Technical indicators, trend strength calculus, S/R pivot trade setup
+│       ├── bandarmologi.py       # Multi-timeframe Broker Summary & Net Foreign Flow tracker
+│       ├── chart_builder.py      # Plotly multi-panel Candlestick, MA20/MA50, and Volume charting
+│       └── dss_engine.py         # 3-Pillar DSS technical insight & dynamic portfolio decision engine
 ├── static/
 │   ├── css/
 │   │   └── style.css             # Central Design System & Dual-Theme CSS variables

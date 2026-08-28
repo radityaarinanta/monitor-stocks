@@ -1,9 +1,18 @@
 import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+API_DIR = os.path.dirname(os.path.abspath(__file__))
+if API_DIR not in sys.path:
+    sys.path.insert(0, API_DIR)
+
 from flask import Flask, render_template, request, send_from_directory
 
 try:
     from api.stock_service import normalize_ticker, scan_bullish_stocks, analyze_stock
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     from stock_service import normalize_ticker, scan_bullish_stocks, analyze_stock
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
