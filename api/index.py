@@ -8,12 +8,12 @@ API_DIR = os.path.dirname(os.path.abspath(__file__))
 if API_DIR not in sys.path:
     sys.path.insert(0, API_DIR)
 
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, jsonify
 
 try:
-    from api.stock_service import normalize_ticker, scan_bullish_stocks, analyze_stock
+    from api.stock_service import normalize_ticker, scan_bullish_stocks, analyze_stock, get_screener_data
 except (ImportError, ModuleNotFoundError):
-    from stock_service import normalize_ticker, scan_bullish_stocks, analyze_stock
+    from stock_service import normalize_ticker, scan_bullish_stocks, analyze_stock, get_screener_data
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
@@ -32,6 +32,30 @@ def serve_static(filename):
     return send_from_directory(STATIC_DIR, filename)
 
 
+@app.route('/favicon.ico')
+def favicon():
+    img_dir = os.path.join(STATIC_DIR, 'img')
+    if os.path.exists(img_dir):
+        for ext in ['png', 'svg', 'ico', 'webp', 'jpg']:
+            filename = f"logo.{ext}"
+            if os.path.exists(os.path.join(img_dir, filename)):
+                return send_from_directory(img_dir, filename)
+    return ('', 204)
+
+
+@app.context_processor
+def inject_custom_logo():
+    img_dir = os.path.join(STATIC_DIR, 'img')
+    custom_logo = None
+    if os.path.exists(img_dir):
+        for ext in ['svg', 'png', 'webp', 'jpg', 'jpeg']:
+            filename = f"logo.{ext}"
+            if os.path.exists(os.path.join(img_dir, filename)):
+                custom_logo = f"img/{filename}"
+                break
+    return {'custom_logo': custom_logo}
+
+
 @app.route('/')
 @app.route('/index')
 @app.route('/api')
@@ -44,7 +68,6 @@ def index():
     if raw_ticker_param and raw_ticker_param.strip():
         raw_ticker_input = raw_ticker_param.strip()
     else:
-        # Opsi 2: Otomatis memuat saham #1 Bullish terkuat hari ini dari scanner
         if bullish_stocks and len(bullish_stocks) > 0:
             raw_ticker_input = bullish_stocks[0]['symbol']
         else:
@@ -61,6 +84,7 @@ def index():
         if not analysis.get('success', True):
             return render_template(
                 'index.html',
+                active_page='dashboard',
                 error_message=analysis.get('error_message'),
                 ticker=raw_ticker_input.upper(),
                 ticker_display=ticker_display,
@@ -71,6 +95,7 @@ def index():
 
         return render_template(
             'index.html',
+            active_page='dashboard',
             plot=analysis['plot'],
             ticker=analysis['ticker'],
             ticker_display=analysis['ticker_display'],
@@ -99,6 +124,7 @@ def index():
     except Exception as e:
         return render_template(
             'index.html',
+            active_page='dashboard',
             error_message=f"Terjadi kesalahan saat memproses data: {str(e)}",
             ticker=raw_ticker_input.upper(),
             ticker_display=ticker_display,
@@ -106,6 +132,19 @@ def index():
             avg_price=avg_price,
             lots=lots
         )
+
+
+@app.route('/screener')
+def screener_page():
+    stocks = get_screener_data()
+    return render_template('screener.html', stocks=stocks, active_page='screener')
+
+
+@app.route('/api/screener-data')
+def api_screener_data():
+    force = request.args.get('refresh', '0') == '1'
+    stocks = get_screener_data(force_refresh=force)
+    return jsonify({'success': True, 'count': len(stocks), 'data': stocks})
 
 
 @app.errorhandler(404)

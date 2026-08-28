@@ -1,13 +1,20 @@
-<!-- ENTERPRISE TOP NAVBAR -->
 <header class="enterprise-header sticky-top mb-4">
-    <div class="container-xl d-flex justify-content-between align-items-center">
-        <!-- Minimalist Brand Logo & Institutional Subtitle -->
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-3 py-2.5">
         <a href="/" class="d-flex align-items-center gap-3 text-decoration-none text-reset">
+            {% if custom_logo %}
+            <div class="brand-logo-container">
+                <img src="{{ url_for('static', filename=custom_logo) }}" alt="StockPulse Logo" class="brand-custom-logo">
+            </div>
+            {% else %}
             <div class="brand-icon-box">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                    <polyline points="3 8 9 4 15 8 21 2"></polyline>
                 </svg>
             </div>
+            {% endif %}
             <div>
                 <div class="d-flex align-items-center" style="line-height: 1.2;">
                     <span class="brand-name">STOCK<span class="text-primary">PULSE</span></span>
@@ -19,14 +26,31 @@
             </div>
         </a>
 
-        <!-- Right Action Items: Live Market Feed Indicator & Theme Switcher -->
+        <nav class="d-none d-md-flex align-items-center enterprise-nav-pill-group">
+            <a href="/" class="enterprise-nav-tab {% if active_page == 'dashboard' or not active_page %}active{% endif %}">
+                <span>Dashboard Analisis</span>
+            </a>
+            <a href="/screener" class="enterprise-nav-tab {% if active_page == 'screener' %}active{% endif %}">
+                <span>Full IHSG Screener</span>
+                <span class="sub-nav-badge">764</span>
+            </a>
+        </nav>
+
         <div class="d-flex align-items-center gap-3">
-            <div class="d-none d-md-flex align-items-center gap-2 px-3 py-1.5 rounded-2 border border-color small font-mono" style="font-size: 0.76rem; background: var(--bg-card);">
+            <nav class="d-flex d-md-none align-items-center enterprise-nav-pill-group me-1">
+                <a href="/" class="enterprise-nav-tab px-2 py-1 {% if active_page == 'dashboard' or not active_page %}active{% endif %}">
+                    Dashboard
+                </a>
+                <a href="/screener" class="enterprise-nav-tab px-2 py-1 {% if active_page == 'screener' %}active{% endif %}">
+                    Screener
+                </a>
+            </nav>
+
+            <div class="d-none d-lg-flex align-items-center gap-2 px-3 py-1.5 rounded-2 border border-color small font-mono" style="font-size: 0.76rem; background: var(--bg-card);">
                 <span class="status-pulse-dot online"></span>
-                <span class="text-theme-secondary">IDX / IHSG MARKET FEED</span>
+                <span class="text-theme-secondary">IDX / IHSG FEED</span>
             </div>
 
-            <!-- Theme Toggle Button -->
             <button id="themeToggleBtn" type="button" class="btn-theme-toggle" title="Ganti Mode Tampilan (Dark / Light)">
                 <i class="bi bi-sun"></i>
                 <span class="d-none d-sm-inline">Light Mode</span>

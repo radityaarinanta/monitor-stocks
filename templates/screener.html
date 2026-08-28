@@ -1,0 +1,551 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Stock Screener Pro | Penyaring 760+ Saham IHSG Terpadu
+{% endblock %}
+
+{% block content %}
+<div class="screener-header-box">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 pb-3 mb-3 border-bottom border-color">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="section-title fs-5">PENYARING SAHAM IHSG</span>
+                <span class="badge bg-primary text-white font-mono px-2 py-0.5" style="font-size: 0.68rem;">{{ stocks|length }} EMITEN AKTIF</span>
+            </div>
+            <div class="text-theme-muted small font-mono" style="font-size: 0.76rem;">
+                Penyaringan kuantitatif otomatis seluruh saham BEI berbasis teknikal, bandarmologi, dan arus asing.
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button id="btnRefreshData" type="button" class="btn-refresh-screener" onclick="refreshScreenerData()">
+                <i class="bi bi-arrow-repeat" id="refreshSpinner"></i>
+                <span id="refreshText">Segarkan Data</span>
+            </button>
+
+            <div class="enterprise-nav-pill-group">
+                <button id="btnModePreset" type="button" class="enterprise-nav-tab active" onclick="switchScreenerMode('preset')">
+                    Mode Preset Instan
+                </button>
+                <button id="btnModeCustom" type="button" class="enterprise-nav-tab" onclick="switchScreenerMode('custom')">
+                    Mode Kustom Filter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRESET MODE CONTAINER -->
+    <div id="containerPresetMode" class="mb-3">
+        <div class="font-mono text-theme-muted small fw-bold mb-2.5" style="font-size: 0.70rem; letter-spacing: 0.06em; text-transform: uppercase;">
+            PILIH STRATEGI POPULER:
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="strategy-chip active" onclick="applyPresetFilter('all', this)">
+                <span>Semua Saham</span>
+                <span class="sub-nav-badge">{{ stocks|length }}</span>
+            </button>
+            <button type="button" class="strategy-chip" onclick="applyPresetFilter('bullish', this)">
+                <span>Bullish Momentum</span>
+            </button>
+            <button type="button" class="strategy-chip" onclick="applyPresetFilter('oversold', this)">
+                <span>Oversold Rebound</span>
+            </button>
+            <button type="button" class="strategy-chip" onclick="applyPresetFilter('big_acc', this)">
+                <span>Bandarmologi Akumulasi</span>
+            </button>
+            <button type="button" class="strategy-chip" onclick="applyPresetFilter('foreign_inflow', this)">
+                <span>Foreign Inflow (Net Buy)</span>
+            </button>
+            <button type="button" class="strategy-chip" onclick="applyPresetFilter('bow', this)">
+                <span>Buy on Weakness</span>
+            </button>
+            <button type="button" class="strategy-chip" onclick="applyPresetFilter('dividend', this)">
+                <span>High Value & Dividend</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- CUSTOM FILTER MODE CONTAINER -->
+    <div id="containerCustomMode" class="custom-filter-box mb-3 d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-color">
+            <span class="font-mono text-theme-muted small fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase;">
+                PARAMETER FILTER KUANTITATIF MANDIRI:
+            </span>
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 font-mono" style="font-size: 0.65rem;">
+                MULTI-PARAMETER ENGINE
+            </span>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-2.5">
+            <div class="col">
+                <label class="custom-filter-label">Sektor Industri</label>
+                <select id="filterSector" class="form-select screener-select" onchange="runCustomFilters()">
+                    <option value="all">Semua Sektor ({{ stocks|length }})</option>
+                    <option value="Financials">Financials / Perbankan</option>
+                    <option value="Energy & Mining">Energy & Mining</option>
+                    <option value="Basic Materials">Basic Materials / Tambang</option>
+                    <option value="Consumer Non-Cyclicals">Consumer Non-Cyclicals</option>
+                    <option value="Consumer Cyclicals">Consumer Cyclicals / Ritel</option>
+                    <option value="Industrials">Industrials / Alat Berat</option>
+                    <option value="Healthcare">Healthcare / Farmasi</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Properties">Properties & Real Estate</option>
+                    <option value="Infrastructures">Infrastructures</option>
+                    <option value="Telco & Infra">Telco & Infrastruktur</option>
+                    <option value="Agriculture & CPO">Agriculture & CPO</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label class="custom-filter-label">Struktur Tren (MA)</label>
+                <select id="filterTrend" class="form-select screener-select" onchange="runCustomFilters()">
+                    <option value="all">Semua Kondisi Tren</option>
+                    <option value="above_ma20">Di Atas MA20 (Short-Term)</option>
+                    <option value="above_ma50">Di Atas MA50 (Mid-Term)</option>
+                    <option value="golden_cross">Golden Cross (MA20 >= 50)</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label class="custom-filter-label">Momentum RSI (14-D)</label>
+                <select id="filterRsi" class="form-select screener-select" onchange="runCustomFilters()">
+                    <option value="all">Semua Level RSI</option>
+                    <option value="oversold">Oversold (< 38 Diskon)</option>
+                    <option value="neutral">Netral (38 - 65)</option>
+                    <option value="overbought">Overbought (> 65 Jenuh)</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label class="custom-filter-label">Bandarmologi</label>
+                <select id="filterBroksum" class="form-select screener-select" onchange="runCustomFilters()">
+                    <option value="all">Semua Status Akumulasi</option>
+                    <option value="accumulation">Hanya Akumulasi</option>
+                    <option value="distribution">Hanya Distribusi</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label class="custom-filter-label">Arus Asing (10D)</label>
+                <select id="filterForeign" class="form-select screener-select" onchange="runCustomFilters()">
+                    <option value="all">Semua Aliran Asing</option>
+                    <option value="net_buy">Net Buy Asing</option>
+                    <option value="net_sell">Net Sell Asing</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-2.5 border-top border-color">
+            <div class="text-theme-muted small font-mono" style="font-size: 0.72rem;">
+                Filter berjalan otomatis secara instan saat parameter diubah.
+            </div>
+            <button type="button" class="btn-reset-filters" onclick="resetCustomFilters()">
+                Reset Semua Filter
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- FILTER STATUS & SEARCH TOOLBAR -->
+<div class="screener-status-toolbar d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-2 font-mono" style="font-size: 0.80rem;">
+        <i class="bi bi-funnel text-primary"></i>
+        <span class="text-theme-muted">Hasil Penyaringan:</span>
+        <span id="screenerCount" class="fw-bold text-primary">{{ stocks|length }}</span>
+        <span class="text-theme-muted">dari {{ stocks|length }} Saham Terpantau</span>
+    </div>
+
+    <div class="screener-search-wrap">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" id="screenerSearchInput" class="form-control form-control-sm" placeholder="Cari kode atau nama emiten..." onkeyup="searchByTicker(this.value)">
+    </div>
+</div>
+
+<!-- DATA TABLE -->
+<div id="screenerTableContainer" class="table-responsive screener-table-box mb-3">
+    <table class="table screener-table align-middle mb-0 font-mono" style="font-size: 0.82rem;">
+        <thead>
+            <tr>
+                <th style="width: 24%;">EMITEN / SEKTOR</th>
+                <th class="text-end" style="width: 12%;">HARGA</th>
+                <th class="text-end" style="width: 10%;">PERUBAHAN</th>
+                <th class="text-center" style="width: 10%;">RSI (14)</th>
+                <th class="text-center" style="width: 12%;">TREN (MA20/50)</th>
+                <th class="text-center" style="width: 11%;">BANDARMOLOGI</th>
+                <th class="text-center" style="width: 11%;">ARUS ASING (10D)</th>
+                <th class="text-end" style="width: 10%;">AKSI</th>
+            </tr>
+        </thead>
+        <tbody id="screenerTableBody">
+            {% for s in stocks %}
+            <tr class="screener-row" 
+                data-code="{{ s.code }}"
+                data-name="{{ s.name|lower }}"
+                data-sector="{{ s.sector }}"
+                data-above-ma20="{{ s.above_ma20 }}"
+                data-above-ma50="{{ s.above_ma50 }}"
+                data-golden-cross="{{ s.is_golden_cross }}"
+                data-rsi="{{ s.rsi }}"
+                data-broksum="{{ s.broksum_tag }}"
+                data-foreign="{{ s.foreign_tag }}"
+                data-presets="{{ s.preset_tags|join(',') }}">
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge-screener-ticker">
+                            {{ s.code }}
+                        </span>
+                        <div>
+                            <div class="fw-bold text-theme-primary" style="font-size: 0.82rem;">{{ s.name }}</div>
+                            <div class="text-theme-muted small" style="font-size: 0.68rem;">{{ s.sector }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="text-end font-mono">
+                    <span class="fw-bold text-theme-primary" style="font-size: 0.84rem;">{{ s.price_str }}</span>
+                </td>
+                <td class="text-end font-mono fw-bold {% if s.is_positive %}text-success{% else %}text-danger{% endif %}">
+                    {{ s.change_str }}
+                </td>
+                <td class="text-center font-mono">
+                    <span class="badge {% if s.rsi < 35 %}bg-success-subtle text-success border border-success border-opacity-25{% elif s.rsi > 70 %}bg-danger-subtle text-danger border border-danger border-opacity-25{% else %}bg-secondary bg-opacity-10 text-secondary border border-color{% endif %} px-2 py-0.5">
+                        {{ s.rsi }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <span class="badge {% if s.above_ma20 and s.above_ma50 %}bias-bullish{% elif s.above_ma20 %}bias-buy{% else %}bias-caution{% endif %} badge-market-bias" style="font-size: 0.66rem;">
+                        {% if s.above_ma20 and s.above_ma50 %}MA20 & MA50 UP{% elif s.above_ma20 %}> MA20 (REBOUND){% else %}< MA20 (DOWNTREND){% endif %}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <span class="badge-market-bias {{ s.broksum_badge }}" style="font-size: 0.66rem;">
+                        {{ s.broksum_status }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <span class="badge-market-bias {{ s.foreign_badge }}" style="font-size: 0.66rem;">
+                        {{ s.foreign_10d_str }}
+                    </span>
+                </td>
+                <td class="text-end">
+                    <a href="/?ticker={{ s.code }}" class="screener-btn-analisis">
+                        Analisis
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- PAGINATION BAR -->
+<div id="screenerPaginationBar" class="screener-pagination-bar d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div class="d-flex align-items-center gap-3 flex-wrap font-mono" style="font-size: 0.78rem;">
+        <div>
+            <span class="text-theme-muted">Menampilkan: </span>
+            <span id="pageRangeText" class="fw-bold text-primary">1 - 25</span>
+            <span class="text-theme-muted"> dari </span>
+            <span id="pageTotalItemsText" class="fw-bold text-primary">{{ stocks|length }}</span>
+            <span class="text-theme-muted"> Emiten</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-1.5 ms-sm-2">
+            <span class="text-theme-muted small">Baris:</span>
+            <button type="button" class="page-size-btn" onclick="setPageSize(15, this)">15</button>
+            <button type="button" class="page-size-btn active" onclick="setPageSize(25, this)">25</button>
+            <button type="button" class="page-size-btn" onclick="setPageSize(50, this)">50</button>
+            <button type="button" class="page-size-btn" onclick="setPageSize(100, this)">100</button>
+            <button type="button" class="page-size-btn" onclick="setPageSize(9999, this)">Semua</button>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 font-mono">
+        <button id="btnFirstPage" type="button" class="pagination-btn" onclick="goToPage(1)" title="Halaman Pertama">
+            <i class="bi bi-chevron-double-left"></i>
+        </button>
+        <button id="btnPrevPage" type="button" class="pagination-btn" onclick="changePage(-1)" title="Halaman Sebelumnya">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <div class="px-2 font-mono" style="font-size: 0.76rem;">
+            <span class="text-theme-muted">Hal </span>
+            <span id="currentPageText" class="fw-bold text-primary">1</span>
+            <span class="text-theme-muted"> dari </span>
+            <span id="totalPagesText" class="fw-bold text-primary">1</span>
+        </div>
+
+        <button id="btnNextPage" type="button" class="pagination-btn" onclick="changePage(1)" title="Halaman Selanjutnya">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+        <button id="btnLastPage" type="button" class="pagination-btn" onclick="goToLastPage()" title="Halaman Terakhir">
+            <i class="bi bi-chevron-double-right"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Empty State -->
+<div id="screenerEmptyState" class="text-center py-5 d-none">
+    <div class="font-mono text-theme-muted mb-2" style="font-size: 1.5rem;">Tidak Ada Saham yang Sesuai</div>
+    <div class="text-theme-muted small mb-3">Cobalah melonggarkan filter atau pilih preset strategi yang lain.</div>
+    <button type="button" class="btn btn-sm btn-primary font-mono" onclick="resetAllFilters()">Tampilkan Semua Saham</button>
+</div>
+
+<script>
+let currentPreset = 'all';
+let currentMode = 'preset';
+let currentPage = 1;
+let pageSize = 25;
+let allTableRows = [];
+let matchedRows = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    allTableRows = Array.from(document.querySelectorAll('.screener-row'));
+    applyPresetFilter('all');
+});
+
+function switchScreenerMode(mode) {
+    currentMode = mode;
+    const btnPreset = document.getElementById('btnModePreset');
+    const btnCustom = document.getElementById('btnModeCustom');
+    const containerPreset = document.getElementById('containerPresetMode');
+    const containerCustom = document.getElementById('containerCustomMode');
+
+    if (mode === 'preset') {
+        btnPreset.classList.add('active');
+        btnCustom.classList.remove('active');
+        containerPreset.classList.remove('d-none');
+        containerCustom.classList.add('d-none');
+        applyPresetFilter(currentPreset);
+    } else {
+        btnCustom.classList.add('active');
+        btnPreset.classList.remove('active');
+        containerCustom.classList.remove('d-none');
+        containerPreset.classList.add('d-none');
+        runCustomFilters();
+    }
+}
+
+function applyPresetFilter(presetKey, btnElem) {
+    currentPreset = presetKey;
+    if (btnElem) {
+        document.querySelectorAll('#containerPresetMode .strategy-chip').forEach(btn => btn.classList.remove('active'));
+        btnElem.classList.add('active');
+    }
+
+    const query = (document.getElementById('screenerSearchInput').value || '').trim().toLowerCase();
+    matchedRows = [];
+
+    allTableRows.forEach(row => {
+        const code = (row.getAttribute('data-code') || '').toLowerCase();
+        const name = (row.getAttribute('data-name') || '').toLowerCase();
+        const presets = (row.getAttribute('data-presets') || '').split(',');
+        const matchPreset = (presetKey === 'all') || presets.includes(presetKey);
+        const matchQuery = !query || code.includes(query) || name.includes(query);
+
+        if (matchPreset && matchQuery) {
+            matchedRows.push(row);
+        }
+    });
+
+    currentPage = 1;
+    renderCurrentPage();
+}
+
+function runCustomFilters() {
+    const sector = document.getElementById('filterSector').value;
+    const trend = document.getElementById('filterTrend').value;
+    const rsi = document.getElementById('filterRsi').value;
+    const broksum = document.getElementById('filterBroksum').value;
+    const foreign = document.getElementById('filterForeign').value;
+    const query = (document.getElementById('screenerSearchInput').value || '').trim().toLowerCase();
+
+    matchedRows = [];
+
+    allTableRows.forEach(row => {
+        const code = (row.getAttribute('data-code') || '').toLowerCase();
+        const name = (row.getAttribute('data-name') || '').toLowerCase();
+        const rowSector = row.getAttribute('data-sector');
+        const aboveMa20 = row.getAttribute('data-above-ma20') === 'True';
+        const aboveMa50 = row.getAttribute('data-above-ma50') === 'True';
+        const isGoldenCross = row.getAttribute('data-golden-cross') === 'True';
+        const rowRsi = parseFloat(row.getAttribute('data-rsi')) || 50;
+        const rowBroksum = row.getAttribute('data-broksum');
+        const rowForeign = row.getAttribute('data-foreign');
+
+        let matchSector = (sector === 'all') || (rowSector === sector);
+        let matchTrend = true;
+        if (trend === 'above_ma20') matchTrend = aboveMa20;
+        else if (trend === 'above_ma50') matchTrend = aboveMa50;
+        else if (trend === 'golden_cross') matchTrend = isGoldenCross;
+
+        let matchRsi = true;
+        if (rsi === 'oversold') matchRsi = rowRsi < 38;
+        else if (rsi === 'neutral') matchRsi = rowRsi >= 38 && rowRsi <= 65;
+        else if (rsi === 'overbought') matchRsi = rowRsi > 65;
+
+        let matchBroksum = (broksum === 'all') || (rowBroksum === broksum);
+        let matchForeign = (foreign === 'all') || (rowForeign === foreign);
+        let matchQuery = !query || code.includes(query) || name.includes(query);
+
+        if (matchSector && matchTrend && matchRsi && matchBroksum && matchForeign && matchQuery) {
+            matchedRows.push(row);
+        }
+    });
+
+    currentPage = 1;
+    renderCurrentPage();
+}
+
+function renderCurrentPage() {
+    const totalCount = matchedRows.length;
+    const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    allTableRows.forEach(row => {
+        row.style.display = 'none';
+    });
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = Math.min(totalCount, startIndex + pageSize);
+
+    for (let i = startIndex; i < endIndex; i++) {
+        matchedRows[i].style.display = '';
+    }
+
+    document.getElementById('screenerCount').innerText = totalCount;
+    document.getElementById('pageTotalItemsText').innerText = totalCount;
+    document.getElementById('currentPageText').innerText = currentPage;
+    document.getElementById('totalPagesText').innerText = totalPages;
+
+    if (totalCount === 0) {
+        document.getElementById('pageRangeText').innerText = '0 - 0';
+        document.getElementById('screenerEmptyState').classList.remove('d-none');
+        document.getElementById('screenerTableContainer').classList.add('d-none');
+        document.getElementById('screenerPaginationBar').classList.add('d-none');
+    } else {
+        document.getElementById('pageRangeText').innerText = `${startIndex + 1} - ${endIndex}`;
+        document.getElementById('screenerEmptyState').classList.add('d-none');
+        document.getElementById('screenerTableContainer').classList.remove('d-none');
+        document.getElementById('screenerPaginationBar').classList.remove('d-none');
+    }
+
+    document.getElementById('btnFirstPage').disabled = (currentPage === 1);
+    document.getElementById('btnPrevPage').disabled = (currentPage === 1);
+    document.getElementById('btnNextPage').disabled = (currentPage === totalPages);
+    document.getElementById('btnLastPage').disabled = (currentPage === totalPages);
+}
+
+function changePage(delta) {
+    const totalPages = Math.max(1, Math.ceil(matchedRows.length / pageSize));
+    const targetPage = currentPage + delta;
+    if (targetPage >= 1 && targetPage <= totalPages) {
+        currentPage = targetPage;
+        renderCurrentPage();
+        scrollToTableTop();
+    }
+}
+
+function goToPage(page) {
+    currentPage = page;
+    renderCurrentPage();
+    scrollToTableTop();
+}
+
+function goToLastPage() {
+    const totalPages = Math.max(1, Math.ceil(matchedRows.length / pageSize));
+    currentPage = totalPages;
+    renderCurrentPage();
+    scrollToTableTop();
+}
+
+function setPageSize(size, btnElem) {
+    pageSize = parseInt(size, 10);
+    currentPage = 1;
+
+    if (btnElem) {
+        document.querySelectorAll('#screenerPaginationBar .page-size-btn').forEach(btn => btn.classList.remove('active'));
+        btnElem.classList.add('active');
+    }
+
+    renderCurrentPage();
+    scrollToTableTop();
+}
+
+function scrollToTableTop() {
+    const tableElem = document.getElementById('screenerTableContainer');
+    if (tableElem) {
+        const topPos = tableElem.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: topPos, behavior: 'smooth' });
+    }
+}
+
+function searchByTicker(val) {
+    if (currentMode === 'preset') {
+        applyPresetFilter(currentPreset);
+    } else {
+        runCustomFilters();
+    }
+}
+
+function resetCustomFilters() {
+    document.getElementById('filterSector').value = 'all';
+    document.getElementById('filterTrend').value = 'all';
+    document.getElementById('filterRsi').value = 'all';
+    document.getElementById('filterBroksum').value = 'all';
+    document.getElementById('filterForeign').value = 'all';
+    document.getElementById('screenerSearchInput').value = '';
+    runCustomFilters();
+}
+
+function resetAllFilters() {
+    document.getElementById('screenerSearchInput').value = '';
+    if (currentMode === 'preset') {
+        const allBtn = document.querySelector('#containerPresetMode .strategy-chip');
+        applyPresetFilter('all', allBtn);
+    } else {
+        resetCustomFilters();
+    }
+}
+
+function refreshScreenerData() {
+    const btn = document.getElementById('btnRefreshData');
+    const spinner = document.getElementById('refreshSpinner');
+    const text = document.getElementById('refreshText');
+
+    btn.disabled = true;
+    spinner.classList.add('spin-animation');
+    text.innerText = 'Memindai...';
+
+    fetch('/api/screener-data?refresh=1')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Gagal menyegarkan data pasar.');
+                btn.disabled = false;
+                spinner.classList.remove('spin-animation');
+                text.innerText = 'Segarkan Data';
+            }
+        })
+        .catch(err => {
+            alert('Terjadi kesalahan koneksi.');
+            btn.disabled = false;
+            spinner.classList.remove('spin-animation');
+            text.innerText = 'Segarkan Data';
+        });
+}
+</script>
+
+<style>
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.spin-animation {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+</style>
+{% endblock %}

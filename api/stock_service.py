@@ -35,6 +35,10 @@ try:
         generate_dss_insights,
         generate_portfolio_decision,
     )
+    from api.services.screener import (
+        get_screener_data,
+        SCREENER_UNIVERSE,
+    )
 except (ImportError, ModuleNotFoundError):
     from services.market_data import (
         WATCHLIST,
@@ -59,6 +63,10 @@ except (ImportError, ModuleNotFoundError):
     from services.dss_engine import (
         generate_dss_insights,
         generate_portfolio_decision,
+    )
+    from services.screener import (
+        get_screener_data,
+        SCREENER_UNIVERSE,
     )
 
 

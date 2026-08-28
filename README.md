@@ -4,28 +4,45 @@
 [![Framework](https://img.shields.io/badge/framework-Flask-black.svg)](https://flask.palletsprojects.com/)
 [![Visualization](https://img.shields.io/badge/charts-Plotly-3F4F75.svg)](https://plotly.com/)
 [![Market Data](https://img.shields.io/badge/data-yfinance-green.svg)](https://github.com/ranaroussi/yfinance)
-[![UI Theme](https://img.shields.io/badge/UI-Dual--Mode%20(Dark%2FLight)-6366F1.svg)](#dual-theme-design-system)
-[![Project Status](https://img.shields.io/badge/status-active%20development-orange.svg)](#development-status)
+[![UI Theme](https://img.shields.io/badge/Theme-Emerald%20%26%20Sage%20Wealth-2A835F.svg)](#dual-theme-design-system)
+[![Screener Universe](https://img.shields.io/badge/IHSG%20Coverage-760%2B%20Stocks-8BBB92.svg)](#full-ihsg-quantitative-stock-screener-764-emiten)
 [![Deployment](https://img.shields.io/badge/deployment-Vercel%20Serverless-000000.svg)](https://vercel.com/)
 
-StockPulse Pro is an institutional-grade Decision Support System (DSS) designed for equity market participants, analysts, portfolio managers, and retail investors. It integrates multi-indicator technical analytics, fundamental metrics, quantitative trend scoring, multi-timeframe broker summary (bandarmologi), net foreign flow tracking, risk-to-reward trade setup planning, portfolio return calculation, and AI-driven contextual market decision narratives.
+StockPulse Pro is an institutional-grade Decision Support System (DSS) and Quantitative Stock Screener designed for equity market participants, analysts, portfolio managers, and retail investors. It integrates multi-indicator technical analytics, fundamental metrics, quantitative trend scoring, multi-timeframe broker summary (bandarmologi), net foreign flow tracking, risk-to-reward trade setup planning, portfolio return calculation, and an automated full-universe screener covering 760+ Indonesian equities (IHSG / BEI).
 
 Optimized for both the Indonesia Stock Exchange (IDX / IHSG) and Global Equities (US Markets, Commodities, Indexes).
-
-> [!NOTE]
-> **Development Status**: This project is under active, phased engineering. Core analytical models, bandarmologi flow simulations, and risk-reward execution modules are continuously evaluated and enhanced.
 
 ---
 
 ## Key Modules & Features
 
-### 1. Multi-Indicator Technical Engine
+### 1. Full IHSG Quantitative Stock Screener (764+ Emiten BEI)
+- **Universal Market Coverage**: Complete quantitative indexing of 764 active stocks listed on the Indonesia Stock Exchange across 12 distinct industrial sectors.
+- **Dual-Mode Filtering Architecture**:
+  - **1-Click Strategy Presets**: Instant filtering for popular institutional trade setups:
+    - *Bullish Momentum (Uptrend Structure)*
+    - *Oversold Rebound (RSI Diskon < 38)*
+    - *Bandarmologi Akumulasi (Institutional Accumulation)*
+    - *Foreign Inflow (Net Buy Asing 10D)*
+    - *Buy on Weakness (Pullback to Support)*
+    - *High Value & Dividend Champions*
+  - **Multi-Parameter Custom Filter Engine**: Granular multi-factor screening by:
+    - *12 Industrial Sectors* (Financials, Energy & Mining, Basic Materials, Consumer Non-Cyclicals, Consumer Cyclicals, Industrials, Healthcare, Technology, Properties, Infrastructures, Telco & Infra, Agriculture & CPO)
+    - *Moving Average Structures* (> MA20 Short-term, > MA50 Mid-term, Golden Cross MA20/50)
+    - *RSI Momentum Ranges* (Oversold, Neutral, Overbought)
+    - *Bandarmologi Flow States* (Accumulation vs. Distribution)
+    - *Foreign Flow Directions* (Net Buy vs. Net Sell)
+- **Instant Client-Side Search**: Sub-millisecond filter by ticker code or company name with instantaneous DOM updates.
+- **Smart Table Pagination**: Configurable rows per page (`15`, `25`, `50`, `100`, or `Semua`) with auto-recalculating page counts and smooth jump-to-top scrolling.
+- **Pre-computed Disk Caching**: High-speed JSON cache (`screener_cache.json`) for 0.01s initial page loads with on-demand background market rescan (`/api/screener-data?refresh=1`).
+
+### 2. Multi-Indicator Technical Engine
 - **Interactive Candlestick & Volume Panels**: High-performance OHLC candlestick charting with unified crosshair hover tooltips powered by Plotly.
 - **Bollinger Bands (20, 2)**: Dynamic volatility bands (Upper, Lower, and shaded channel area) to detect overbought extensions and support bounce opportunities.
 - **Dual Moving Averages (MA20 & MA50)**: Multi-timeframe trend baselines to identify golden/death crosses and pullback support zones.
 - **Relative Strength Index (RSI 14-D)**: Momentum oscillator measuring extreme overbought ($>70$) and oversold ($<30$) territory.
 
-### 2. Trade Setup Planner & Risk-Reward (R:R) Calculator
+### 3. Trade Setup Planner & Risk-Reward (R:R) Calculator
 - **Mathematical Pivot Point Engine**: Automatic computation of $S2\text{ (Kritikal)}$, $S1\text{ (Support)}$, $\text{Pivot Point}$, $R1\text{ (Resistensi)}$, and $R2\text{ (Akselerasi)}$.
 - **Actionable Execution Targets**: Real-time identification of Entry Zone, Target Profit 1 (TP1 / R1), Target Profit 2 (TP2 / R2), and Protective Stop Loss (SL1 / S1).
 - **Asymmetric Risk/Reward Ratio**: Automated $1 : X.X$ ratio computation paired with institutional feasibility badges:
@@ -34,19 +51,18 @@ Optimized for both the Indonesia Stock Exchange (IDX / IHSG) and Global Equities
   - `ASYMMETRIC RISK (WAIT PULLBACK)`
 - **Segmented Level Micro-Cards**: 5 distinct, high-contrast metric cards displaying precise support and resistance levels.
 
-### 3. Multi-Timeframe Broker Summary (Bandarmologi Flow)
+### 4. Multi-Timeframe Broker Summary (Bandarmologi Flow)
 - **Interactive Timeframe Switching**: Instant client-side switching between **1 Day (1D)**, **5 Days (5D)**, and **20 Days (20D)** trading horizons.
 - **Buyer vs. Seller Concentration Bar**: Dynamic visual power ratio bar comparing Net Buying Power vs. Net Selling Power.
 - **Top 5 Net Buyers & Top 5 Net Sellers Table**: Granular volume-weighted broker breakdown showing broker codes, accumulated volume (lot), average execution price, and total value (IDR).
 - **Accumulation/Distribution Status**: Categorized institutional flow state (`BIG ACCUMULATION`, `NORMAL ACCUMULATION`, `NEUTRAL`, `NORMAL DISTRIBUTION`, `BIG DISTRIBUTION`).
-- **Methodology & Data Source Footnote**: Clear disclosure regarding volume-weighted algorithmic simulation vs. direct IDX trade feeds.
 
-### 4. Net Foreign Flow Tracker (10-Day Cumulative Flow)
+### 5. Net Foreign Flow Tracker (10-Day Cumulative Flow)
 - **10-Day Cumulative Net Flow**: Total net foreign inflow/outflow measured in Billions of IDR (`+Rp X.X M` or `-Rp X.X M`).
 - **10-Session Visual Histogram**: Daily color-coded bar chart distinguishing institutional foreign accumulation (Green) and distribution (Red).
 - **Foreign Bias State**: Real-time signal badges (`STRONG FOREIGN INFLOW`, `ACCUMULATIVE INFLOW`, `NEUTRAL FLOW`, `DISTRIBUTIVE OUTFLOW`, `STRONG FOREIGN OUTFLOW`).
 
-### 5. Quantitative Trend Strength Meter (0–100%)
+### 6. Quantitative Trend Strength Meter (0–100%)
 A composite scoring engine calculating real-time directional momentum and translating market conditions into a five-tier institutional signal:
 - `STRONG ACCUMULATE` ($\ge 70\%$)
 - `BUY / OVERWEIGHT` ($55\% - 69\%$)
@@ -54,7 +70,7 @@ A composite scoring engine calculating real-time directional momentum and transl
 - `SELL / UNDERWEIGHT` ($31\% - 45\%$)
 - `STRONG REDUCE` ($\le 30\%$)
 
-### 6. Institutional 3-Pillar Technical Insight & Dynamic Portfolio Decision Engine
+### 7. Institutional 3-Pillar Technical Insight & Dynamic Portfolio Decision Engine
 - **3 Quantitative Pillars**:
   1. *Struktur Tren (MA20 & MA50)*
   2. *Momentum Kuantitatif (RSI 14-D)*
@@ -67,20 +83,19 @@ A composite scoring engine calculating real-time directional momentum and transl
   - `HOLD (ZONA OVERSOLD EXTREME)`
   - `EVALUASI RISIKO / DISCIPLINARY CUT LOSS`
   - `DEFENSIVE STANCE (WAIT & SEE)`
-- **Formal DYOR Compliance Disclaimer**: 100% professional financial formatting with zero informal emojis.
 
-### 7. Executive KPI Financial Scoreboard & Corporate Profile
+### 8. Executive KPI Financial Scoreboard & Corporate Profile
 - Comprehensive fundamentals: P/E Ratio, EPS, Dividend Yield, Market Capitalization, 52-Week Range, and Average Daily Volume.
 - Business overview, industry group, corporate headquarters, benchmark currency, and official investor relations portal links.
 
-### 8. Bullish Watchlist Scanner & Dynamic Top Bullish Landing
-- Scans premier blue-chip constituents (e.g., `BBCA`, `BBRI`, `BMRI`, `BBNI`, `TLKM`, `ASII`, `ICBP`, `AMRT`, `UNTR`, `KLBF`, `ADRO`) to detect stocks trading above their 20-day moving average.
+### 9. Bullish Watchlist Scanner & Dynamic Top Bullish Landing
+- Scans premier constituents to detect stocks trading above their 20-day moving average.
 - Smart Default Landing: Automatically showcases the day's #1 strongest bullish stock upon first visit (fallback to `BBCA`).
 
-### 9. Dual-Theme System (Dark & Light Mode)
-- **Executive Dark Mode**: High-contrast deep slate and navy tones (`#080C14`, `#0F172A`) with monospaced financial typography.
-- **Clean Light Mode**: Minimalist paper and crisp charcoal palette for daytime institutional reporting.
-- Persistent client-side preference stored via `localStorage` with zero theme flickering.
+### 10. Deep Emerald & Sage Wealth Design System
+- **Executive Dark Theme**: Curated palette utilizing Deep Slate `#080D1A`, Emerald Green `#2A835F`, Pine Teal `#12544F`, and Sage Mint `#8BBB92`.
+- **Dynamic Custom Logo Engine**: Automatic detection and rendering of user brand logos (`static/img/logo.png`, `logo.svg`, etc.) on both header and browser favicon.
+- **Single-Row Integrated Header**: Slim, institutional top navigation bar uniting Brand Identity, Page Navigation (`Dashboard` vs `Screener`), Live Market Feed status, and Theme Controller.
 
 ---
 
@@ -90,9 +105,10 @@ A composite scoring engine calculating real-time directional momentum and transl
 | :--- | :--- | :--- |
 | **Backend Engine** | Python 3.10+, Flask | WSGI controller, routing, and DSS synthesis |
 | **Data & Analytics** | `yfinance`, `pandas`, `math` | Historical time series, technical calculus & bandarmologi flow |
+| **Screener Universe** | Multi-batch Parallel Scanner | Chunked batch querying with local disk caching |
 | **Visualization** | `plotly` Graph Objects | Interactive financial charts with unified crosshair tooltips |
 | **Frontend Architecture** | Jinja2 Templates (Modular) | Atomic component partials with clean separation of concerns |
-| **Styling & Design** | CSS3 Custom Properties, Bootstrap 5 | Pure vanilla CSS tokens for seamless dual-mode support |
+| **Styling & Design** | CSS3 Custom Properties, Bootstrap 5 | Deep Emerald & Sage Wealth design tokens |
 | **Typography** | Google Fonts | *Plus Jakarta Sans*, *Inter*, and *JetBrains Mono* |
 | **Edge Deployment** | Vercel Serverless Edge | Configured via `vercel.json` rewrite rules |
 
@@ -100,15 +116,16 @@ A composite scoring engine calculating real-time directional momentum and transl
 
 ## Project Architecture
 
-The codebase adheres to a modular, decoupled architecture separating business logic, static assets, and template partials:
-
 ```
 monitor stocks/
 ├── api/
-│   ├── index.py                  # Flask application controller & HTTP routing
+│   ├── index.py                  # Flask application controller, favicon route & context processor
 │   ├── stock_service.py          # Master Facade Hub orchestrating modular service execution
 │   └── services/                 # Decoupled domain service modules
 │       ├── __init__.py           # Package exports
+│       ├── idx_universe.py       # Catalog of 820+ Indonesian listed stocks (IHSG) by sector
+│       ├── screener.py           # Multi-batch screener engine, technical indicator generator & cache manager
+│       ├── screener_cache.json   # High-speed pre-computed market cache for 760+ stocks
 │       ├── market_data.py        # yfinance ingestion, ticker normalization, fundamentals, news, scanner
 │       ├── indicators.py         # Technical indicators, trend strength calculus, S/R pivot trade setup
 │       ├── bandarmologi.py       # Multi-timeframe Broker Summary & Net Foreign Flow tracker
@@ -116,14 +133,17 @@ monitor stocks/
 │       └── dss_engine.py         # 3-Pillar DSS technical insight & dynamic portfolio decision engine
 ├── static/
 │   ├── css/
-│   │   └── style.css             # Central Design System & Dual-Theme CSS variables
-│   └── js/
-│       └── app.js                # Theme switcher, broker tab switcher & client helpers
+│   │   └── style.css             # Central Design System, Emerald & Sage Wealth CSS tokens
+│   ├── js/
+│   │   └── app.js                # Theme switcher, chart zoom controller & client helpers
+│   └── img/
+│       └── logo.png              # Custom brand logo & favicon asset
 ├── templates/
-│   ├── base.html                 # Master layout shell (head, metadata, fonts, scripts)
+│   ├── base.html                 # Master layout shell (head, favicon link, fonts, scripts)
 │   ├── index.html                # Main dashboard view orchestrating component partials
+│   ├── screener.html             # Dual-mode 760+ IHSG stock screener with smart pagination
 │   └── components/               # Isolated modular Jinja2 partials
-│       ├── _header.html          # Brand navbar, market indicator & theme switch
+│       ├── _header.html          # Single-row brand navbar, navigation tabs & theme switch
 │       ├── _search_form.html     # Ticker search, collapsible portfolio form & quick pills
 │       ├── _fundamental.html     # 6-card executive KPI financial scoreboard
 │       ├── _price_banner.html    # Stock price hero, day change & DSS signal badge
@@ -142,6 +162,7 @@ monitor stocks/
 │       └── _footer.html          # Institutional disclaimer & copyright
 ├── requirements.txt              # Python package dependencies
 ├── vercel.json                   # Serverless edge function routing configuration
+├── LICENSE                       # MIT License
 └── README.md                     # Comprehensive project documentation
 ```
 
@@ -181,9 +202,8 @@ python api/index.py
 ```
 
 Open your browser and navigate to:
-```
-http://127.0.0.1:5000
-```
+- **Dashboard**: `http://127.0.0.1:5000/`
+- **Full IHSG Screener**: `http://127.0.0.1:5000/screener`
 
 ---
 
@@ -212,13 +232,6 @@ $$\text{Upper Band} = \text{MA20} + 2\sigma, \quad \text{Lower Band} = \text{MA2
 $$\text{RS} = \frac{\text{Average Gain}}{\text{Average Loss}}$$
 
 $$\text{RSI} = 100 - \left( \frac{100}{1 + \text{RS}} \right)$$
-
-### 4. Quantitative Trend Strength Algorithm
-
-A composite multi-factor scoring model ($0\% \text{ to } 100\%$) evaluating three core technical dimensions:
-- **Trend Baseline**: Price position relative to MA20 ($+20\% \text{ / } -15\%$) and MA50 ($+10\%$).
-- **Momentum Filter**: RSI oversold bounce reward ($+20\%$) vs. overbought extension penalty ($-20\%$).
-- **Volatility Boundary**: Bollinger lower support proximity ($+10\%$) vs. upper resistance rejection ($-10\%$).
 
 ---
 

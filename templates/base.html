@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}StockPulse Pro | Decision Support System{% endblock %}</title>
     
-    <!-- Inline Theme Init (Mencegah screen flash) -->
+    {% if custom_logo %}
+    <link rel="icon" href="{{ url_for('static', filename=custom_logo) }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename=custom_logo) }}">
+    {% else %}
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A835F' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='3 8 9 4 15 8 21 2'/></svg>">
+    {% endif %}
+
     <script>
         (function() {
             var savedTheme = localStorage.getItem('stockpulse_theme') || 'dark';
@@ -34,8 +40,9 @@
     {% include 'components/_header.html' %}
 
     <main class="container-xl py-4">
-        <!-- Search & Ticker Bar -->
-        {% include 'components/_search_form.html' %}
+        {% if active_page == 'dashboard' or not active_page %}
+            {% include 'components/_search_form.html' %}
+        {% endif %}
 
         <!-- Content Area -->
         {% block content %}{% endblock %}

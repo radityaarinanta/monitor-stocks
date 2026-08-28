@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         themeBtn.addEventListener('click', toggleTheme);
     }
     
-    // Auto uppercase for ticker search inputs
     const tickerInputs = document.querySelectorAll('input[name="ticker"]');
     tickerInputs.forEach(input => {
         input.addEventListener('input', (e) => {

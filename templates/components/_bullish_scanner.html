@@ -21,7 +21,7 @@
                     <span class="font-mono fw-bold {% if s.is_positive %}text-success{% else %}text-danger{% endif %}" style="font-size: 0.85rem;">
                         {% if s.is_positive %}+{% endif %}{{ "{:.2f}".format(s.change) }}%
                     </span>
-                    <a href="/?ticker={{ s.symbol }}" class="btn btn-sm btn-outline-primary py-1 px-2 font-mono fw-semibold" style="font-size: 0.74rem;">
+                    <a href="/?ticker={{ s.symbol }}" class="screener-btn-analisis">
                         Analisis
                     </a>
                 </div>

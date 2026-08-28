@@ -8,8 +8,7 @@
                     <i class="bi bi-search text-primary"></i> SIMBOL EMITEN / KODE SAHAM
                 </label>
                 <input type="text" name="ticker" class="form-control form-control-enterprise font-mono text-uppercase" 
-                       placeholder="Ketik kode saham (contoh: BBCA, BBRI, BMRI, NVDA, AAPL)" 
-                       value="{{ ticker_display if ticker_display else ticker.replace('.JK', '') }}" required>
+                       placeholder="Ketik kode saham (contoh: BBCA, BBRI, BMRI, NVDA, AAPL)"                        value="{{ ticker_display if ticker_display else (ticker.replace('.JK', '') if ticker else '') }}" required>
             </div>
             
             <div class="col-12 col-md-4 col-lg-3">
@@ -39,7 +38,7 @@
             <div class="row g-3">
                 <div class="col-12 col-md-6">
                     <label class="form-label-formal">
-                        <i class="bi bi-cash-stack text-warning"></i> AVG. HARGA BELI (RP)
+                        AVG. HARGA BELI (RP)
                     </label>
                     <input type="number" step="any" name="avg_price" class="form-control form-control-enterprise font-mono" 
                            placeholder="Masukkan harga beli rata-rata (misal: 6200)" value="{{ avg_price if avg_price > 0 else '' }}">
@@ -47,7 +46,7 @@
                 
                 <div class="col-12 col-md-6">
                     <label class="form-label-formal">
-                        <i class="bi bi-pie-chart text-info"></i> JUMLAH KEPEMILIKAN (LOT)
+                        JUMLAH KEPEMILIKAN (LOT)
                     </label>
                     <input type="number" name="lots" class="form-control form-control-enterprise font-mono" 
                            placeholder="Masukkan jumlah lot (misal: 25)" value="{{ lots if lots > 0 else '' }}">
@@ -61,7 +60,7 @@
         <span class="me-2 font-mono fw-bold text-theme-muted" style="font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase;">PINTASAN CEPAT:</span>
         {% for sym in ['BBCA', 'BBRI', 'BMRI', 'BBNI', 'TLKM', 'ASII', 'ICBP', 'AMRT', 'UNTR', 'KLBF', 'ADRO', 'AAPL', 'NVDA'] %}
         <a href="/?ticker={{ sym }}{% if avg_price > 0 %}&avg_price={{ avg_price }}{% endif %}{% if lots > 0 %}&lots={{ lots }}{% endif %}" 
-           class="quick-ticker-pill {% if ticker_display == sym or ticker.replace('.JK', '') == sym %}active{% endif %}">
+           class="quick-ticker-pill {% if ticker_display == sym or (ticker and ticker.replace('.JK', '') == sym) %}active{% endif %}">
             {{ sym }}
         </a>
         {% endfor %}
