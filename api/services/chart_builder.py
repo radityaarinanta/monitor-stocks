@@ -19,7 +19,7 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
         x=date_strings,
         y=chart_df['Upper_Band'],
         mode='lines',
-        line=dict(color='rgba(14, 165, 233, 0.45)', width=1, dash='dot'),
+        line=dict(color='rgba(139, 187, 146, 0.55)', width=1, dash='dot'),
         name='Upper Band (BB)',
         hoverinfo='skip'
     ), row=1, col=1)
@@ -29,8 +29,8 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
         y=chart_df['Lower_Band'],
         mode='lines',
         fill='tonexty',
-        fillcolor='rgba(14, 165, 233, 0.04)',
-        line=dict(color='rgba(14, 165, 233, 0.45)', width=1, dash='dot'),
+        fillcolor='rgba(139, 187, 146, 0.05)',
+        line=dict(color='rgba(139, 187, 146, 0.55)', width=1, dash='dot'),
         name='Lower Band (BB)',
         hoverinfo='skip'
     ), row=1, col=1)
@@ -62,7 +62,7 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
             x=date_strings,
             y=chart_df['MA50'],
             mode='lines',
-            line=dict(color='#38bdf8', width=1.5),
+            line=dict(color='#8BBB92', width=1.5),
             name='MA50',
             hoverinfo='name+y'
         ), row=1, col=1)
