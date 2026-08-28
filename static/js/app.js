@@ -4,13 +4,13 @@
 
 // 1. Theme Controller
 function initTheme() {
-    const savedTheme = localStorage.getItem('stockpulse_theme') || 'dark';
+    const savedTheme = localStorage.getItem('stockpulse_theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeButtonUI(savedTheme);
 }
 
 function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     
     document.documentElement.setAttribute('data-theme', newTheme);
