@@ -5,7 +5,7 @@
 [![Visualization](https://img.shields.io/badge/charts-Plotly-3F4F75.svg)](https://plotly.com/)
 [![Market Data](https://img.shields.io/badge/data-yfinance-green.svg)](https://github.com/ranaroussi/yfinance)
 [![UI Theme](https://img.shields.io/badge/Theme-Emerald%20%26%20Sage%20Wealth-2A835F.svg)](#deep-emerald--sage-wealth-design-system)
-[![Screener Universe](https://img.shields.io/badge/IDX%20Coverage-760%2B%20Stocks-8BBB92.svg)](#1-full-idx-quantitative-stock-screener-764-listed-equities)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Deployment](https://img.shields.io/badge/deployment-Vercel%20Serverless-000000.svg)](https://vercel.com/)
 
 StockPulse Pro is an institutional-grade Decision Support System (DSS) and Quantitative Stock Screener designed for equity market participants, quantitative analysts, portfolio managers, and private wealth investors. It integrates multi-indicator technical analytics, fundamental scoreboard metrics, quantitative trend scoring, multi-timeframe broker summary (volume concentration), net foreign flow tracking, risk-to-reward trade setup planning, portfolio return calculation, and an automated full-universe screener covering 760+ equities listed on the Indonesia Stock Exchange (IDX / IHSG) alongside global market instruments.
@@ -258,4 +258,4 @@ This project is pre-configured for zero-configuration deployment on Vercel:
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE) &copy; 2026 StockPulse Pro.
+This project is licensed under the [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE) &copy; 2026 Raditya Arinanta. See the [LICENSE](LICENSE) file for the full license text and terms.
