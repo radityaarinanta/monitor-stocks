@@ -768,16 +768,24 @@ body {
     color: #ffffff !important;
 }
 
-.text-primary {
-    color: var(--primary) !important;
+.badge-price-ticker {
+    background: rgba(42, 131, 95, 0.22) !important;
+    color: #8BBB92 !important;
+    border: 1px solid rgba(42, 131, 95, 0.5) !important;
+    font-weight: 800 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    letter-spacing: 0.05em !important;
+    padding: 4px 10px !important;
+    border-radius: 6px !important;
+    font-size: 0.92rem !important;
+    display: inline-flex;
+    align-items: center;
 }
 
-.bg-primary {
-    background-color: var(--primary) !important;
-}
-
-.border-primary {
-    border-color: var(--primary) !important;
+[data-theme="light"] .badge-price-ticker {
+    background: rgba(42, 131, 95, 0.12) !important;
+    color: #1e6044 !important;
+    border-color: rgba(42, 131, 95, 0.35) !important;
 }
 
 .screener-table-box {
