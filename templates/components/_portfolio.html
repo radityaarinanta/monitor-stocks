@@ -2,15 +2,15 @@
 {% if portfolio %}
 <div class="portfolio-ledger mb-4">
     <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-color">
-        <span class="small fw-bold text-secondary text-uppercase" style="letter-spacing: 0.05em; font-size: 0.76rem;">
-            <i class="bi bi-wallet2 me-1"></i> Posisi & Estimasi Portofolio
+        <span class="small fw-bold text-secondary text-uppercase font-mono" style="letter-spacing: 0.06em; font-size: 0.74rem;">
+            Posisi & Estimasi Portofolio
         </span>
         <span class="badge {% if portfolio.is_profit %}bg-success-subtle text-success border border-success border-opacity-25{% else %}bg-danger-subtle text-danger border border-danger border-opacity-25{% endif %} font-mono">
             {% if portfolio.is_profit %}PROFIT{% else %}UNREALIZED LOSS{% endif %}
         </span>
     </div>
     
-    <div class="row g-2 text-center align-items-center">
+    <div class="row g-3 text-center align-items-center">
         <div class="col-6 col-md-3 border-end border-color">
             <span class="ledger-item-label">Modal Terpasang</span>
             <span class="ledger-item-val">Rp {{ "{:,.0f}".format(portfolio.invested) }}</span>

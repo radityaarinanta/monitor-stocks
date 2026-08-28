@@ -1,26 +1,25 @@
 <!-- 3. FINANCIAL NEWS WIRE -->
 <div class="enterprise-card">
-    <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-        <i class="bi bi-newspaper text-primary"></i> FINANCIAL NEWS WIRE
-    </h6>
+    <div class="section-title mb-3">
+        Warta Berita Emiten & Pasar
+    </div>
     
     {% if news and news|length > 0 %}
         <div>
             {% for n in news %}
             <div class="news-item">
-                <a href="{{ n.link }}" target="_blank" rel="noopener noreferrer" class="news-title-link mb-1">
+                <a href="{{ n.link }}" target="_blank" rel="noopener noreferrer" class="news-title-link mb-2">
                     {{ n.title }}
                 </a>
-                <div class="d-flex justify-content-between text-muted" style="font-size: 0.74rem;">
-                    <span><i class="bi bi-broadcast me-1"></i>{{ n.pub }}</span>
-                    {% if n.time %}<span class="font-mono">{{ n.time }}</span>{% endif %}
+                <div class="d-flex justify-content-between text-theme-muted font-mono" style="font-size: 0.72rem;">
+                    <span>{{ n.pub }}</span>
+                    {% if n.time %}<span>{{ n.time }}</span>{% endif %}
                 </div>
             </div>
             {% endfor %}
         </div>
     {% else %}
-        <div class="text-center py-3 text-muted small" style="font-size: 0.82rem;">
-            <i class="bi bi-info-circle d-block fs-5 mb-1 text-muted"></i>
+        <div class="text-center py-4 text-theme-muted small font-mono" style="font-size: 0.8rem;">
             Tidak ada siaran berita spesifik untuk emiten ini saat ini.
         </div>
     {% endif %}

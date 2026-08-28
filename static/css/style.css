@@ -1,94 +1,159 @@
 /* ==========================================================================
-   StockPulse Pro - Formal & Clean Enterprise Design System (Dual-Theme)
+   StockPulse Pro - Institutional Financial Decision Support System (DSS)
+   Dual-Theme System (Seamless Dark Mode & Light Mode High-Contrast)
    ========================================================================== */
 
 /* ---------------------------------------------------------
-   1. Theme Variables
+   1. Design System Tokens
    --------------------------------------------------------- */
 :root, [data-theme="dark"] {
-    --bg-body: #080c14;
+    --bg-body: #080d1a;
     --bg-surface: #0f172a;
     --bg-surface-elevated: #1e293b;
-    --bg-card: #0e1626;
-    --bg-card-subtle: #131d31;
-    --border-color: #1e293b;
-    --border-strong: #334155;
+    --bg-card: #0f192d;
+    --bg-card-subtle: #15223c;
+    --bg-card-hover: #1c2c4d;
     
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
+    --border-color: #223454;
+    --border-subtle: #1a2a46;
+    --border-strong: #334e7a;
+    --border-focus: #3b82f6;
     
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --primary-subtle: rgba(37, 99, 235, 0.12);
+    --text-primary: #ffffff;
+    --text-secondary: #cbd5e1;  /* Slate 300: High-contrast */
+    --text-muted: #94a3b8;      /* Slate 400: Clear readable */
+    --text-dim: #64748b;
     
-    --accent: #0284c7;
-    --accent-subtle: rgba(2, 132, 199, 0.12);
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-subtle: rgba(59, 130, 246, 0.16);
+    --primary-border: rgba(59, 130, 246, 0.35);
+    
+    --accent: #38bdf8;
+    --accent-subtle: rgba(56, 189, 248, 0.16);
     
     --success: #10b981;
-    --success-subtle: rgba(16, 185, 129, 0.12);
-    --success-border: rgba(16, 185, 129, 0.3);
+    --success-subtle: rgba(16, 185, 129, 0.16);
+    --success-border: rgba(16, 185, 129, 0.35);
+    --success-text: #34d399;
     
-    --danger: #ef4444;
-    --danger-subtle: rgba(239, 68, 68, 0.12);
-    --danger-border: rgba(239, 68, 68, 0.3);
+    --danger: #f43f5e;
+    --danger-subtle: rgba(244, 63, 94, 0.16);
+    --danger-border: rgba(244, 63, 94, 0.35);
+    --danger-text: #fb7185;
     
-    --warning: #f59e0b;
-    --warning-subtle: rgba(245, 158, 11, 0.12);
+    --warning: #fbbf24;
+    --warning-subtle: rgba(251, 191, 36, 0.16);
+    --warning-border: rgba(251, 191, 36, 0.35);
+    --warning-text: #fde68a;
     
-    --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+    --pill-bg: #15223c;
+    --pill-text: #e2e8f0;
+    --pill-border: #2a3d62;
+    --pill-active-bg: #2563eb;
+    --pill-active-text: #ffffff;
+    
+    --kpi-value-color: #ffffff;
+    --kpi-div-color: #fbbf24;
+    --kpi-cap-color: #60a5fa;
+    
+    --insight-bg: rgba(59, 130, 246, 0.12);
+    --insight-text: #e2e8f0;
+    --insight-title: #38bdf8;
+    
+    --card-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.55);
     --navbar-bg: rgba(15, 23, 42, 0.95);
-    --input-bg: #0b1220;
-    --hover-row: rgba(255, 255, 255, 0.03);
+    --input-bg: #0b1222;
 }
 
 [data-theme="light"] {
-    --bg-body: #f8fafc;
+    --bg-body: #f1f5f9;
     --bg-surface: #ffffff;
-    --bg-surface-elevated: #f1f5f9;
+    --bg-surface-elevated: #e2e8f0;
     --bg-card: #ffffff;
     --bg-card-subtle: #f8fafc;
-    --border-color: #e2e8f0;
-    --border-strong: #cbd5e1;
+    --bg-card-hover: #f1f5f9;
     
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #94a3b8;
+    --border-color: #cbd5e1;
+    --border-subtle: #e2e8f0;
+    --border-strong: #94a3b8;
+    --border-focus: #2563eb;
+    
+    --text-primary: #0f172a;    /* Deep Slate 900 */
+    --text-secondary: #334155;  /* Slate 700 */
+    --text-muted: #64748b;      /* Slate 500 */
+    --text-dim: #94a3b8;
     
     --primary: #2563eb;
     --primary-hover: #1d4ed8;
     --primary-subtle: rgba(37, 99, 235, 0.08);
+    --primary-border: rgba(37, 99, 235, 0.25);
     
     --accent: #0284c7;
     --accent-subtle: rgba(2, 132, 199, 0.08);
     
     --success: #059669;
-    --success-subtle: rgba(5, 150, 105, 0.08);
-    --success-border: rgba(5, 150, 105, 0.25);
+    --success-subtle: rgba(5, 150, 105, 0.1);
+    --success-border: rgba(5, 150, 105, 0.3);
+    --success-text: #059669;
     
-    --danger: #dc2626;
-    --danger-subtle: rgba(220, 38, 38, 0.08);
-    --danger-border: rgba(220, 38, 38, 0.25);
+    --danger: #e11d48;
+    --danger-subtle: rgba(225, 29, 72, 0.1);
+    --danger-border: rgba(225, 29, 72, 0.3);
+    --danger-text: #e11d48;
     
     --warning: #d97706;
-    --warning-subtle: rgba(217, 119, 6, 0.08);
+    --warning-subtle: rgba(217, 119, 6, 0.1);
+    --warning-border: rgba(217, 119, 6, 0.3);
+    --warning-text: #b45309;
     
-    --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+    --pill-bg: #f1f5f9;
+    --pill-text: #1e293b;
+    --pill-border: #cbd5e1;
+    --pill-active-bg: #2563eb;
+    --pill-active-text: #ffffff;
+    
+    --kpi-value-color: #0f172a;
+    --kpi-div-color: #d97706;
+    --kpi-cap-color: #2563eb;
+    
+    --insight-bg: rgba(37, 99, 235, 0.06);
+    --insight-text: #1e293b;
+    --insight-title: #1d4ed8;
+    
+    --card-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06);
     --navbar-bg: rgba(255, 255, 255, 0.95);
     --input-bg: #ffffff;
-    --hover-row: rgba(0, 0, 0, 0.02);
 }
 
 /* ---------------------------------------------------------
-   2. Base & Typography
+   2. Global Typography & Core Reset
    --------------------------------------------------------- */
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: var(--bg-body);
     color: var(--text-primary);
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
-    transition: background-color 0.25s ease, color 0.25s ease;
-    line-height: 1.5;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Adaptive text utilities (Overrides Bootstrap text defaults) */
+.text-theme-primary, .text-primary {
+    color: var(--text-primary) !important;
+}
+
+.text-theme-secondary, .text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-theme-muted, .text-muted {
+    color: var(--text-muted) !important;
 }
 
 .num-tabular, .font-mono {
@@ -97,15 +162,15 @@ body {
 }
 
 /* ---------------------------------------------------------
-   3. Enterprise Cards & Panels
+   3. Enterprise Cards & Structural Containers
    --------------------------------------------------------- */
 .enterprise-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 10px;
+    padding: 22px 24px;
     box-shadow: var(--card-shadow);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .enterprise-card:hover {
@@ -114,40 +179,61 @@ body {
 
 .enterprise-header {
     background: var(--navbar-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 /* ---------------------------------------------------------
-   4. Form Controls & Buttons
+   4. Form Controls & Buttons (Adaptive in Dark & Light)
    --------------------------------------------------------- */
+.form-label-formal {
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
 .form-control-enterprise {
     background-color: var(--input-bg) !important;
     border: 1px solid var(--border-strong) !important;
     color: var(--text-primary) !important;
-    border-radius: 8px;
-    padding: 9px 14px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    border-radius: 6px;
+    padding: 11px 14px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .form-control-enterprise:focus {
-    border-color: var(--primary) !important;
+    border-color: var(--border-focus) !important;
     box-shadow: 0 0 0 3px var(--primary-subtle) !important;
+}
+
+.form-control-enterprise::placeholder {
+    color: var(--text-dim) !important;
+    font-weight: 400;
 }
 
 .btn-enterprise-primary {
     background-color: var(--primary);
     border: 1px solid var(--primary);
     color: #ffffff !important;
-    font-weight: 600;
-    font-size: 0.88rem;
-    border-radius: 8px;
-    padding: 9px 18px;
-    letter-spacing: 0.02em;
-    transition: all 0.2s ease;
+    font-weight: 700;
+    font-size: 0.86rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 6px;
+    padding: 11px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-enterprise-primary:hover {
@@ -160,15 +246,16 @@ body {
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-strong);
     color: var(--text-primary);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 0.85rem;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
     font-weight: 600;
+    letter-spacing: 0.02em;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 .btn-theme-toggle:hover {
@@ -178,34 +265,43 @@ body {
 
 /* Quick Ticker Badges */
 .quick-ticker-pill {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    color: var(--pill-text) !important;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 5px;
     text-decoration: none;
     transition: all 0.15s ease;
+    display: inline-block;
 }
 
-.quick-ticker-pill:hover, .quick-ticker-pill.active {
+.quick-ticker-pill:hover {
     background: var(--primary-subtle);
     border-color: var(--primary);
-    color: var(--primary);
+    color: var(--primary) !important;
+}
+
+.quick-ticker-pill.active {
+    background: var(--pill-active-bg) !important;
+    border-color: var(--pill-active-bg) !important;
+    color: var(--pill-active-text) !important;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.35);
 }
 
 /* ---------------------------------------------------------
-   5. KPI & Scoreboard Tiles
+   5. Tier 1: KPI & Scoreboard Tiles (Adaptive Contrast)
    --------------------------------------------------------- */
 .kpi-tile {
     background: var(--bg-card-subtle);
     border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 14px 12px;
-    text-align: center;
-    transition: border-color 0.2s ease;
+    border-radius: 8px;
+    padding: 16px 16px;
+    text-align: left;
+    transition: background-color 0.2s ease, border-color 0.15s ease;
+    height: 100%;
 }
 
 .kpi-tile:hover {
@@ -215,17 +311,28 @@ body {
 .kpi-label {
     font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-muted);
-    margin-bottom: 4px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted) !important;
+    margin-bottom: 6px;
     font-weight: 700;
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 .kpi-value {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--kpi-value-color) !important;
     font-family: 'JetBrains Mono', monospace;
+    line-height: 1.2;
+}
+
+.kpi-div-val {
+    color: var(--kpi-div-color) !important;
+}
+
+.kpi-cap-val {
+    color: var(--kpi-cap-color) !important;
 }
 
 /* ---------------------------------------------------------
@@ -234,50 +341,79 @@ body {
 .stock-hero-price {
     font-size: 2.5rem;
     font-weight: 800;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     color: var(--text-primary);
     font-family: 'JetBrains Mono', monospace;
     line-height: 1.1;
 }
 
-/* Formal DSS Badges */
+.stock-sector-badge {
+    background: var(--bg-card-subtle);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+}
+
+/* Formal Institutional Signal Badges */
 .signal-badge {
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
     text-align: center;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
+    border: 1px solid transparent;
 }
 
 .signal-strong-buy {
     background: var(--success-subtle);
-    color: var(--success);
-    border: 1px solid var(--success-border);
+    color: var(--success-text);
+    border-color: var(--success-border);
+}
+
+.signal-strong-buy small {
+    color: var(--success-text) !important;
 }
 
 .signal-buy {
-    background: var(--accent-subtle);
-    color: var(--accent);
-    border: 1px solid var(--accent);
+    background: var(--primary-subtle);
+    color: var(--primary);
+    border-color: var(--primary-border);
+}
+
+.signal-buy small {
+    color: var(--primary) !important;
 }
 
 .signal-neutral {
-    background: var(--bg-surface-elevated);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-strong);
+    background: var(--bg-card-subtle);
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+}
+
+.signal-neutral small {
+    color: var(--text-muted) !important;
 }
 
 .signal-sell {
     background: var(--warning-subtle);
-    color: var(--warning);
-    border: 1px solid var(--warning);
+    color: var(--warning-text);
+    border-color: var(--warning-border);
+}
+
+.signal-sell small {
+    color: var(--warning-text) !important;
 }
 
 .signal-strong-sell {
     background: var(--danger-subtle);
-    color: var(--danger);
-    border: 1px solid var(--danger-border);
+    color: var(--danger-text);
+    border-color: var(--danger-border);
+}
+
+.signal-strong-sell small {
+    color: var(--danger-text) !important;
 }
 
 /* ---------------------------------------------------------
@@ -286,24 +422,25 @@ body {
 .portfolio-ledger {
     background: var(--bg-card-subtle);
     border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 16px;
+    border-radius: 8px;
+    padding: 18px 20px;
 }
 
 .ledger-item-label {
     font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-muted);
-    margin-bottom: 2px;
-    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-muted) !important;
+    margin-bottom: 4px;
+    font-weight: 700;
     display: block;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 .ledger-item-val {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-primary) !important;
     font-family: 'JetBrains Mono', monospace;
 }
 
@@ -313,41 +450,40 @@ body {
 .strength-track {
     height: 8px;
     background: var(--bg-surface-elevated);
-    border-radius: 999px;
+    border-radius: 4px;
     overflow: hidden;
-    margin: 10px 0 6px;
+    margin: 12px 0 8px;
     border: 1px solid var(--border-color);
 }
 
 .strength-bar-fill {
     height: 100%;
-    border-radius: 999px;
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 4px;
+    transition: width 0.8s ease;
 }
 
 .scanner-row {
     background: var(--bg-card-subtle);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 9px 12px;
+    border-radius: 6px;
+    padding: 12px 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.15s ease;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .scanner-row:hover {
-    background: var(--hover-row);
+    background: var(--bg-card-hover);
     border-color: var(--border-strong);
-    transform: translateX(2px);
 }
 
 /* ---------------------------------------------------------
    9. Financial News Wire
    --------------------------------------------------------- */
 .news-item {
-    padding-bottom: 12px;
-    margin-bottom: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -361,8 +497,8 @@ body {
     color: var(--text-primary) !important;
     text-decoration: none !important;
     font-weight: 600;
-    font-size: 0.88rem;
-    line-height: 1.35;
+    font-size: 0.9rem;
+    line-height: 1.45;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -375,18 +511,59 @@ body {
 }
 
 /* ---------------------------------------------------------
-   10. Quick Insight & Educational Cards
+   10. Analytical Insights & Technical Guide
    --------------------------------------------------------- */
 .insight-box {
-    background: var(--primary-subtle);
-    border-left: 4px solid var(--primary);
-    border-radius: 8px;
-    padding: 14px 16px;
+    background: var(--insight-bg);
+    border-left: 3px solid var(--primary);
+    border-radius: 6px;
+    padding: 16px 18px;
+}
+
+.insight-box-title {
+    color: var(--insight-title) !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.76rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.insight-box-text {
+    color: var(--insight-text) !important;
+    line-height: 1.65;
+    font-size: 0.9rem;
 }
 
 .guide-box {
     background: var(--bg-card);
-    border: 1px dashed var(--border-strong);
-    border-radius: 10px;
-    padding: 18px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px 22px;
+}
+
+/* Section Title Headers */
+.section-title {
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Status Indicator Dot */
+.status-pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-pulse-dot.online {
+    background-color: var(--success);
+    box-shadow: 0 0 0 2px var(--success-subtle);
 }

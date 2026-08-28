@@ -1,10 +1,10 @@
 <!-- 2. BULLISH WATCHLIST SCANNER -->
 <div class="enterprise-card mb-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="fw-bold text-primary mb-0 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-            <i class="bi bi-shield-check text-success"></i> BULLISH SCANNER
-        </h6>
-        <span class="badge bg-success-subtle text-success border border-success border-opacity-25" style="font-size: 0.68rem;">
+        <span class="section-title">
+            Bullish Scanner
+        </span>
+        <span class="badge bg-success-subtle text-success border border-success border-opacity-35 font-mono" style="font-size: 0.7rem;">
             Close &ge; MA20
         </span>
     </div>
@@ -14,21 +14,21 @@
             {% for s in bullish_scanner %}
             <div class="scanner-row">
                 <div>
-                    <span class="fw-bold font-mono text-primary fs-6">{{ s.symbol }}</span>
-                    <small class="text-muted ms-1 font-mono d-block" style="font-size: 0.76rem;">Rp {{ "{:,.0f}".format(s.price) }}</small>
+                    <span class="fw-bold font-mono text-theme-primary fs-6">{{ s.symbol }}</span>
+                    <span class="font-mono d-block text-theme-muted" style="font-size: 0.78rem;">Rp {{ "{:,.0f}".format(s.price) }}</span>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    <span class="small font-mono fw-bold {% if s.is_positive %}text-success{% else %}text-danger{% endif %}">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="font-mono fw-bold {% if s.is_positive %}text-success{% else %}text-danger{% endif %}" style="font-size: 0.85rem;">
                         {% if s.is_positive %}+{% endif %}{{ "{:.2f}".format(s.change) }}%
                     </span>
-                    <a href="/?ticker={{ s.symbol }}" class="btn btn-sm btn-outline-secondary py-0 px-2 font-mono" style="font-size: 0.72rem;">
-                        Lihat <i class="bi bi-chevron-right" style="font-size: 0.65rem;"></i>
+                    <a href="/?ticker={{ s.symbol }}" class="btn btn-sm btn-outline-primary py-1 px-2 font-mono fw-semibold" style="font-size: 0.74rem;">
+                        Analisis
                     </a>
                 </div>
             </div>
             {% endfor %}
         </div>
     {% else %}
-        <p class="text-muted small mb-0" style="font-size: 0.82rem;">Tidak ada konstituen watchlist yang memenuhi kriteria uptrend saat ini.</p>
+        <p class="small mb-0 font-mono text-theme-muted" style="font-size: 0.8rem;">Tidak ada konstituen watchlist yang memenuhi kriteria uptrend saat ini.</p>
     {% endif %}
 </div>

@@ -4,10 +4,20 @@ import yfinance as yf
 import plotly.graph_objects as go
 import plotly.io as pio
 
-# Watchlist 10 saham terkemuka IHSG untuk Bullish Scanner
+# Watchlist Saham Blue-Chip Pilihan IHSG untuk Bullish Scanner (Fundamental & Likuiditas Kuat)
 WATCHLIST = [
-    'BBCA.JK', 'BBRI.JK', 'BMRI.JK', 'TLKM.JK', 'ASII.JK',
-    'GOTO.JK', 'BBNI.JK', 'UNVR.JK', 'ICBP.JK', 'AMRT.JK'
+    'BBCA.JK',  # Bank Central Asia (Kapitalisasi Terbesar)
+    'BBRI.JK',  # Bank Rakyat Indonesia (Perbankan Mikro & Dividen)
+    'BMRI.JK',  # Bank Mandiri (Perbankan Korporasi)
+    'BBNI.JK',  # Bank Negara Indonesia (Perbankan)
+    'TLKM.JK',  # Telkom Indonesia (Telekomunikasi)
+    'ASII.JK',  # Astra International (Konglomerasi & Otomotif)
+    'ICBP.JK',  # Indofood CBP (Consumer Goods)
+    'INDF.JK',  # Indofood Sukses Makmur (Consumer Goods)
+    'AMRT.JK',  # Sumber Alfaria Trijaya / Alfamart (Retail)
+    'UNTR.JK',  # United Tractors (Alat Berat & Tambang)
+    'KLBF.JK',  # Kalbe Farma (Farmasi & Kesehatan)
+    'ADRO.JK',  # Adaro Energy (Energi & Dividen)
 ]
 
 
@@ -34,8 +44,51 @@ def normalize_ticker(raw_ticker: str) -> tuple[str, str]:
     return raw, raw
 
 
-def parse_news(stock) -> list[dict]:
-    """Ekstraksi berita yang kompatibel dengan format yfinance v1.2+ dan format lama."""
+def fetch_google_news_rss(query_keyword: str) -> list[dict]:
+    """Mengambil berita keuangan terkini via Google News RSS jika yfinance kosong (khususnya saham IHSG/Indonesia)."""
+    import urllib.request
+    import xml.etree.ElementTree as ET
+    import urllib.parse
+    
+    encoded_q = urllib.parse.quote(f"saham {query_keyword}")
+    rss_url = f"https://news.google.com/rss/search?q={encoded_q}&hl=id&gl=ID&ceid=ID:id"
+    req = urllib.request.Request(
+        rss_url,
+        headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+    )
+    news_items = []
+    try:
+        with urllib.request.urlopen(req, timeout=4) as response:
+            xml_data = response.read()
+            root = ET.fromstring(xml_data)
+            for item in root.findall('.//item')[:4]:
+                raw_title = item.find('title').text or ''
+                link = item.find('link').text or '#'
+                pub_date = (item.find('pubDate').text or '')
+                
+                # Ekstraksi judul dan nama media/publisher
+                if ' - ' in raw_title:
+                    title_part, pub_part = raw_title.rsplit(' - ', 1)
+                else:
+                    title_part = raw_title
+                    pub_part = 'Berita Pasar'
+                
+                # Format tanggal singkat (misal: 28 Aug 2026)
+                time_str = pub_date[5:16] if len(pub_date) >= 16 else pub_date[:10]
+                
+                news_items.append({
+                    'title': title_part.strip(),
+                    'link': link,
+                    'pub': pub_part.strip(),
+                    'time': time_str
+                })
+    except Exception:
+        pass
+    return news_items
+
+
+def parse_news(stock, ticker_display: str = '', company_name: str = '') -> list[dict]:
+    """Ekstraksi berita emiten: Prioritas yfinance, dengan pelengkap/fallback Google News RSS untuk saham Indonesia."""
     news_data = []
     try:
         raw_news = stock.news or []
@@ -67,6 +120,17 @@ def parse_news(stock) -> list[dict]:
                 })
     except Exception:
         pass
+
+    # Jika berita dari yfinance kurang dari 3 (umum terjadi pada emiten BEI/IHSG), lengkapi dengan Google News RSS
+    if len(news_data) < 3 and ticker_display:
+        search_query = f"{ticker_display} {company_name}".strip() if company_name else ticker_display
+        rss_news = fetch_google_news_rss(search_query)
+        for r_item in rss_news:
+            if len(news_data) >= 4:
+                break
+            if not any(r_item['title'].lower() in existing['title'].lower() for existing in news_data):
+                news_data.append(r_item)
+
     return news_data
 
 
@@ -149,7 +213,7 @@ def get_fundamental_data(info: dict) -> dict:
 
 
 def scan_bullish_stocks() -> list[dict]:
-    """Memindai saham watchlist yang berada di atas MA20."""
+    """Memindai saham watchlist berfundamental unggul yang sedang berada dalam tren Bullish (Close >= MA20)."""
     bullish_list = []
     for symbol in WATCHLIST:
         try:
@@ -161,7 +225,10 @@ def scan_bullish_stocks() -> list[dict]:
                 prev = float(s_data['Close'].iloc[-2])
                 change = ((curr - prev) / prev) * 100
                 
-                if curr >= ma_val:
+                # Filter kriteria:
+                # 1. Harga di atas MA20 (Uptrend Momentum)
+                # 2. Menghindari saham gocap / non-likuid (harga > 100)
+                if curr >= ma_val and curr > 100:
                     bullish_list.append({
                         'symbol': symbol.replace('.JK', ''),
                         'full_symbol': symbol,
@@ -171,7 +238,10 @@ def scan_bullish_stocks() -> list[dict]:
                     })
         except Exception:
             continue
-    return bullish_list
+            
+    # Urutkan berdasarkan persentase perubahan performa terbaik di atas
+    bullish_list.sort(key=lambda x: x['change'], reverse=True)
+    return bullish_list[:6]
 
 
 def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
@@ -180,12 +250,12 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
     
     fig = go.Figure()
 
-    # 1. Bollinger Bands Shade Area (Subtle institutional fill)
+    # 1. Bollinger Bands Area (Subtle institutional fill)
     fig.add_trace(go.Scatter(
         x=chart_df.index,
         y=chart_df['Upper_Band'],
         mode='lines',
-        line=dict(color='rgba(14, 165, 233, 0.45)', width=1, dash='dot'),
+        line=dict(color='rgba(14, 165, 233, 0.4)', width=1, dash='dot'),
         name='Upper Band (BB)',
         hoverinfo='x+y'
     ))
@@ -194,8 +264,8 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
         y=chart_df['Lower_Band'],
         mode='lines',
         fill='tonexty',
-        fillcolor='rgba(14, 165, 233, 0.05)',
-        line=dict(color='rgba(14, 165, 233, 0.45)', width=1, dash='dot'),
+        fillcolor='rgba(14, 165, 233, 0.04)',
+        line=dict(color='rgba(14, 165, 233, 0.4)', width=1, dash='dot'),
         name='Lower Band (BB)',
         hoverinfo='x+y'
     ))
@@ -209,12 +279,12 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
         close=chart_df['Close'],
         increasing_line_color='#10b981',
         increasing_fillcolor='#10b981',
-        decreasing_line_color='#ef4444',
-        decreasing_fillcolor='#ef4444',
+        decreasing_line_color='#f43f5e',
+        decreasing_fillcolor='#f43f5e',
         name='Price'
     ))
 
-    # 3. MA20 Line (Vibrant Amber/Orange)
+    # 3. MA20 Line (Amber Trendline)
     fig.add_trace(go.Scatter(
         x=chart_df.index,
         y=chart_df['MA20'],
@@ -226,19 +296,20 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
     fig.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(family='Inter, Plus Jakarta Sans, sans-serif', size=11),
+        font=dict(family='Plus Jakarta Sans, Inter, sans-serif', size=11),
         margin=dict(l=10, r=10, t=20, b=10),
-        height=400,
+        height=430,
         xaxis=dict(
             rangeslider=dict(visible=False),
-            gridcolor='rgba(148, 163, 184, 0.15)',
+            gridcolor='rgba(148, 163, 184, 0.08)',
             type='date',
-            tickfont=dict(size=10)
+            tickfont=dict(size=10, family='JetBrains Mono, monospace')
         ),
         yaxis=dict(
-            gridcolor='rgba(148, 163, 184, 0.15)',
+            gridcolor='rgba(148, 163, 184, 0.08)',
             side='right',
-            tickformat=","
+            tickformat=",",
+            tickfont=dict(size=10, family='JetBrains Mono, monospace')
         ),
         hovermode='x unified',
         legend=dict(
@@ -247,7 +318,7 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
             y=1.02,
             xanchor='right',
             x=1,
-            font=dict(size=10)
+            font=dict(size=10, family='Plus Jakarta Sans, sans-serif')
         )
     )
 
@@ -327,22 +398,32 @@ def analyze_stock(target_symbol: str, raw_ticker_input: str, avg_price: float = 
 
     strength = max(10, min(95, strength))
 
-    # Sinyal Rekomendasi Formal
+    # Sinyal Rekomendasi Formal & Styling Kelas Meter
     if strength >= 70:
         rekomendasi = "STRONG ACCUMULATE"
         badge_style = "signal-strong-buy"
+        strength_badge_class = "bg-success-subtle text-success border border-success border-opacity-25"
+        strength_bar_class = "bg-success"
     elif strength >= 55:
         rekomendasi = "BUY / OVERWEIGHT"
         badge_style = "signal-buy"
+        strength_badge_class = "bg-primary-subtle text-primary border border-primary border-opacity-25"
+        strength_bar_class = "bg-success"
     elif strength <= 30:
         rekomendasi = "STRONG REDUCE"
         badge_style = "signal-strong-sell"
+        strength_badge_class = "bg-danger-subtle text-danger border border-danger border-opacity-25"
+        strength_bar_class = "bg-danger"
     elif strength <= 45:
         rekomendasi = "SELL / UNDERWEIGHT"
         badge_style = "signal-sell"
+        strength_badge_class = "bg-warning-subtle text-warning border border-warning border-opacity-25"
+        strength_bar_class = "bg-warning"
     else:
         rekomendasi = "HOLD / NEUTRAL"
         badge_style = "signal-neutral"
+        strength_badge_class = "bg-secondary bg-opacity-10 text-secondary border border-color"
+        strength_bar_class = "bg-warning"
 
     # AI Executive Insight
     insights = []
@@ -370,7 +451,7 @@ def analyze_stock(target_symbol: str, raw_ticker_input: str, avg_price: float = 
     # Data Fundamental & Berita
     info = stock.info if hasattr(stock, 'info') else {}
     fundamental = get_fundamental_data(info)
-    news_data = parse_news(stock)
+    news_data = parse_news(stock, ticker_display=ticker_display, company_name=fundamental.get('company_name', ''))
 
     # Kalkulasi Portofolio
     portfolio = None
@@ -402,6 +483,8 @@ def analyze_stock(target_symbol: str, raw_ticker_input: str, avg_price: float = 
         'badge_style': badge_style,
         'current_rsi': latest_rsi,
         'strength': strength,
+        'strength_badge_class': strength_badge_class,
+        'strength_bar_class': strength_bar_class,
         'news': news_data,
         'fundamental': fundamental,
         'insight': insight_text,

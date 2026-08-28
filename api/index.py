@@ -54,6 +54,8 @@ def index():
             badge_style=analysis.get('badge_style', 'signal-neutral'),
             current_rsi=analysis['current_rsi'],
             strength=analysis['strength'],
+            strength_badge_class=analysis.get('strength_badge_class', 'bg-secondary bg-opacity-10 text-secondary border border-color'),
+            strength_bar_class=analysis.get('strength_bar_class', 'bg-warning'),
             news=analysis['news'],
             fundamental=analysis['fundamental'],
             bullish_scanner=bullish_stocks,

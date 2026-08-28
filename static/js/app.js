@@ -23,9 +23,9 @@ function updateThemeButtonUI(theme) {
     if (!btn) return;
     
     if (theme === 'light') {
-        btn.innerHTML = '<i class="bi bi-moon-stars-fill text-primary"></i> <span>Dark Mode</span>';
+        btn.innerHTML = '<i class="bi bi-moon text-secondary"></i> <span>Dark Mode</span>';
     } else {
-        btn.innerHTML = '<i class="bi bi-sun-fill text-warning"></i> <span>Light Mode</span>';
+        btn.innerHTML = '<i class="bi bi-sun text-secondary"></i> <span>Light Mode</span>';
     }
 }
 

@@ -1,39 +1,39 @@
 <!-- EXECUTIVE KPI FINANCIAL SCOREBOARD -->
-<div class="row g-2 mb-4">
+<div class="row g-3 mb-4">
     <div class="col-6 col-sm-4 col-md-2">
         <div class="kpi-tile">
-            <div class="kpi-label">P/E Ratio</div>
+            <span class="kpi-label">P/E Ratio</span>
             <div class="kpi-value">{{ fundamental.pe }}</div>
         </div>
     </div>
     <div class="col-6 col-sm-4 col-md-2">
         <div class="kpi-tile">
-            <div class="kpi-label">EPS</div>
+            <span class="kpi-label">EPS (TTM)</span>
             <div class="kpi-value">{{ fundamental.eps }}</div>
         </div>
     </div>
     <div class="col-6 col-sm-4 col-md-2">
         <div class="kpi-tile">
-            <div class="kpi-label">Div Yield</div>
-            <div class="kpi-value text-warning">{{ fundamental.div }}</div>
+            <span class="kpi-label">Div. Yield</span>
+            <div class="kpi-value kpi-div-val">{{ fundamental.div }}</div>
         </div>
     </div>
     <div class="col-6 col-sm-4 col-md-2">
         <div class="kpi-tile">
-            <div class="kpi-label">Market Cap</div>
-            <div class="kpi-value text-primary">{{ fundamental.cap }}</div>
+            <span class="kpi-label">Market Cap</span>
+            <div class="kpi-value kpi-cap-val">{{ fundamental.cap }}</div>
         </div>
     </div>
     <div class="col-6 col-sm-4 col-md-2">
         <div class="kpi-tile">
-            <div class="kpi-label">52W Range</div>
-            <div class="kpi-value text-secondary" style="font-size: 0.92rem;">{{ fundamental.range_52 }}</div>
+            <span class="kpi-label">Rentang 52W</span>
+            <div class="kpi-value" style="font-size: 0.95rem;">{{ fundamental.range_52 }}</div>
         </div>
     </div>
     <div class="col-6 col-sm-4 col-md-2">
         <div class="kpi-tile">
-            <div class="kpi-label">Volume</div>
-            <div class="kpi-value text-secondary" style="font-size: 0.95rem;">{{ fundamental.volume }}</div>
+            <span class="kpi-label">Volume Harian</span>
+            <div class="kpi-value" style="font-size: 1.05rem;">{{ fundamental.volume }}</div>
         </div>
     </div>
 </div>

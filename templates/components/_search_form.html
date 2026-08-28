@@ -2,37 +2,37 @@
 <div class="enterprise-card mb-4">
     <form action="/" method="get" class="row g-3 align-items-end">
         <div class="col-12 col-md-4 col-lg-3">
-            <label class="kpi-label d-flex align-items-center gap-1 text-muted">
-                <i class="bi bi-search text-primary"></i> SIMBOL EMITEN / TICKER
+            <label class="form-label-formal">
+                SIMBOL TICKER
             </label>
-            <input type="text" name="ticker" class="form-control form-control-enterprise font-mono text-uppercase" placeholder="Misal: BBCA, BBRI, NVDA" value="{{ ticker_display if ticker_display else ticker.replace('.JK', '') }}" required>
+            <input type="text" name="ticker" class="form-control form-control-enterprise font-mono text-uppercase" placeholder="Contoh: BBCA, BBRI, NVDA" value="{{ ticker_display if ticker_display else ticker.replace('.JK', '') }}" required>
         </div>
         
         <div class="col-6 col-md-4 col-lg-3">
-            <label class="kpi-label d-flex align-items-center gap-1 text-muted">
-                <i class="bi bi-tag text-muted"></i> AVG HARGA BELI (OPSIONAL)
+            <label class="form-label-formal">
+                AVG. HARGA BELI (OPSIONAL)
             </label>
             <input type="number" step="any" name="avg_price" class="form-control form-control-enterprise font-mono" placeholder="Rp 0" value="{{ avg_price if avg_price > 0 else '' }}">
         </div>
         
         <div class="col-6 col-md-4 col-lg-3">
-            <label class="kpi-label d-flex align-items-center gap-1 text-muted">
-                <i class="bi bi-layers text-muted"></i> TOTAL LOT (OPSIONAL)
+            <label class="form-label-formal">
+                TOTAL LOT (OPSIONAL)
             </label>
             <input type="number" name="lots" class="form-control form-control-enterprise font-mono" placeholder="0 lot" value="{{ lots if lots > 0 else '' }}">
         </div>
         
         <div class="col-12 col-lg-3">
             <button type="submit" class="btn btn-enterprise-primary w-100 d-flex align-items-center justify-content-center gap-2">
-                <i class="bi bi-arrow-repeat"></i> Perbarui Analisis
+                Analisis Emiten
             </button>
         </div>
     </form>
 
     <!-- Quick Ticker Suggestions -->
     <div class="d-flex flex-wrap align-items-center gap-2 mt-3 pt-3 border-top border-color">
-        <span class="small text-muted me-1" style="font-size: 0.76rem;"><i class="bi bi-lightning-charge"></i> Pintasan:</span>
-        {% for sym in ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'BBNI', 'UNVR', 'ICBP', 'AMRT', 'AAPL', 'NVDA'] %}
+        <span class="me-2 font-mono fw-bold text-theme-muted" style="font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase;">PINTASAN:</span>
+        {% for sym in ['BBCA', 'BBRI', 'BMRI', 'BBNI', 'TLKM', 'ASII', 'ICBP', 'AMRT', 'UNTR', 'KLBF', 'ADRO', 'AAPL', 'NVDA'] %}
         <a href="/?ticker={{ sym }}{% if avg_price > 0 %}&avg_price={{ avg_price }}{% endif %}{% if lots > 0 %}&lots={{ lots }}{% endif %}" 
            class="quick-ticker-pill {% if ticker_display == sym or ticker.replace('.JK', '') == sym %}active{% endif %}">
             {{ sym }}

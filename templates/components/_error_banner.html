@@ -1,17 +1,20 @@
 <!-- ERROR NOTIFICATION BANNER -->
 <div class="enterprise-card mb-4 border-danger border-opacity-50 text-center py-5 px-4">
-    <div class="d-inline-flex p-3 rounded-circle bg-danger-subtle text-danger mb-3">
-        <i class="bi bi-shield-exclamation fs-2"></i>
+    <div class="d-inline-flex p-3 rounded-circle bg-danger-subtle text-danger mb-3 font-mono fw-bold fs-4">
+        !
     </div>
-    <h5 class="fw-bold text-primary mb-2">Instrumen Pasar Tidak Ditemukan</h5>
-    <p class="text-secondary small mb-4" style="max-width: 500px; margin: 0 auto;">
+    <h5 class="fw-bold text-theme-primary mb-2 font-mono">Instrumen Pasar Tidak Ditemukan</h5>
+    <p class="text-theme-secondary small mb-4" style="max-width: 540px; margin: 0 auto; line-height: 1.6;">
         {{ error_message }}
     </p>
-    <p class="small text-muted mb-3 font-mono" style="font-size: 0.78rem;">PILIH EMITEN BENCHMARK IHSG:</p>
+    <p class="small text-theme-muted mb-3 font-mono" style="font-size: 0.76rem; letter-spacing: 0.05em; text-transform: uppercase;">
+        Pilih Saham Benchmark IHSG:
+    </p>
     <div class="d-flex justify-content-center flex-wrap gap-2">
-        <a href="/?ticker=BBCA" class="btn btn-sm btn-outline-secondary font-mono px-3">BBCA (BCA)</a>
-        <a href="/?ticker=BBRI" class="btn btn-sm btn-outline-secondary font-mono px-3">BBRI (BRI)</a>
-        <a href="/?ticker=BMRI" class="btn btn-sm btn-outline-secondary font-mono px-3">BMRI (Mandiri)</a>
-        <a href="/?ticker=TLKM" class="btn btn-sm btn-outline-secondary font-mono px-3">TLKM (Telkom)</a>
+        <a href="/?ticker=BBCA" class="quick-ticker-pill px-3">BBCA</a>
+        <a href="/?ticker=BBRI" class="quick-ticker-pill px-3">BBRI</a>
+        <a href="/?ticker=BMRI" class="quick-ticker-pill px-3">BMRI</a>
+        <a href="/?ticker=BBNI" class="quick-ticker-pill px-3">BBNI</a>
+        <a href="/?ticker=TLKM" class="quick-ticker-pill px-3">TLKM</a>
     </div>
 </div>

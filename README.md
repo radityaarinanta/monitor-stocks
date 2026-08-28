@@ -49,7 +49,7 @@ Comprehensive financial overview displaying:
 Contextual business intelligence showing the company's operational summary, sector classification, industry group, domicile, benchmark currency, and direct links to official investor portals.
 
 ### 6. Bullish Watchlist Trend Scanner
-Automated screener monitoring premier blue-chip constituents (e.g., `BBCA`, `BBRI`, `BMRI`, `TLKM`, `ASII`, `GOTO`, `BBNI`, `UNVR`, `ICBP`, `AMRT`) trading above their 20-day moving average.
+Automated screener monitoring premier blue-chip constituents (e.g., `BBCA`, `BBRI`, `BMRI`, `BBNI`, `TLKM`, `ASII`, `ICBP`, `AMRT`, `UNTR`, `KLBF`, `ADRO`) trading above their 20-day moving average.
 
 ### 7. Portfolio Position & P/L Tracker
 Ledger-style portfolio calculator computing invested capital, current asset value, unrealized gain/loss (nominal IDR/USD), and total percentage return based on purchase price and lot size.

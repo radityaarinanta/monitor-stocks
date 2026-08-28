@@ -2,44 +2,43 @@
 <div class="row align-items-center mb-4 g-3">
     <!-- Left: Ticker, Name, Sector & Live Price -->
     <div class="col-md-7">
-        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-            <span class="badge bg-secondary bg-opacity-25 text-primary border border-primary border-opacity-25 font-mono px-2 py-1 fs-6">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+            <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-50 font-mono px-2 py-1 fs-6 rounded-1">
                 {{ ticker }}
             </span>
-            <span class="fw-bold fs-6 text-primary">{{ fundamental.company_name }}</span>
-            <span class="badge bg-surface-elevated text-secondary border border-color small" style="font-size: 0.72rem;">
+            <span class="fw-bold fs-5 text-theme-primary">{{ fundamental.company_name }}</span>
+            <span class="stock-sector-badge badge px-2 py-1 rounded-1">
                 {{ fundamental.sector }}
             </span>
         </div>
 
-        <div class="d-flex align-items-baseline gap-3 mt-2">
+        <div class="d-flex align-items-baseline gap-3 my-2">
             <div class="stock-hero-price">
                 {% if fundamental.currency == 'IDR' %}Rp {% else %}${% endif %}{{ "{:,.2f}".format(current_price) if current_price < 100 else "{:,.0f}".format(current_price) }}
             </div>
             
-            <div class="d-flex align-items-center gap-1 fw-bold fs-6 num-tabular {% if day_change >= 0 %}text-success{% else %}text-danger{% endif %}">
-                <i class="bi {% if day_change >= 0 %}bi-arrow-up-right{% else %}bi-arrow-down-right{% endif %}"></i>
+            <div class="d-flex align-items-center gap-1 fw-bold fs-5 num-tabular {% if day_change >= 0 %}text-success{% else %}text-danger{% endif %}">
                 <span>{% if day_change >= 0 %}+{% endif %}{{ "{:.2f}".format(day_change) }}%</span>
-                <span class="small fw-normal text-muted ms-1" style="font-size: 0.82rem;">
+                <span class="small fw-normal text-theme-muted ms-1" style="font-size: 0.84rem;">
                     ({% if price_change_nominal >= 0 %}+{% endif %}{{ "{:,.0f}".format(price_change_nominal) }})
                 </span>
             </div>
         </div>
         
-        <div class="d-flex align-items-center gap-3 text-muted small mt-1" style="font-size: 0.8rem;">
-            <span>RSI (14-D): <strong class="text-primary font-mono">{{ "{:.1f}".format(current_rsi) }}</strong></span>
-            <span>•</span>
-            <span>Industri: <span class="text-secondary">{{ fundamental.industry }}</span></span>
+        <div class="d-flex align-items-center gap-3 small mt-2 font-mono text-theme-muted" style="font-size: 0.8rem;">
+            <span>RSI (14-D): <strong class="text-theme-primary">{{ "{:.1f}".format(current_rsi) }}</strong></span>
+            <span style="opacity: 0.5;">|</span>
+            <span>Industri: <strong class="text-theme-primary">{{ fundamental.industry }}</strong></span>
         </div>
     </div>
 
     <!-- Right: Formal DSS Recommendation Signal -->
     <div class="col-md-5">
         <div class="signal-badge {{ badge_style }}">
-            <small class="d-block text-uppercase fw-bold opacity-75" style="font-size: 0.68rem; letter-spacing: 0.08em;">
+            <small class="d-block text-uppercase fw-bold font-mono" style="font-size: 0.72rem; letter-spacing: 0.1em; opacity: 0.9;">
                 Sinyal Keputusan DSS
             </small>
-            <div class="fs-5 fw-bold mt-1">
+            <div class="fs-5 fw-bold mt-1 font-mono">
                 {{ rekomendasi }}
             </div>
         </div>
