@@ -247,18 +247,21 @@ def scan_bullish_stocks() -> list[dict]:
 
 def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
     """Membuat grafik Candlestick multi-panel standar platform profesional (Price, MA20/MA50, Bollinger Bands, Volume)."""
-    chart_df = df.iloc[-60:] if len(df) >= 60 else df
+    chart_df = df.iloc[-60:].copy() if len(df) >= 60 else df.copy()
     
+    # Format tanggal sebagai string harian murni (menghindari jam 00:00/12:00 dan jeda libur)
+    date_strings = [d.strftime('%d %b %Y') for d in chart_df.index]
+
     fig = make_subplots(
         rows=2, cols=1,
         shared_xaxes=True,
-        vertical_spacing=0.03,
-        row_heights=[0.74, 0.26]
+        vertical_spacing=0.04,
+        row_heights=[0.75, 0.25]
     )
 
     # 1. Bollinger Bands (Shaded Volatility Channel)
     fig.add_trace(go.Scatter(
-        x=chart_df.index,
+        x=date_strings,
         y=chart_df['Upper_Band'],
         mode='lines',
         line=dict(color='rgba(14, 165, 233, 0.45)', width=1, dash='dot'),
@@ -267,7 +270,7 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
     ), row=1, col=1)
 
     fig.add_trace(go.Scatter(
-        x=chart_df.index,
+        x=date_strings,
         y=chart_df['Lower_Band'],
         mode='lines',
         fill='tonexty',
@@ -279,7 +282,7 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
 
     # 2. Candlestick Chart (Crisp Institutional Emerald & Ruby)
     fig.add_trace(go.Candlestick(
-        x=chart_df.index,
+        x=date_strings,
         open=chart_df['Open'],
         high=chart_df['High'],
         low=chart_df['Low'],
@@ -293,7 +296,7 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
 
     # 3. MA20 (Short-Term Trend) & MA50 (Medium-Term Trend)
     fig.add_trace(go.Scatter(
-        x=chart_df.index,
+        x=date_strings,
         y=chart_df['MA20'],
         mode='lines',
         line=dict(color='#f59e0b', width=1.8),
@@ -302,7 +305,7 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
 
     if 'MA50' in chart_df.columns and pd.notnull(chart_df['MA50'].iloc[-1]):
         fig.add_trace(go.Scatter(
-            x=chart_df.index,
+            x=date_strings,
             y=chart_df['MA50'],
             mode='lines',
             line=dict(color='#38bdf8', width=1.5),
@@ -312,7 +315,7 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
     # 4. Volume Bars (Colored by price direction)
     vol_colors = ['#10b981' if c >= o else '#f43f5e' for c, o in zip(chart_df['Close'], chart_df['Open'])]
     fig.add_trace(go.Bar(
-        x=chart_df.index,
+        x=date_strings,
         y=chart_df['Volume'],
         marker_color=vol_colors,
         opacity=0.65,
@@ -322,7 +325,7 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
     # 5. Volume MA20 Line
     if 'Vol_MA20' in chart_df.columns and pd.notnull(chart_df['Vol_MA20'].iloc[-1]):
         fig.add_trace(go.Scatter(
-            x=chart_df.index,
+            x=date_strings,
             y=chart_df['Vol_MA20'],
             mode='lines',
             line=dict(color='rgba(148, 163, 184, 0.75)', width=1.2),
@@ -332,34 +335,36 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
     fig.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(family='Plus Jakarta Sans, Inter, sans-serif', size=11),
-        margin=dict(l=10, r=10, t=25, b=10),
-        height=480,
+        font=dict(family='Plus Jakarta Sans, Inter, sans-serif', size=11, color='#cbd5e1'),
+        margin=dict(l=10, r=10, t=28, b=15),
+        height=490,
         hovermode='x unified',
         xaxis=dict(
             rangeslider=dict(visible=False),
             showspikes=True, spikemode='across', spikesnap='cursor', spikethickness=1,
             spikedash='dot', spikecolor='rgba(148, 163, 184, 0.35)',
-            rangebreaks=[dict(bounds=['sat', 'mon'])],
             gridcolor='rgba(148, 163, 184, 0.08)',
-            tickfont=dict(size=10, family='JetBrains Mono, monospace')
+            type='category',
+            nticks=7,
+            tickfont=dict(size=10, family='JetBrains Mono, monospace', color='#cbd5e1')
         ),
         xaxis2=dict(
             showspikes=True, spikemode='across', spikesnap='cursor', spikethickness=1,
             spikedash='dot', spikecolor='rgba(148, 163, 184, 0.35)',
-            rangebreaks=[dict(bounds=['sat', 'mon'])],
             gridcolor='rgba(148, 163, 184, 0.08)',
-            tickfont=dict(size=10, family='JetBrains Mono, monospace')
+            type='category',
+            nticks=7,
+            tickfont=dict(size=10, family='JetBrains Mono, monospace', color='#cbd5e1')
         ),
         yaxis=dict(
             side='right', tickformat=',',
             gridcolor='rgba(148, 163, 184, 0.08)',
-            tickfont=dict(size=10, family='JetBrains Mono, monospace')
+            tickfont=dict(size=10, family='JetBrains Mono, monospace', color='#cbd5e1')
         ),
         yaxis2=dict(
             side='right', tickformat='.2s',
             gridcolor='rgba(148, 163, 184, 0.08)',
-            tickfont=dict(size=9, family='JetBrains Mono, monospace')
+            tickfont=dict(size=9, family='JetBrains Mono, monospace', color='#cbd5e1')
         ),
         legend=dict(
             orientation='h',
@@ -367,11 +372,23 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
             y=1.02,
             xanchor='right',
             x=1,
-            font=dict(size=10, family='Plus Jakarta Sans, sans-serif')
+            font=dict(size=10, family='Plus Jakarta Sans, sans-serif', color='#cbd5e1')
         )
     )
 
-    return pio.to_html(fig, full_html=False, include_plotlyjs=False, config={'displayModeBar': False, 'responsive': True})
+    return pio.to_html(
+        fig,
+        full_html=False,
+        include_plotlyjs=False,
+        config={
+            'displayModeBar': True,
+            'displaylogo': False,
+            'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+            'scrollZoom': True,
+            'responsive': True,
+            'doubleClick': 'reset+autosize'
+        }
+    )
 
 
 def analyze_stock(target_symbol: str, raw_ticker_input: str, avg_price: float = 0.0, lots: int = 0) -> dict:
