@@ -19,6 +19,10 @@ app = Flask(
 
 
 @app.route('/')
+@app.route('/index')
+@app.route('/api')
+@app.route('/api/index')
+@app.route('/api/index.py')
 def index():
     raw_ticker_input = request.args.get('ticker', 'BBCA').strip()
     target_symbol, ticker_display = normalize_ticker(raw_ticker_input)
@@ -76,6 +80,11 @@ def index():
             avg_price=avg_price,
             lots=lots
         )
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return index()
 
 
 if __name__ == '__main__':
