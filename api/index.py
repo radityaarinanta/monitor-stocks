@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 
 try:
     from api.stock_service import normalize_ticker, scan_bullish_stocks, analyze_stock
@@ -16,6 +16,11 @@ app = Flask(
     static_folder=STATIC_DIR,
     static_url_path='/static'
 )
+
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(STATIC_DIR, filename)
 
 
 @app.route('/')
