@@ -2,6 +2,7 @@ import math
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import plotly.io as pio
 
 # Watchlist Saham Blue-Chip Pilihan IHSG untuk Bullish Scanner (Fundamental & Likuiditas Kuat)
@@ -245,32 +246,38 @@ def scan_bullish_stocks() -> list[dict]:
 
 
 def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
-    """Membuat grafik Candlestick formal & clean (kompatibel dual-mode dark/light)."""
-    chart_df = df.iloc[-45:] if len(df) >= 45 else df
+    """Membuat grafik Candlestick multi-panel standar platform profesional (Price, MA20/MA50, Bollinger Bands, Volume)."""
+    chart_df = df.iloc[-60:] if len(df) >= 60 else df
     
-    fig = go.Figure()
+    fig = make_subplots(
+        rows=2, cols=1,
+        shared_xaxes=True,
+        vertical_spacing=0.03,
+        row_heights=[0.74, 0.26]
+    )
 
-    # 1. Bollinger Bands Area (Subtle institutional fill)
+    # 1. Bollinger Bands (Shaded Volatility Channel)
     fig.add_trace(go.Scatter(
         x=chart_df.index,
         y=chart_df['Upper_Band'],
         mode='lines',
-        line=dict(color='rgba(14, 165, 233, 0.4)', width=1, dash='dot'),
+        line=dict(color='rgba(14, 165, 233, 0.45)', width=1, dash='dot'),
         name='Upper Band (BB)',
         hoverinfo='x+y'
-    ))
+    ), row=1, col=1)
+
     fig.add_trace(go.Scatter(
         x=chart_df.index,
         y=chart_df['Lower_Band'],
         mode='lines',
         fill='tonexty',
         fillcolor='rgba(14, 165, 233, 0.04)',
-        line=dict(color='rgba(14, 165, 233, 0.4)', width=1, dash='dot'),
+        line=dict(color='rgba(14, 165, 233, 0.45)', width=1, dash='dot'),
         name='Lower Band (BB)',
         hoverinfo='x+y'
-    ))
+    ), row=1, col=1)
 
-    # 2. Candlestick Chart (Crisp Institutional Green/Red)
+    # 2. Candlestick Chart (Crisp Institutional Emerald & Ruby)
     fig.add_trace(go.Candlestick(
         x=chart_df.index,
         open=chart_df['Open'],
@@ -282,36 +289,78 @@ def create_stock_chart(df: pd.DataFrame, ticker_display: str) -> str:
         decreasing_line_color='#f43f5e',
         decreasing_fillcolor='#f43f5e',
         name='Price'
-    ))
+    ), row=1, col=1)
 
-    # 3. MA20 Line (Amber Trendline)
+    # 3. MA20 (Short-Term Trend) & MA50 (Medium-Term Trend)
     fig.add_trace(go.Scatter(
         x=chart_df.index,
         y=chart_df['MA20'],
         mode='lines',
-        line=dict(color='#f59e0b', width=2),
+        line=dict(color='#f59e0b', width=1.8),
         name='MA20 Trend'
-    ))
+    ), row=1, col=1)
+
+    if 'MA50' in chart_df.columns and pd.notnull(chart_df['MA50'].iloc[-1]):
+        fig.add_trace(go.Scatter(
+            x=chart_df.index,
+            y=chart_df['MA50'],
+            mode='lines',
+            line=dict(color='#38bdf8', width=1.5),
+            name='MA50 Baseline'
+        ), row=1, col=1)
+
+    # 4. Volume Bars (Colored by price direction)
+    vol_colors = ['#10b981' if c >= o else '#f43f5e' for c, o in zip(chart_df['Close'], chart_df['Open'])]
+    fig.add_trace(go.Bar(
+        x=chart_df.index,
+        y=chart_df['Volume'],
+        marker_color=vol_colors,
+        opacity=0.65,
+        name='Volume'
+    ), row=2, col=1)
+
+    # 5. Volume MA20 Line
+    if 'Vol_MA20' in chart_df.columns and pd.notnull(chart_df['Vol_MA20'].iloc[-1]):
+        fig.add_trace(go.Scatter(
+            x=chart_df.index,
+            y=chart_df['Vol_MA20'],
+            mode='lines',
+            line=dict(color='rgba(148, 163, 184, 0.75)', width=1.2),
+            name='Vol MA20'
+        ), row=2, col=1)
 
     fig.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font=dict(family='Plus Jakarta Sans, Inter, sans-serif', size=11),
-        margin=dict(l=10, r=10, t=20, b=10),
-        height=430,
+        margin=dict(l=10, r=10, t=25, b=10),
+        height=480,
+        hovermode='x unified',
         xaxis=dict(
             rangeslider=dict(visible=False),
+            showspikes=True, spikemode='across', spikesnap='cursor', spikethickness=1,
+            spikedash='dot', spikecolor='rgba(148, 163, 184, 0.35)',
+            rangebreaks=[dict(bounds=['sat', 'mon'])],
             gridcolor='rgba(148, 163, 184, 0.08)',
-            type='date',
+            tickfont=dict(size=10, family='JetBrains Mono, monospace')
+        ),
+        xaxis2=dict(
+            showspikes=True, spikemode='across', spikesnap='cursor', spikethickness=1,
+            spikedash='dot', spikecolor='rgba(148, 163, 184, 0.35)',
+            rangebreaks=[dict(bounds=['sat', 'mon'])],
+            gridcolor='rgba(148, 163, 184, 0.08)',
             tickfont=dict(size=10, family='JetBrains Mono, monospace')
         ),
         yaxis=dict(
+            side='right', tickformat=',',
             gridcolor='rgba(148, 163, 184, 0.08)',
-            side='right',
-            tickformat=",",
             tickfont=dict(size=10, family='JetBrains Mono, monospace')
         ),
-        hovermode='x unified',
+        yaxis2=dict(
+            side='right', tickformat='.2s',
+            gridcolor='rgba(148, 163, 184, 0.08)',
+            tickfont=dict(size=9, family='JetBrains Mono, monospace')
+        ),
         legend=dict(
             orientation='h',
             yanchor='bottom',
@@ -356,11 +405,13 @@ def analyze_stock(target_symbol: str, raw_ticker_input: str, avg_price: float = 
     day_change = ((current_price - prev_price) / prev_price) * 100
     price_change_nominal = current_price - prev_price
 
-    # Indikator Teknikal
+    # Indikator Teknikal Multi-Timeframe & Volatilitas
     df['MA20'] = df['Close'].rolling(window=20).mean()
+    df['MA50'] = df['Close'].rolling(window=50).mean()
     df['STD'] = df['Close'].rolling(window=20).std()
     df['Upper_Band'] = df['MA20'] + (df['STD'] * 2)
     df['Lower_Band'] = df['MA20'] - (df['STD'] * 2)
+    df['Vol_MA20'] = df['Volume'].rolling(window=20).mean()
 
     delta = df['Close'].diff()
     gain = delta.clip(lower=0)
