@@ -156,10 +156,33 @@
     </div>
 
     <div class="d-flex align-items-center gap-2 flex-wrap">
-        <button type="button" class="btn-export-csv" onclick="exportScreenerToCSV()" title="Unduh Hasil Penyaringan ke File CSV / Excel">
-            <i class="bi bi-download"></i>
-            <span>Export CSV</span>
-        </button>
+        <div class="dropdown">
+            <button class="btn-export-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Ekspor Hasil Screener">
+                <i class="bi bi-download"></i>
+                <span>Export Data</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-1" style="background: var(--bg-card); border: 1px solid var(--border-strong) !important; border-radius: 8px;">
+                <li>
+                    <button class="dropdown-item d-flex align-items-center gap-2 py-2 px-3 text-theme-primary font-mono" style="font-size: 0.78rem;" onclick="exportScreenerToPDF()">
+                        <i class="bi bi-file-earmark-pdf text-danger fs-6"></i>
+                        <div>
+                            <div class="fw-bold">Export Dokumen PDF</div>
+                            <div class="text-theme-muted" style="font-size: 0.68rem;">Laporan Eksekutif Siap Cetak</div>
+                        </div>
+                    </button>
+                </li>
+                <li><hr class="dropdown-divider my-1 opacity-20"></li>
+                <li>
+                    <button class="dropdown-item d-flex align-items-center gap-2 py-2 px-3 text-theme-primary font-mono" style="font-size: 0.78rem;" onclick="exportScreenerToCSV()">
+                        <i class="bi bi-file-earmark-spreadsheet text-success fs-6"></i>
+                        <div>
+                            <div class="fw-bold">Export Spreadsheet CSV</div>
+                            <div class="text-theme-muted" style="font-size: 0.68rem;">Kompatibel Excel & Spreadsheet</div>
+                        </div>
+                    </button>
+                </li>
+            </ul>
+        </div>
 
         <div class="screener-search-wrap">
             <i class="bi bi-search search-icon"></i>
@@ -500,6 +523,247 @@ function updateSortIcons() {
             iconEl.innerHTML = '<i class="bi bi-arrow-down-up opacity-40"></i>';
         }
     });
+}
+
+function exportScreenerToPDF() {
+    if (!matchedRows || matchedRows.length === 0) {
+        alert('Tidak ada data saham untuk diekspor ke PDF.');
+        return;
+    }
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+    
+    let activeFilterLabel = 'Semua Saham Terpantau';
+    if (currentMode === 'preset') {
+        const activeChip = document.querySelector('#containerPresetMode .strategy-chip.active');
+        if (activeChip) activeFilterLabel = 'Strategi: ' + activeChip.textContent.trim();
+    } else {
+        const sectorVal = document.getElementById('filterSector').value;
+        activeFilterLabel = 'Custom Filter (' + (sectorVal !== 'all' ? sectorVal : 'Multi-Sektor') + ')';
+    }
+
+    const query = (document.getElementById('screenerSearchInput').value || '').trim();
+    if (query) {
+        activeFilterLabel += ' | Pencarian: "' + query + '"';
+    }
+
+    let rowsHTML = '';
+    matchedRows.forEach((row, idx) => {
+        const code = row.getAttribute('data-code') || '';
+        const nameElem = row.querySelector('.text-theme-primary');
+        const name = nameElem ? nameElem.textContent.trim() : '';
+        const sector = row.getAttribute('data-sector') || '';
+        const price = parseInt(row.getAttribute('data-price') || 0, 10).toLocaleString('id-ID');
+        const changePct = parseFloat(row.getAttribute('data-change') || 0);
+        const changeStr = (changePct >= 0 ? '+' : '') + changePct.toFixed(2) + '%';
+        const changeClass = changePct >= 0 ? 'color-pos' : 'color-neg';
+        const rsi = parseFloat(row.getAttribute('data-rsi') || 50).toFixed(1);
+        const above20 = row.getAttribute('data-above-ma20') === 'True';
+        const above50 = row.getAttribute('data-above-ma50') === 'True';
+        const trend = (above20 && above50) ? 'MA20 & MA50 UP' : (above20 ? '> MA20 (REBOUND)' : '< MA20 (DOWNTREND)');
+        const broksum = (row.getAttribute('data-broksum') || 'NETRAL').toUpperCase();
+        const foreignVal = parseFloat(row.getAttribute('data-foreign-val') || 0);
+        const foreignStr = (foreignVal >= 0 ? '+Rp ' : '-Rp ') + Math.abs(foreignVal).toFixed(1) + ' M';
+        const foreignClass = foreignVal >= 0 ? 'color-pos' : 'color-neg';
+
+        rowsHTML += `
+            <tr>
+                <td class="text-center font-mono text-muted">${idx + 1}</td>
+                <td>
+                    <div style="font-weight: 700; color: #092328; font-size: 11px;">${code}</div>
+                    <div style="font-size: 9.5px; color: #64748b;">${name} &bull; ${sector}</div>
+                </td>
+                <td class="text-right font-mono" style="font-weight: 600;">Rp ${price}</td>
+                <td class="text-right font-mono ${changeClass}" style="font-weight: 700;">${changeStr}</td>
+                <td class="text-center font-mono">${rsi}</td>
+                <td class="text-center" style="font-size: 9px; font-weight: 600;">${trend}</td>
+                <td class="text-center" style="font-size: 9px; font-weight: 600;">${broksum}</td>
+                <td class="text-center font-mono ${foreignClass}" style="font-weight: 600;">${foreignStr}</td>
+            </tr>
+        `;
+    });
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        alert('Pop-up browser diblokir. Harap izinkan pop-up untuk mencetak / menyimpan PDF.');
+        return;
+    }
+
+    const docContent = `
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>StockPulse_Screener_Report_${now.toISOString().split('T')[0]}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 12mm 10mm 12mm 10mm;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            color: #0f172a;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
+            font-size: 10px;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #092328;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+        }
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #092328;
+            letter-spacing: 0.02em;
+        }
+        .brand-subtitle {
+            font-size: 10px;
+            font-weight: 600;
+            color: #2A835F;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 2px;
+        }
+        .meta-box {
+            text-align: right;
+            font-size: 9.5px;
+            color: #475569;
+            line-height: 1.45;
+        }
+        .meta-highlight {
+            font-weight: 700;
+            color: #092328;
+        }
+        .summary-ribbon {
+            display: flex;
+            gap: 12px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px 14px;
+            margin-bottom: 14px;
+            font-size: 9.5px;
+        }
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .summary-item strong {
+            color: #092328;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.5px;
+        }
+        th {
+            background-color: #092328 !important;
+            color: #ffffff !important;
+            text-align: left;
+            padding: 7px 8px;
+            font-weight: 700;
+            font-size: 9px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        td {
+            padding: 5px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+        tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .text-muted { color: #94a3b8; }
+        .color-pos { color: #166534 !important; font-weight: 700; }
+        .color-neg { color: #991b1b !important; font-weight: 700; }
+        .report-footer {
+            margin-top: 18px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 8.5px;
+            color: #64748b;
+        }
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none !important; }
+            tr { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-header">
+        <div>
+            <div class="brand-title">STOCK<span style="color: #2A835F;">PULSE</span> PRO</div>
+            <div class="brand-subtitle">Laporan Pemindaian Kuantitatif Pasar Saham (IHSG / BEI)</div>
+        </div>
+        <div class="meta-box">
+            <div>Tanggal Cetak: <span class="meta-highlight">${dateStr}</span></div>
+            <div>Waktu: <span class="meta-highlight">${timeStr}</span></div>
+            <div>Parameter: <span class="meta-highlight">${activeFilterLabel}</span></div>
+        </div>
+    </div>
+
+    <div class="summary-ribbon">
+        <div class="summary-item"><span>Total Emiten Terpilih:</span> <strong>${matchedRows.length} Saham</strong></div>
+        <div class="summary-item" style="margin-left: auto;"><span>Algoritma:</span> <strong>Multi-Factor DSS Engine v2.4</strong></div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 4%; text-align: center;">No</th>
+                <th style="width: 26%;">Emiten / Perusahaan</th>
+                <th style="width: 12%; text-align: right;">Harga Terakhir</th>
+                <th style="width: 10%; text-align: right;">Perubahan (%)</th>
+                <th style="width: 8%; text-align: center;">RSI (14)</th>
+                <th style="width: 14%; text-align: center;">Struktur Tren</th>
+                <th style="width: 12%; text-align: center;">Bandarmologi</th>
+                <th style="width: 14%; text-align: center;">Arus Asing (10D)</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${rowsHTML}
+        </tbody>
+    </table>
+
+    <div class="report-footer">
+        <div>Dokumen resmi dihasilkan secara otomatis oleh <strong>StockPulse Pro DSS</strong>. Informasi ini untuk keperluan analisis & riset kuantitatif. DYOR.</div>
+        <div>Halaman Laporan Eksekutif &bull; Selesai</div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.print();
+            }, 350);
+        });
+    </script>
+</body>
+</html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(docContent);
+    printWindow.document.close();
 }
 
 function exportScreenerToCSV() {

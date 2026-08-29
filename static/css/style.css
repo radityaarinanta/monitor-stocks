@@ -1171,7 +1171,7 @@ body {
     background-color: var(--bg-card-hover) !important;
 }
 
-.btn-export-csv {
+.btn-export-dropdown {
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-strong);
     color: var(--text-primary);
@@ -1190,10 +1190,30 @@ body {
     box-sizing: border-box;
 }
 
-.btn-export-csv:hover {
+.btn-export-dropdown:hover,
+.btn-export-dropdown:focus {
     background: var(--primary);
     border-color: var(--primary);
     color: #ffffff;
+}
+
+.btn-export-dropdown::after {
+    margin-left: 4px;
+    vertical-align: 0.15em;
+}
+
+.dropdown-item {
+    transition: all 0.12s ease;
+    border-radius: 4px;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--bg-card-hover) !important;
+}
+
+.dropdown-item:hover .text-theme-primary {
+    color: var(--primary) !important;
 }
 
 .sortable-th {
