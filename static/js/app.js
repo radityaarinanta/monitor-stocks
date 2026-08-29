@@ -107,13 +107,13 @@ function updateIDXMarketClock() {
     }
 
     if (isOpen) {
-        dotEl.className = 'status-pulse-dot online';
+        dotEl.className = 'market-status-dot online';
         statusEl.textContent = statusLabel;
-        statusEl.className = 'fw-bold text-success';
+        statusEl.className = 'text-success';
     } else {
-        dotEl.className = 'status-pulse-dot offline';
+        dotEl.className = 'market-status-dot offline';
         statusEl.textContent = statusLabel;
-        statusEl.className = 'fw-bold text-theme-muted';
+        statusEl.className = 'text-theme-muted';
     }
 }
 

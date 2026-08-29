@@ -46,11 +46,13 @@
                 </a>
             </nav>
 
-            <div class="d-none d-lg-flex align-items-center gap-2 px-2.5 py-1.5 rounded-2 border border-color font-mono" style="font-size: 0.74rem; background: var(--bg-card);">
-                <span id="marketStatusDot" class="status-pulse-dot online"></span>
-                <span id="marketStatusText" class="fw-bold text-success" style="letter-spacing: 0.04em;">PASAR BUKA</span>
-                <span class="text-theme-muted" style="opacity: 0.35;">|</span>
-                <span id="idxClockText" class="text-theme-secondary">--:--:-- WIB</span>
+            <div class="d-none d-lg-flex idx-market-status-box">
+                <div class="market-status-indicator">
+                    <span id="marketStatusDot" class="market-status-dot online"></span>
+                    <span id="marketStatusText" class="text-success">PASAR BUKA</span>
+                </div>
+                <span class="market-divider-bar"></span>
+                <span id="idxClockText" class="market-clock-val">--:--:-- WIB</span>
             </div>
 
             <button id="themeToggleBtn" type="button" class="btn-theme-toggle" title="Ganti Mode Tampilan (Dark / Light)">
