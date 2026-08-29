@@ -239,6 +239,8 @@
                 data-sector="{{ s.sector }}"
                 data-price="{{ s.price }}"
                 data-change="{{ s.change_pct }}"
+                data-ma20="{{ s.ma20 }}"
+                data-ma50="{{ s.ma50 }}"
                 data-above-ma20="{{ s.above_ma20 }}"
                 data-above-ma50="{{ s.above_ma50 }}"
                 data-golden-cross="{{ s.is_golden_cross }}"
@@ -246,6 +248,7 @@
                 data-broksum="{{ s.broksum_tag }}"
                 data-foreign="{{ s.foreign_tag }}"
                 data-foreign-val="{{ s.foreign_10d_m }}"
+                data-dss="{{ s.dss_signal }}"
                 data-presets="{{ s.preset_tags|join(',') }}">
                 <td>
                     <div class="d-flex align-items-center gap-2">
@@ -772,48 +775,99 @@ function exportScreenerToPDF() {
 
 function exportScreenerToCSV() {
     if (!matchedRows || matchedRows.length === 0) {
-        alert('Tidak ada data saham untuk diexport.');
+        alert('Tidak ada data saham untuk diekspor ke CSV.');
         return;
     }
 
-    const headers = ['Kode', 'Nama Perusahaan', 'Sektor', 'Harga (IDR)', 'Perubahan (%)', 'RSI (14)', 'Status Tren', 'Bandarmologi', 'Net Foreign Flow 10D (Miliar IDR)'];
-    const rows = [headers];
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+    
+    let activeFilterLabel = 'Semua Saham Terpantau (Full Universe)';
+    if (currentMode === 'preset') {
+        const activeChip = document.querySelector('#containerPresetMode .strategy-chip.active');
+        if (activeChip) activeFilterLabel = 'Strategi: ' + activeChip.textContent.trim();
+    } else {
+        const sectorVal = document.getElementById('filterSector').value;
+        activeFilterLabel = 'Custom Filter (' + (sectorVal !== 'all' ? sectorVal : 'Multi-Sektor') + ')';
+    }
 
-    matchedRows.forEach(row => {
+    const query = (document.getElementById('screenerSearchInput').value || '').trim();
+    if (query) {
+        activeFilterLabel += ' | Pencarian: "' + query + '"';
+    }
+
+    const csvLines = [];
+    csvLines.push('# =========================================================================================================');
+    csvLines.push('# STOCKPULSE PRO — INSTITUTIONAL QUANTITATIVE EQUITY SCREENER REPORT');
+    csvLines.push('# Bursa Efek Indonesia (IDX / BEI) Universe');
+    csvLines.push(`# Waktu Export      : ${dateStr}, ${timeStr}`);
+    csvLines.push(`# Parameter Filter  : ${activeFilterLabel}`);
+    csvLines.push(`# Total Emiten      : ${matchedRows.length} Saham`);
+    csvLines.push('# Metodologi        : Multi-Indicator Technical, Bandarmologi & Foreign Flow Decision Support System (DSS)');
+    csvLines.push('# Catatan           : Laporan ini untuk keperluan riset & analisis kuantitatif independen. DYOR.');
+    csvLines.push('# =========================================================================================================');
+    csvLines.push('');
+
+    const headers = [
+        'No',
+        'Kode Emiten',
+        'Nama Perusahaan',
+        'Sektor Industri',
+        'Harga Terakhir (IDR)',
+        'Perubahan Hari Ini (%)',
+        'RSI (14-D)',
+        'Level MA20 (IDR)',
+        'Level MA50 (IDR)',
+        'Struktur Tren MA',
+        'Arus Bandarmologi',
+        'Net Foreign Flow 10D (Miliar IDR)',
+        'Sinyal Kuantitatif DSS'
+    ];
+    csvLines.push(headers.map(h => `"${h}"`).join(','));
+
+    matchedRows.forEach((row, idx) => {
         const code = row.getAttribute('data-code') || '';
         const nameElem = row.querySelector('.text-theme-primary');
         const name = nameElem ? nameElem.textContent.trim() : '';
         const sector = row.getAttribute('data-sector') || '';
-        const price = row.getAttribute('data-price') || '0';
-        const change = row.getAttribute('data-change') || '0';
-        const rsi = row.getAttribute('data-rsi') || '50';
+        const price = parseInt(row.getAttribute('data-price') || 0, 10);
+        const changePct = parseFloat(row.getAttribute('data-change') || 0).toFixed(2);
+        const rsi = parseFloat(row.getAttribute('data-rsi') || 50).toFixed(1);
+        const ma20 = parseInt(row.getAttribute('data-ma20') || 0, 10);
+        const ma50 = parseInt(row.getAttribute('data-ma50') || 0, 10);
         const above20 = row.getAttribute('data-above-ma20') === 'True';
         const above50 = row.getAttribute('data-above-ma50') === 'True';
         const trend = (above20 && above50) ? 'Bullish (MA20 & MA50 UP)' : (above20 ? 'Rebound (> MA20)' : 'Downtrend (< MA20)');
-        const broksum = row.getAttribute('data-broksum') || '';
-        const foreign = row.getAttribute('data-foreign-val') || '0';
+        const broksum = (row.getAttribute('data-broksum') || 'NETRAL').toUpperCase();
+        const foreignVal = parseFloat(row.getAttribute('data-foreign-val') || 0).toFixed(1);
+        const dss = row.getAttribute('data-dss') || (above20 && above50 ? 'BULLISH CONTINUATION' : 'NEUTRAL / WAIT & SEE');
 
-        rows.push([
+        const rowValues = [
+            idx + 1,
             `"${code}"`,
             `"${name.replace(/"/g, '""')}"`,
             `"${sector.replace(/"/g, '""')}"`,
             price,
-            change,
+            changePct,
             rsi,
+            ma20,
+            ma50,
             `"${trend}"`,
-            `"${broksum.toUpperCase()}"`,
-            foreign
-        ]);
+            `"${broksum}"`,
+            foreignVal,
+            `"${dss}"`
+        ];
+        csvLines.push(rowValues.join(','));
     });
 
-    const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\r\n');
+    const csvContent = '\uFEFF' + csvLines.join('\r\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    const now = new Date();
-    const dateStr = now.toISOString().split('T')[0];
+    const isoDate = now.toISOString().split('T')[0];
     link.setAttribute('href', url);
-    link.setAttribute('download', `IHSG_Stock_Screener_${dateStr}.csv`);
+    link.setAttribute('download', `StockPulse_IHSG_Screener_${isoDate}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
