@@ -757,14 +757,6 @@ function exportScreenerToPDF() {
         <div>Dokumen resmi dihasilkan secara otomatis oleh <strong>StockPulse Pro DSS</strong>. Informasi ini untuk keperluan analisis & riset kuantitatif. DYOR.</div>
         <div>Halaman Laporan Eksekutif &bull; Selesai</div>
     </div>
-
-    <script>
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                window.print();
-            }, 350);
-        });
-    </script>
 </body>
 </html>
     `;
@@ -772,6 +764,10 @@ function exportScreenerToPDF() {
     printWindow.document.open();
     printWindow.document.write(docContent);
     printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+        printWindow.print();
+    }, 400);
 }
 
 function exportScreenerToCSV() {
