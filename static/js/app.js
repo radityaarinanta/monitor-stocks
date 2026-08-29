@@ -272,7 +272,7 @@ function initApp() {
     document.querySelectorAll('.enterprise-nav-tab').forEach(tab => {
         tab.addEventListener('click', (e) => {
             if (e.button === 0 && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
-                if (!tab.classList.contains('active')) {
+                if (!tab.classList.contains('active') && tab.getAttribute('target') !== '_blank') {
                     showLoading('MEMUAT HALAMAN...');
                 }
             }
