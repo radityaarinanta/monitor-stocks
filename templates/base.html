@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}StockPulse Pro | Decision Support System{% endblock %}</title>
     
-    {% if custom_logo %}
+    {% if custom_favicon %}
+    <link rel="icon" href="{{ url_for('static', filename=custom_favicon) }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename=custom_favicon) }}">
+    {% elif custom_logo %}
     <link rel="icon" href="{{ url_for('static', filename=custom_logo) }}">
     <link rel="apple-touch-icon" href="{{ url_for('static', filename=custom_logo) }}">
     {% else %}

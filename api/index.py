@@ -36,6 +36,8 @@ def serve_static(filename):
 def favicon():
     img_dir = os.path.join(STATIC_DIR, 'img')
     if os.path.exists(img_dir):
+        if os.path.exists(os.path.join(img_dir, 'favicon.png')):
+            return send_from_directory(img_dir, 'favicon.png')
         for ext in ['png', 'svg', 'ico', 'webp', 'jpg']:
             filename = f"logo.{ext}"
             if os.path.exists(os.path.join(img_dir, filename)):
@@ -47,13 +49,18 @@ def favicon():
 def inject_custom_logo():
     img_dir = os.path.join(STATIC_DIR, 'img')
     custom_logo = None
+    custom_favicon = None
     if os.path.exists(img_dir):
+        if os.path.exists(os.path.join(img_dir, 'favicon.png')):
+            custom_favicon = 'img/favicon.png'
         for ext in ['svg', 'png', 'webp', 'jpg', 'jpeg']:
             filename = f"logo.{ext}"
             if os.path.exists(os.path.join(img_dir, filename)):
                 custom_logo = f"img/{filename}"
+                if not custom_favicon:
+                    custom_favicon = f"img/{filename}"
                 break
-    return {'custom_logo': custom_logo}
+    return {'custom_logo': custom_logo, 'custom_favicon': custom_favicon}
 
 
 @app.route('/')
