@@ -96,6 +96,10 @@
         <i class="bi bi-arrows-fullscreen"></i>
         <span>Lihat Broker Summary Lengkap</span>
     </button>
+
+    <div class="mt-2.5 pt-2 border-top border-color font-mono text-theme-muted" style="font-size: 0.65rem; line-height: 1.45;">
+        <span class="text-theme-primary fw-bold">[SUMBER & METODOLOGI]:</span> Data transaksi & volume bersumber dari <span class="text-theme-primary fw-semibold">Yahoo Finance (EOD)</span>. Estimasi akumulasi/distribusi dihitung menggunakan algoritma kuantitatif <em>Volume Weighted Average Price (VWAP)</em>.
+    </div>
 </div>
 
 <div class="modal fade" id="brokerDetailModal" tabindex="-1" aria-labelledby="brokerDetailModalLabel" aria-hidden="true">
@@ -272,9 +276,9 @@
                 {% endfor %}
             </div>
 
-            <div class="modal-footer border-top border-color py-2.5 px-4 d-flex justify-content-between align-items-center" style="background: var(--bg-surface-elevated);">
+            <div class="modal-footer border-top border-color py-2.5 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: var(--bg-surface-elevated);">
                 <div class="font-mono text-theme-muted" style="font-size: 0.72rem;">
-                    Data diolah dari transaksi bursa BEI berbasis algoritma Volume Weighted Average Price (VWAP).
+                    <span class="text-theme-primary fw-bold">[SUMBER & METODOLOGI]:</span> Data transaksi & volume bursa BEI bersumber dari <span class="text-theme-primary fw-semibold">Yahoo Finance (EOD)</span> yang diolah menggunakan algoritma kuantitatif <em>Volume Weighted Average Price (VWAP & Price Action)</em>.
                 </div>
                 <button type="button" class="btn btn-secondary btn-sm font-mono px-3" data-bs-dismiss="modal">Tutup</button>
             </div>
