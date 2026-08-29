@@ -9,7 +9,7 @@
 [![Deployment](https://img.shields.io/badge/deployment-Vercel%20Serverless-000000.svg)](https://vercel.com/)
 [![Portfolio Suite](https://img.shields.io/badge/suite-Portfolio%20Calculator-2A835F.svg)](https://stock-exchange-calculator.vercel.app/)
 
-StockPulse Pro is an institutional-grade Decision Support System (DSS) and Quantitative Stock Screener designed for equity market participants, quantitative analysts, portfolio managers, and private wealth investors. It seamlessly integrates multi-indicator technical analytics, fundamental scoreboard metrics, quantitative trend scoring, multi-timeframe broker summary (volume concentration & bandarmologi), net foreign flow tracking, risk-to-reward trade setup planning, portfolio return calculation, an automated full-universe screener covering 764 active equities on the Indonesia Stock Exchange (IDX / IHSG), dual-engine institutional report exporting (Vector PDF & Quantitative CSV), and full interoperability with the [StockPulse Portfolio & Dividend Calculator Suite](https://stock-exchange-calculator.vercel.app/).
+StockPulse Pro is an institutional-grade Decision Support System (DSS) and Quantitative Stock Screener designed for equity market participants, quantitative analysts, portfolio managers, and private wealth investors. It seamlessly integrates multi-indicator technical analytics, fundamental scoreboard metrics, quantitative trend scoring, multi-timeframe broker summary (volume concentration & bandarmologi), net foreign flow tracking, risk-to-reward trade setup planning, portfolio return calculation, an automated full-universe screener covering 764 active equities on the Indonesia Stock Exchange (IDX / IHSG), dual-engine institutional report exporting (Vector PDF & Quantitative CSV).
 
 ---
 
@@ -90,7 +90,7 @@ A composite scoring engine calculating real-time directional momentum and transl
   - `DEFENSIVE STANCE (WAIT & SEE)`
 
 ### 8. Integrated Portfolio & Dividend Calculator Suite
-- Direct top-navigation link to the [StockPulse Portfolio & Dividend Calculator](https://stock-exchange-calculator.vercel.app/).
+- Direct top-navigation link to the [StockPulse Portfolio & Dividend Calculator].
 - Enables portfolio rebalancing, average down scenario modeling, forward dividend yield estimations, and broker transaction fee computations.
 
 ### 9. Executive KPI Financial Scoreboard & Corporate Profile
@@ -217,7 +217,7 @@ python api/index.py
 Open your browser and navigate to:
 - **Dashboard**: `http://127.0.0.1:5000/`
 - **Full IDX Screener**: `http://127.0.0.1:5000/screener`
-- **Portfolio Calculator**: [https://stock-exchange-calculator.vercel.app/](https://stock-exchange-calculator.vercel.app/)
+
 
 ---
 
