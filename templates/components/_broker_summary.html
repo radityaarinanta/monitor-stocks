@@ -26,7 +26,7 @@
 
             <div class="row g-2 font-mono mb-2.5" style="font-size: 0.74rem;">
                 <div class="col-6">
-                    <div class="p-2 rounded border border-color" style="background: var(--bg-card);">
+                    <div class="broksum-metric-tile">
                         <div class="text-theme-muted small" style="font-size: 0.68rem;">Top 3 Konsentrasi</div>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span class="fw-bold text-theme-primary">{{ pdata.top3_pct }}%</span>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="p-2 rounded border border-color" style="background: var(--bg-card);">
+                    <div class="broksum-metric-tile">
                         <div class="text-theme-muted small" style="font-size: 0.68rem;">Total Flow Transaksi</div>
                         <div class="fw-bold text-theme-primary mt-1" style="font-size: 0.76rem;">{{ pdata.tot_buyer_val_str }}</div>
                     </div>
@@ -61,12 +61,12 @@
                     </div>
                     <div class="d-flex flex-column gap-1">
                         {% for b in pdata.top_buyers[:3] %}
-                        <div class="d-flex align-items-center justify-content-between py-1 px-1.5 rounded border border-color" style="background: var(--bg-card);">
-                            <div class="d-flex align-items-center gap-1">
-                                <span class="badge-broker-code badge-broker-buy" style="font-size: 0.62rem; padding: 1px 4px;">{{ b.code }}</span>
-                                <span class="badge-broker-type {% if b.type == 'F' %}type-foreign{% else %}type-domestic{% endif %}" style="font-size: 0.55rem;">{{ b.type }}</span>
+                        <div class="d-flex align-items-center justify-content-between py-1 px-2 rounded broksum-mini-row">
+                            <div class="d-flex align-items-center gap-1.5">
+                                <span class="badge-broker-code badge-broker-buy" style="font-size: 0.64rem; padding: 1px 5px;">{{ b.code }}</span>
+                                <span class="badge-broker-type {% if b.type == 'F' %}type-foreign{% else %}type-domestic{% endif %}" style="font-size: 0.58rem;">{{ b.type }}</span>
                             </div>
-                            <span class="fw-bold text-success" style="font-size: 0.68rem;">{{ b.val_str }}</span>
+                            <span class="fw-bold text-success" style="font-size: 0.70rem;">{{ b.val_str }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -77,12 +77,12 @@
                     </div>
                     <div class="d-flex flex-column gap-1">
                         {% for s in pdata.top_sellers[:3] %}
-                        <div class="d-flex align-items-center justify-content-between py-1 px-1.5 rounded border border-color" style="background: var(--bg-card);">
-                            <div class="d-flex align-items-center gap-1">
-                                <span class="badge-broker-code badge-broker-sell" style="font-size: 0.62rem; padding: 1px 4px;">{{ s.code }}</span>
-                                <span class="badge-broker-type {% if s.type == 'F' %}type-foreign{% else %}type-domestic{% endif %}" style="font-size: 0.55rem;">{{ s.type }}</span>
+                        <div class="d-flex align-items-center justify-content-between py-1 px-2 rounded broksum-mini-row">
+                            <div class="d-flex align-items-center gap-1.5">
+                                <span class="badge-broker-code badge-broker-sell" style="font-size: 0.64rem; padding: 1px 5px;">{{ s.code }}</span>
+                                <span class="badge-broker-type {% if s.type == 'F' %}type-foreign{% else %}type-domestic{% endif %}" style="font-size: 0.58rem;">{{ s.type }}</span>
                             </div>
-                            <span class="fw-bold text-danger" style="font-size: 0.68rem;">{{ s.val_str }}</span>
+                            <span class="fw-bold text-danger" style="font-size: 0.70rem;">{{ s.val_str }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -92,7 +92,7 @@
     </div>
     {% endfor %}
 
-    <button type="button" class="btn btn-outline-primary btn-sm w-100 font-mono d-flex align-items-center justify-content-center gap-2 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#brokerDetailModal">
+    <button type="button" class="btn btn-broksum-modal btn-sm w-100 d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#brokerDetailModal">
         <i class="bi bi-arrows-fullscreen"></i>
         <span>Lihat Broker Summary Lengkap</span>
     </button>
@@ -198,7 +198,7 @@
                                     Total: {{ pdata.tot_buyer_val_str }}
                                 </div>
                             </div>
-                            <div class="table-responsive border border-color rounded-bottom" style="background: var(--bg-card);">
+                            <div class="table-responsive border border-color rounded-bottom">
                                 <table class="table broksum-table align-middle mb-0 font-mono" style="font-size: 0.80rem;">
                                     <thead>
                                         <tr>
@@ -240,7 +240,7 @@
                                     Total: {{ pdata.tot_seller_val_str }}
                                 </div>
                             </div>
-                            <div class="table-responsive border border-color rounded-bottom" style="background: var(--bg-card);">
+                            <div class="table-responsive border border-color rounded-bottom">
                                 <table class="table broksum-table align-middle mb-0 font-mono" style="font-size: 0.80rem;">
                                     <thead>
                                         <tr>
