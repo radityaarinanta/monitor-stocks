@@ -1,11 +1,8 @@
-<!-- BROKER SUMMARY & SMART MONEY FLOW MODULE (MULTI-TIMEFRAME) -->
 <div class="enterprise-card mb-4">
-    <!-- Header: Title & Timeframe Selector -->
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom border-color">
         <span class="section-title">
-            ESTIMASI BROKER SUMMARY & FLOW
+            ESTIMASI BROKER SUMMARY & BANDARMOLOGI
         </span>
-        <!-- Timeframe Buttons: 1D, 5D, 20D -->
         <div class="d-flex align-items-center gap-1">
             <button type="button" class="chart-zoom-btn active font-mono" id="btn-broksum-1D" onclick="switchBroksum('1D', this)">1D</button>
             <button type="button" class="chart-zoom-btn font-mono" id="btn-broksum-5D" onclick="switchBroksum('5D', this)">5D</button>
@@ -13,168 +10,158 @@
         </div>
     </div>
 
-    <!-- PANE 1D (1 HARI) -->
-    <div id="broksum-pane-1D" class="broksum-pane">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="font-mono text-theme-muted small fw-semibold" style="font-size: 0.72rem;">RENTANG: 1 HARI (SESI TERAKHIR)</span>
-            <span class="badge-market-bias {{ broker_summary['1D'].badge_class }}">{{ broker_summary['1D'].status }}</span>
+    {% for period, pdata in [('1D', broker_summary['1D']), ('5D', broker_summary['5D']), ('20D', broker_summary['20D'])] %}
+    <div id="broksum-pane-{{ period }}" class="broksum-pane {% if period != '1D' %}d-none{% endif %}">
+        <div class="broksum-summary-box mb-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2 pb-2 border-bottom border-color">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="font-mono text-theme-muted small fw-bold" style="font-size: 0.72rem; text-transform: uppercase;">
+                        STATUS FLOW ({{ period }}):
+                    </span>
+                    <span class="badge-market-bias {{ pdata.badge_class }}">{{ pdata.status }}</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 font-mono flex-wrap" style="font-size: 0.74rem;">
+                    <span class="text-theme-muted">Modal Bandar (Avg):</span>
+                    <span class="fw-bold text-theme-primary">{{ pdata.bandar_avg_str }}</span>
+                    <span class="badge {% if pdata.is_above_bandar %}bg-success-subtle text-success border border-success border-opacity-25{% else %}bg-danger-subtle text-danger border border-danger border-opacity-25{% endif %} px-1.5 py-0.5">
+                        {{ pdata.price_dist_str }} vs Modal
+                    </span>
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-3 g-2 font-mono" style="font-size: 0.74rem;">
+                <div class="col">
+                    <div class="concentration-card">
+                        <div class="text-theme-muted small">Top 1 Concentration</div>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <span class="fw-bold text-theme-primary">{{ pdata.top1_pct }}%</span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 0.65rem;">{{ pdata.top1_status }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="concentration-card">
+                        <div class="text-theme-muted small">Top 3 Concentration</div>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <span class="fw-bold text-theme-primary">{{ pdata.top3_pct }}%</span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 0.65rem;">{{ pdata.top3_status }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="concentration-card">
+                        <div class="text-theme-muted small">Top 5 Concentration</div>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <span class="fw-bold text-theme-primary">{{ pdata.top5_pct }}%</span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 0.65rem;">{{ pdata.top5_status }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Concentration Ratio Bar -->
         <div class="mb-3">
             <div class="d-flex justify-content-between align-items-center font-mono small mb-1" style="font-size: 0.74rem;">
-                <span class="text-success fw-bold">BUYER: {{ broker_summary['1D'].buyer_pct }}%</span>
-                <span class="text-theme-muted">KONSENTRASI FLOW</span>
-                <span class="text-danger fw-bold">SELLER: {{ broker_summary['1D'].seller_pct }}%</span>
+                <span class="text-success fw-bold"><i class="bi bi-arrow-up-circle me-1"></i>BUY POWER: {{ pdata.buyer_pct }}% ({{ pdata.tot_buyer_val_str }})</span>
+                <span class="text-theme-muted">KONSENTRASI VOLUME</span>
+                <span class="text-danger fw-bold"><i class="bi bi-arrow-down-circle me-1"></i>SELL POWER: {{ pdata.seller_pct }}% ({{ pdata.tot_seller_val_str }})</span>
             </div>
             <div class="progress" style="height: 6px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden;">
-                <div class="progress-bar bg-success" role="progressbar" style="width: {{ broker_summary['1D'].buyer_pct }}%;"></div>
-                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ broker_summary['1D'].seller_pct }}%;"></div>
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ pdata.buyer_pct }}%;"></div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ pdata.seller_pct }}%;"></div>
             </div>
         </div>
 
-        <!-- Top 5 Buyers vs Top 5 Sellers Table -->
-        <div class="row g-2 font-mono" style="font-size: 0.78rem;">
-            <div class="col-6">
-                <div class="p-1.5 rounded-1 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 text-center fw-bold text-success" style="font-size: 0.70rem; letter-spacing: 0.05em;">
-                    TOP NET BUYERS
-                </div>
-                <div class="d-flex flex-column gap-1.5">
-                    {% for b in broker_summary['1D'].top_buyers %}
-                    <div class="d-flex justify-content-between align-items-center py-1 px-2 rounded border border-color" style="background: var(--bg-card-subtle);">
-                        <span class="badge bg-success text-white font-mono px-1.5 py-0.5 rounded-1 fw-bold" style="font-size: 0.70rem;">{{ b.code }}</span>
-                        <span class="text-theme-primary fw-bold" style="font-size: 0.76rem;">{{ b.lots }}</span>
-                        <span class="text-theme-muted small" style="font-size: 0.68rem;">{{ b.avg }}</span>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <div class="broksum-table-header buyer-header d-flex justify-content-between align-items-center py-1.5 px-2.5 rounded-top font-mono fw-bold">
+                    <div class="d-flex align-items-center gap-1.5 text-success" style="font-size: 0.72rem;">
+                        <i class="bi bi-shield-check"></i>
+                        <span>TOP NET BUYERS</span>
                     </div>
-                    {% endfor %}
+                    <div class="text-success small" style="font-size: 0.70rem;">
+                        Total: {{ pdata.tot_buyer_val_str }}
+                    </div>
+                </div>
+                <div class="table-responsive border border-color rounded-bottom" style="background: var(--bg-card);">
+                    <table class="table broksum-table align-middle mb-0 font-mono" style="font-size: 0.76rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 44%;">BROKER</th>
+                                <th class="text-end" style="width: 18%;">LOT</th>
+                                <th class="text-end" style="width: 18%;">AVG</th>
+                                <th class="text-end" style="width: 20%;">VALUE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in pdata.top_buyers %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-1.5">
+                                        <span class="badge-broker-code badge-broker-buy">{{ b.code }}</span>
+                                        <span class="badge-broker-type {% if b.type == 'F' %}type-foreign{% else %}type-domestic{% endif %}">
+                                            {{ b.type }}
+                                        </span>
+                                        <span class="text-theme-muted small text-truncate d-none d-sm-inline" style="max-width: 110px; font-size: 0.68rem;" title="{{ b.name }}">{{ b.name }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-end fw-semibold text-theme-primary">{{ b.lots }}</td>
+                                <td class="text-end text-theme-muted">{{ b.avg }}</td>
+                                <td class="text-end fw-bold text-success">{{ b.val_str }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="p-1.5 rounded-1 mb-2 bg-danger bg-opacity-10 border border-danger border-opacity-25 text-center fw-bold text-danger" style="font-size: 0.70rem; letter-spacing: 0.05em;">
-                    TOP NET SELLERS
-                </div>
-                <div class="d-flex flex-column gap-1.5">
-                    {% for s in broker_summary['1D'].top_sellers %}
-                    <div class="d-flex justify-content-between align-items-center py-1 px-2 rounded border border-color" style="background: var(--bg-card-subtle);">
-                        <span class="badge bg-danger text-white font-mono px-1.5 py-0.5 rounded-1 fw-bold" style="font-size: 0.70rem;">{{ s.code }}</span>
-                        <span class="text-theme-primary fw-bold" style="font-size: 0.76rem;">{{ s.lots }}</span>
-                        <span class="text-theme-muted small" style="font-size: 0.68rem;">{{ s.avg }}</span>
+
+            <div class="col-12 col-md-6">
+                <div class="broksum-table-header seller-header d-flex justify-content-between align-items-center py-1.5 px-2.5 rounded-top font-mono fw-bold">
+                    <div class="d-flex align-items-center gap-1.5 text-danger" style="font-size: 0.72rem;">
+                        <i class="bi bi-shield-x"></i>
+                        <span>TOP NET SELLERS</span>
                     </div>
-                    {% endfor %}
+                    <div class="text-danger small" style="font-size: 0.70rem;">
+                        Total: {{ pdata.tot_seller_val_str }}
+                    </div>
+                </div>
+                <div class="table-responsive border border-color rounded-bottom" style="background: var(--bg-card);">
+                    <table class="table broksum-table align-middle mb-0 font-mono" style="font-size: 0.76rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 44%;">BROKER</th>
+                                <th class="text-end" style="width: 18%;">LOT</th>
+                                <th class="text-end" style="width: 18%;">AVG</th>
+                                <th class="text-end" style="width: 20%;">VALUE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in pdata.top_sellers %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-1.5">
+                                        <span class="badge-broker-code badge-broker-sell">{{ s.code }}</span>
+                                        <span class="badge-broker-type {% if s.type == 'F' %}type-foreign{% else %}type-domestic{% endif %}">
+                                            {{ s.type }}
+                                        </span>
+                                        <span class="text-theme-muted small text-truncate d-none d-sm-inline" style="max-width: 110px; font-size: 0.68rem;" title="{{ s.name }}">{{ s.name }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-end fw-semibold text-theme-primary">{{ s.lots }}</td>
+                                <td class="text-end text-theme-muted">{{ s.avg }}</td>
+                                <td class="text-end fw-bold text-danger">{{ s.val_str }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+    {% endfor %}
 
-    <!-- PANE 5D (1 MINGGU) -->
-    <div id="broksum-pane-5D" class="broksum-pane d-none">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="font-mono text-theme-muted small fw-semibold" style="font-size: 0.72rem;">RENTANG: 1 MINGGU (5 HARI BURSA)</span>
-            <span class="badge-market-bias {{ broker_summary['5D'].badge_class }}">{{ broker_summary['5D'].status }}</span>
-        </div>
-
-        <!-- Concentration Ratio Bar -->
-        <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center font-mono small mb-1" style="font-size: 0.74rem;">
-                <span class="text-success fw-bold">BUYER: {{ broker_summary['5D'].buyer_pct }}%</span>
-                <span class="text-theme-muted">KONSENTRASI FLOW</span>
-                <span class="text-danger fw-bold">SELLER: {{ broker_summary['5D'].seller_pct }}%</span>
-            </div>
-            <div class="progress" style="height: 6px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden;">
-                <div class="progress-bar bg-success" role="progressbar" style="width: {{ broker_summary['5D'].buyer_pct }}%;"></div>
-                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ broker_summary['5D'].seller_pct }}%;"></div>
-            </div>
-        </div>
-
-        <!-- Top 5 Buyers vs Top 5 Sellers Table -->
-        <div class="row g-2 font-mono" style="font-size: 0.78rem;">
-            <div class="col-6">
-                <div class="p-1.5 rounded-1 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 text-center fw-bold text-success" style="font-size: 0.70rem; letter-spacing: 0.05em;">
-                    TOP NET BUYERS (5D)
-                </div>
-                <div class="d-flex flex-column gap-1.5">
-                    {% for b in broker_summary['5D'].top_buyers %}
-                    <div class="d-flex justify-content-between align-items-center py-1 px-2 rounded border border-color" style="background: var(--bg-card-subtle);">
-                        <span class="badge bg-success text-white font-mono px-1.5 py-0.5 rounded-1 fw-bold" style="font-size: 0.70rem;">{{ b.code }}</span>
-                        <span class="text-theme-primary fw-bold" style="font-size: 0.76rem;">{{ b.lots }}</span>
-                        <span class="text-theme-muted small" style="font-size: 0.68rem;">{{ b.avg }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="p-1.5 rounded-1 mb-2 bg-danger bg-opacity-10 border border-danger border-opacity-25 text-center fw-bold text-danger" style="font-size: 0.70rem; letter-spacing: 0.05em;">
-                    TOP NET SELLERS (5D)
-                </div>
-                <div class="d-flex flex-column gap-1.5">
-                    {% for s in broker_summary['5D'].top_sellers %}
-                    <div class="d-flex justify-content-between align-items-center py-1 px-2 rounded border border-color" style="background: var(--bg-card-subtle);">
-                        <span class="badge bg-danger text-white font-mono px-1.5 py-0.5 rounded-1 fw-bold" style="font-size: 0.70rem;">{{ s.code }}</span>
-                        <span class="text-theme-primary fw-bold" style="font-size: 0.76rem;">{{ s.lots }}</span>
-                        <span class="text-theme-muted small" style="font-size: 0.68rem;">{{ s.avg }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PANE 20D (1 BULAN) -->
-    <div id="broksum-pane-20D" class="broksum-pane d-none">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="font-mono text-theme-muted small fw-semibold" style="font-size: 0.72rem;">RENTANG: 1 BULAN (20 HARI BURSA)</span>
-            <span class="badge-market-bias {{ broker_summary['20D'].badge_class }}">{{ broker_summary['20D'].status }}</span>
-        </div>
-
-        <!-- Concentration Ratio Bar -->
-        <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center font-mono small mb-1" style="font-size: 0.74rem;">
-                <span class="text-success fw-bold">BUYER: {{ broker_summary['20D'].buyer_pct }}%</span>
-                <span class="text-theme-muted">KONSENTRASI FLOW</span>
-                <span class="text-danger fw-bold">SELLER: {{ broker_summary['20D'].seller_pct }}%</span>
-            </div>
-            <div class="progress" style="height: 6px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden;">
-                <div class="progress-bar bg-success" role="progressbar" style="width: {{ broker_summary['20D'].buyer_pct }}%;"></div>
-                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ broker_summary['20D'].seller_pct }}%;"></div>
-            </div>
-        </div>
-
-        <!-- Top 5 Buyers vs Top 5 Sellers Table -->
-        <div class="row g-2 font-mono" style="font-size: 0.78rem;">
-            <div class="col-6">
-                <div class="p-1.5 rounded-1 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 text-center fw-bold text-success" style="font-size: 0.70rem; letter-spacing: 0.05em;">
-                    TOP NET BUYERS (20D)
-                </div>
-                <div class="d-flex flex-column gap-1.5">
-                    {% for b in broker_summary['20D'].top_buyers %}
-                    <div class="d-flex justify-content-between align-items-center py-1 px-2 rounded border border-color" style="background: var(--bg-card-subtle);">
-                        <span class="badge bg-success text-white font-mono px-1.5 py-0.5 rounded-1 fw-bold" style="font-size: 0.70rem;">{{ b.code }}</span>
-                        <span class="text-theme-primary fw-bold" style="font-size: 0.76rem;">{{ b.lots }}</span>
-                        <span class="text-theme-muted small" style="font-size: 0.68rem;">{{ b.avg }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="p-1.5 rounded-1 mb-2 bg-danger bg-opacity-10 border border-danger border-opacity-25 text-center fw-bold text-danger" style="font-size: 0.70rem; letter-spacing: 0.05em;">
-                    TOP NET SELLERS (20D)
-                </div>
-                <div class="d-flex flex-column gap-1.5">
-                    {% for s in broker_summary['20D'].top_sellers %}
-                    <div class="d-flex justify-content-between align-items-center py-1 px-2 rounded border border-color" style="background: var(--bg-card-subtle);">
-                        <span class="badge bg-danger text-white font-mono px-1.5 py-0.5 rounded-1 fw-bold" style="font-size: 0.70rem;">{{ s.code }}</span>
-                        <span class="text-theme-primary fw-bold" style="font-size: 0.76rem;">{{ s.lots }}</span>
-                        <span class="text-theme-muted small" style="font-size: 0.68rem;">{{ s.avg }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footnote Info & Source Disclosure -->
     <div class="mt-3 pt-2 border-top border-color font-mono text-theme-muted" style="font-size: 0.68rem; line-height: 1.5;">
-        <span class="text-theme-primary fw-bold">[SUMBER & METODOLOGI]:</span> Data transaksi & volume bersumber dari <span class="text-theme-primary fw-semibold">Yahoo Finance (EOD)</span>. Modul ini menggunakan pemodelan kuantitatif <em>Volume Weighted Flow (VWAP & Price Action)</em> sebagai estimasi kekuatan akumulasi/distribusi pasar lintas rentang waktu.
+        <span class="text-theme-primary fw-bold">[SUMBER & METODOLOGI]:</span> Data transaksi & volume diolah berbasis kuantitatif <em>Volume Weighted Average Price (VWAP & Price Action)</em> untuk merekonstruksi estimasi konsentrasi akumulasi/distribusi bursa BEI secara otomatis.
     </div>
 </div>
 
