@@ -53,7 +53,7 @@ StockPulse Pro is an institutional-grade Decision Support System (DSS) and Quant
   - `ASYMMETRIC RISK (WAIT PULLBACK)`
 - **Segmented Level Micro-Cards**: 5 distinct, high-contrast metric cards displaying precise mathematical support and resistance levels.
 
-### 4. Advanced Broker Summary & Bandarmologi Engine (Stockbit Pro Style)
+### 4. Advanced Institutional Broker Summary & Bandarmologi Engine
 - **Multi-Timeframe Horizon Switching**: Seamless client-side switching between **1 Day (1D)**, **5 Days (5D)**, and **20 Days (20D)** trading horizons.
 - **Institutional Concentration Metrics**: Quantitative Top 1, Top 3, and Top 5 concentration percentage analysis categorized into 5 institutional flow states (`BIG ACCUMULATION`, `NORMAL ACCUMULATION`, `NEUTRAL`, `NORMAL DISTRIBUTION`, `BIG DISTRIBUTION`).
 - **Bandar Average Cost Engine (VWAP)**: Automated volume-weighted average price calculation of major accumulating market makers alongside real-time price deviation percentages (`+X.XX% vs Modal Bandar`).
@@ -140,7 +140,7 @@ monitor stocks/
 │       ├── screener_cache.json   # High-speed pre-computed market cache for 760+ stocks
 │       ├── market_data.py        # yfinance ingestion, ticker normalization, fundamentals, news, scanner
 │       ├── indicators.py         # Technical indicators, trend strength calculus, S/R pivot trade setup
-│       ├── bandarmologi.py       # Stockbit Pro broker summary, concentration engine & foreign flow
+│       ├── bandarmologi.py       # Multi-timeframe broker summary, concentration engine & foreign flow
 │       ├── chart_builder.py      # Plotly multi-panel Candlestick, MA20/MA50, and Volume charting
 │       └── dss_engine.py         # 3-Pillar DSS technical insight & dynamic portfolio decision engine
 ├── static/
