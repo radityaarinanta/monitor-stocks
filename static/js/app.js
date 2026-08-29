@@ -177,6 +177,8 @@ function resetChartZoom() {
     if (allBtn) allBtn.classList.add('active');
 }
 
+let loadingTimer = null;
+
 function showLoading(text) {
     const screen = document.getElementById('globalLoadingScreen');
     const bar = document.getElementById('topLoadingBar');
@@ -191,9 +193,17 @@ function showLoading(text) {
     if (screen) {
         screen.classList.add('active');
     }
+    if (loadingTimer) clearTimeout(loadingTimer);
+    loadingTimer = setTimeout(() => {
+        hideLoading();
+    }, 6000);
 }
 
 function hideLoading() {
+    if (loadingTimer) {
+        clearTimeout(loadingTimer);
+        loadingTimer = null;
+    }
     const screen = document.getElementById('globalLoadingScreen');
     const bar = document.getElementById('topLoadingBar');
     if (bar) {
@@ -205,15 +215,13 @@ function hideLoading() {
     }
 }
 
-window.addEventListener('pageshow', () => {
-    hideLoading();
-});
+hideLoading();
 
-window.addEventListener('load', () => {
-    hideLoading();
-});
+window.addEventListener('pageshow', hideLoading);
+window.addEventListener('load', hideLoading);
+window.addEventListener('popstate', hideLoading);
 
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
     initTheme();
     hideLoading();
     updateIDXMarketClock();
@@ -239,14 +247,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelectorAll('.quick-ticker-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            showLoading('MEMUAT DATA SAHAM...');
+        pill.addEventListener('click', (e) => {
+            if (e.button === 0 && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+                showLoading('MEMUAT DATA SAHAM...');
+            }
         });
     });
 
     document.querySelectorAll('.screener-btn-analisis').forEach(btn => {
-        btn.addEventListener('click', () => {
-            showLoading('MENYIAPKAN DASHBOARD...');
+        btn.addEventListener('click', (e) => {
+            if (e.button === 0 && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+                showLoading('MENYIAPKAN DASHBOARD...');
+            }
         });
     });
 
@@ -259,9 +271,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.enterprise-nav-tab').forEach(tab => {
         tab.addEventListener('click', (e) => {
-            if (!tab.classList.contains('active')) {
-                showLoading('MEMUAT HALAMAN...');
+            if (e.button === 0 && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+                if (!tab.classList.contains('active')) {
+                    showLoading('MEMUAT HALAMAN...');
+                }
             }
         });
     });
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}

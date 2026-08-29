@@ -346,7 +346,9 @@
     <div class="text-theme-muted small mb-3">Cobalah melonggarkan filter atau pilih preset strategi yang lain.</div>
     <button type="button" class="btn btn-sm btn-primary font-mono" onclick="resetAllFilters()">Tampilkan Semua Saham</button>
 </div>
+{% endblock %}
 
+{% block extra_scripts %}
 <script>
 let currentPreset = 'all';
 let currentMode = 'preset';
@@ -357,10 +359,16 @@ let matchedRows = [];
 let currentSortColumn = null;
 let currentSortDirection = 'asc';
 
-document.addEventListener('DOMContentLoaded', () => {
+function initScreener() {
     allTableRows = Array.from(document.querySelectorAll('.screener-row'));
     applyPresetFilter('all');
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScreener);
+} else {
+    initScreener();
+}
 
 function switchScreenerMode(mode) {
     currentMode = mode;
