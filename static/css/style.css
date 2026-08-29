@@ -1421,11 +1421,18 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+.broksum-compact-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+}
+
 .broksum-summary-box {
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 12px 14px;
+    padding: 14px 16px;
 }
 
 .concentration-card {
