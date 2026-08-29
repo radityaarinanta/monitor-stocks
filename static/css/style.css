@@ -1171,6 +1171,47 @@ body {
     background-color: var(--bg-card-hover) !important;
 }
 
+.btn-export-csv {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    height: 33px;
+    box-sizing: border-box;
+}
+
+.btn-export-csv:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+}
+
+.sortable-th {
+    user-select: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sortable-th:hover {
+    color: var(--primary) !important;
+    background: rgba(42, 131, 95, 0.08);
+}
+
+.sort-icon {
+    font-size: 0.74rem;
+    display: inline-flex;
+    align-items: center;
+}
+
 .screener-pagination-bar {
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-color);

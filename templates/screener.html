@@ -155,9 +155,16 @@
         <span class="text-theme-muted">dari {{ stocks|length }} Saham Terpantau</span>
     </div>
 
-    <div class="screener-search-wrap">
-        <i class="bi bi-search search-icon"></i>
-        <input type="text" id="screenerSearchInput" class="form-control form-control-sm" placeholder="Cari kode atau nama emiten..." onkeyup="searchByTicker(this.value)">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button type="button" class="btn-export-csv" onclick="exportScreenerToCSV()" title="Unduh Hasil Penyaringan ke File CSV / Excel">
+            <i class="bi bi-download"></i>
+            <span>Export CSV</span>
+        </button>
+
+        <div class="screener-search-wrap">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="screenerSearchInput" class="form-control form-control-sm" placeholder="Cari kode atau nama emiten..." onkeyup="searchByTicker(this.value)">
+        </div>
     </div>
 </div>
 
@@ -166,14 +173,39 @@
     <table class="table screener-table align-middle mb-0 font-mono" style="font-size: 0.82rem;">
         <thead>
             <tr>
-                <th style="width: 24%;">EMITEN / SEKTOR</th>
-                <th class="text-end" style="width: 12%;">HARGA</th>
-                <th class="text-end" style="width: 10%;">PERUBAHAN</th>
-                <th class="text-center" style="width: 10%;">RSI (14)</th>
+                <th class="sortable-th" onclick="sortTable('code')" style="width: 24%; cursor: pointer;" title="Klik untuk mengurutkan Emiten">
+                    <div class="d-flex align-items-center gap-1">
+                        <span>EMITEN / SEKTOR</span>
+                        <span id="sortIcon-code" class="sort-icon"><i class="bi bi-arrow-down-up opacity-50"></i></span>
+                    </div>
+                </th>
+                <th class="sortable-th text-end" onclick="sortTable('price')" style="width: 12%; cursor: pointer;" title="Klik untuk mengurutkan Harga">
+                    <div class="d-flex align-items-center justify-content-end gap-1">
+                        <span>HARGA</span>
+                        <span id="sortIcon-price" class="sort-icon"><i class="bi bi-arrow-down-up opacity-50"></i></span>
+                    </div>
+                </th>
+                <th class="sortable-th text-end" onclick="sortTable('change')" style="width: 11%; cursor: pointer;" title="Klik untuk mengurutkan Perubahan %">
+                    <div class="d-flex align-items-center justify-content-end gap-1">
+                        <span>PERUBAHAN</span>
+                        <span id="sortIcon-change" class="sort-icon"><i class="bi bi-arrow-down-up opacity-50"></i></span>
+                    </div>
+                </th>
+                <th class="sortable-th text-center" onclick="sortTable('rsi')" style="width: 10%; cursor: pointer;" title="Klik untuk mengurutkan RSI">
+                    <div class="d-flex align-items-center justify-content-center gap-1">
+                        <span>RSI (14)</span>
+                        <span id="sortIcon-rsi" class="sort-icon"><i class="bi bi-arrow-down-up opacity-50"></i></span>
+                    </div>
+                </th>
                 <th class="text-center" style="width: 12%;">TREN (MA20/50)</th>
                 <th class="text-center" style="width: 11%;">BANDARMOLOGI</th>
-                <th class="text-center" style="width: 11%;">ARUS ASING (10D)</th>
-                <th class="text-end" style="width: 10%;">AKSI</th>
+                <th class="sortable-th text-center" onclick="sortTable('foreign')" style="width: 11%; cursor: pointer;" title="Klik untuk mengurutkan Arus Asing">
+                    <div class="d-flex align-items-center justify-content-center gap-1">
+                        <span>ARUS ASING (10D)</span>
+                        <span id="sortIcon-foreign" class="sort-icon"><i class="bi bi-arrow-down-up opacity-50"></i></span>
+                    </div>
+                </th>
+                <th class="text-end" style="width: 9%;">AKSI</th>
             </tr>
         </thead>
         <tbody id="screenerTableBody">
@@ -182,12 +214,15 @@
                 data-code="{{ s.code }}"
                 data-name="{{ s.name|lower }}"
                 data-sector="{{ s.sector }}"
+                data-price="{{ s.price }}"
+                data-change="{{ s.change_pct }}"
                 data-above-ma20="{{ s.above_ma20 }}"
                 data-above-ma50="{{ s.above_ma50 }}"
                 data-golden-cross="{{ s.is_golden_cross }}"
                 data-rsi="{{ s.rsi }}"
                 data-broksum="{{ s.broksum_tag }}"
                 data-foreign="{{ s.foreign_tag }}"
+                data-foreign-val="{{ s.foreign_10d_m }}"
                 data-presets="{{ s.preset_tags|join(',') }}">
                 <td>
                     <div class="d-flex align-items-center gap-2">
@@ -296,6 +331,8 @@ let currentPage = 1;
 let pageSize = 25;
 let allTableRows = [];
 let matchedRows = [];
+let currentSortColumn = null;
+let currentSortDirection = 'asc';
 
 document.addEventListener('DOMContentLoaded', () => {
     allTableRows = Array.from(document.querySelectorAll('.screener-row'));
@@ -346,6 +383,7 @@ function applyPresetFilter(presetKey, btnElem) {
         }
     });
 
+    applyCurrentSort();
     currentPage = 1;
     renderCurrentPage();
 }
@@ -391,8 +429,127 @@ function runCustomFilters() {
         }
     });
 
+    applyCurrentSort();
     currentPage = 1;
     renderCurrentPage();
+}
+
+function sortTable(columnKey) {
+    if (currentSortColumn === columnKey) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSortColumn = columnKey;
+        if (columnKey === 'change' || columnKey === 'price' || columnKey === 'foreign') {
+            currentSortDirection = 'desc';
+        } else {
+            currentSortDirection = 'asc';
+        }
+    }
+
+    updateSortIcons();
+    applyCurrentSort();
+    currentPage = 1;
+    renderCurrentPage();
+}
+
+function applyCurrentSort() {
+    if (!currentSortColumn) return;
+    matchedRows.sort((a, b) => {
+        let valA, valB;
+        if (currentSortColumn === 'code') {
+            valA = (a.getAttribute('data-code') || '').toUpperCase();
+            valB = (b.getAttribute('data-code') || '').toUpperCase();
+            return currentSortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        } else if (currentSortColumn === 'price') {
+            valA = parseFloat(a.getAttribute('data-price')) || 0;
+            valB = parseFloat(b.getAttribute('data-price')) || 0;
+        } else if (currentSortColumn === 'change') {
+            valA = parseFloat(a.getAttribute('data-change')) || 0;
+            valB = parseFloat(b.getAttribute('data-change')) || 0;
+        } else if (currentSortColumn === 'rsi') {
+            valA = parseFloat(a.getAttribute('data-rsi')) || 0;
+            valB = parseFloat(b.getAttribute('data-rsi')) || 0;
+        } else if (currentSortColumn === 'foreign') {
+            valA = parseFloat(a.getAttribute('data-foreign-val')) || 0;
+            valB = parseFloat(b.getAttribute('data-foreign-val')) || 0;
+        }
+        return currentSortDirection === 'asc' ? (valA - valB) : (valB - valA);
+    });
+
+    const tbody = document.getElementById('screenerTableBody');
+    if (tbody) {
+        matchedRows.forEach(row => tbody.appendChild(row));
+    }
+}
+
+function updateSortIcons() {
+    ['code', 'price', 'change', 'rsi', 'foreign'].forEach(col => {
+        const iconEl = document.getElementById(`sortIcon-${col}`);
+        if (!iconEl) return;
+        if (col === currentSortColumn) {
+            if (col === 'code') {
+                iconEl.innerHTML = currentSortDirection === 'asc' 
+                    ? '<i class="bi bi-sort-alpha-down text-primary fw-bold"></i>' 
+                    : '<i class="bi bi-sort-alpha-up-alt text-primary fw-bold"></i>';
+            } else {
+                iconEl.innerHTML = currentSortDirection === 'asc' 
+                    ? '<i class="bi bi-sort-numeric-down text-primary fw-bold"></i>' 
+                    : '<i class="bi bi-sort-numeric-up-alt text-primary fw-bold"></i>';
+            }
+        } else {
+            iconEl.innerHTML = '<i class="bi bi-arrow-down-up opacity-40"></i>';
+        }
+    });
+}
+
+function exportScreenerToCSV() {
+    if (!matchedRows || matchedRows.length === 0) {
+        alert('Tidak ada data saham untuk diexport.');
+        return;
+    }
+
+    const headers = ['Kode', 'Nama Perusahaan', 'Sektor', 'Harga (IDR)', 'Perubahan (%)', 'RSI (14)', 'Status Tren', 'Bandarmologi', 'Net Foreign Flow 10D (Miliar IDR)'];
+    const rows = [headers];
+
+    matchedRows.forEach(row => {
+        const code = row.getAttribute('data-code') || '';
+        const nameElem = row.querySelector('.text-theme-primary');
+        const name = nameElem ? nameElem.textContent.trim() : '';
+        const sector = row.getAttribute('data-sector') || '';
+        const price = row.getAttribute('data-price') || '0';
+        const change = row.getAttribute('data-change') || '0';
+        const rsi = row.getAttribute('data-rsi') || '50';
+        const above20 = row.getAttribute('data-above-ma20') === 'True';
+        const above50 = row.getAttribute('data-above-ma50') === 'True';
+        const trend = (above20 && above50) ? 'Bullish (MA20 & MA50 UP)' : (above20 ? 'Rebound (> MA20)' : 'Downtrend (< MA20)');
+        const broksum = row.getAttribute('data-broksum') || '';
+        const foreign = row.getAttribute('data-foreign-val') || '0';
+
+        rows.push([
+            `"${code}"`,
+            `"${name.replace(/"/g, '""')}"`,
+            `"${sector.replace(/"/g, '""')}"`,
+            price,
+            change,
+            rsi,
+            `"${trend}"`,
+            `"${broksum.toUpperCase()}"`,
+            foreign
+        ]);
+    });
+
+    const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    link.setAttribute('href', url);
+    link.setAttribute('download', `IHSG_Stock_Screener_${dateStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 }
 
 function renderCurrentPage() {
@@ -495,11 +652,15 @@ function resetCustomFilters() {
     document.getElementById('filterBroksum').value = 'all';
     document.getElementById('filterForeign').value = 'all';
     document.getElementById('screenerSearchInput').value = '';
+    currentSortColumn = null;
+    updateSortIcons();
     runCustomFilters();
 }
 
 function resetAllFilters() {
     document.getElementById('screenerSearchInput').value = '';
+    currentSortColumn = null;
+    updateSortIcons();
     if (currentMode === 'preset') {
         const allBtn = document.querySelector('#containerPresetMode .strategy-chip');
         applyPresetFilter('all', allBtn);
