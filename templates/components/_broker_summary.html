@@ -54,38 +54,22 @@
                 </div>
             </div>
 
-            <div class="row g-2 font-mono" style="font-size: 0.72rem;">
-                <div class="col-6">
-                    <div class="text-success fw-bold small mb-1 d-flex align-items-center gap-1" style="font-size: 0.68rem;">
-                        <i class="bi bi-arrow-up-circle-fill"></i> TOP BUYERS (3)
-                    </div>
-                    <div class="d-flex flex-column gap-1">
-                        {% for b in pdata.top_buyers[:3] %}
-                        <div class="d-flex align-items-center justify-content-between py-1 px-2 rounded broksum-mini-row">
-                            <div class="d-flex align-items-center gap-1.5">
-                                <span class="badge-broker-code badge-broker-buy" style="font-size: 0.64rem; padding: 1px 5px;">{{ b.code }}</span>
-                                <span class="badge-broker-type {% if b.type == 'F' %}type-foreign{% else %}type-domestic{% endif %}" style="font-size: 0.58rem;">{{ b.type }}</span>
-                            </div>
-                            <span class="fw-bold text-success" style="font-size: 0.70rem;">{{ b.val_str }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
+            <div class="p-2 rounded border border-color font-mono" style="background: var(--bg-card); font-size: 0.73rem;">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-success fw-bold d-flex align-items-center gap-1">
+                        <i class="bi bi-arrow-up-circle-fill"></i> Bandar Buy (Top 3):
+                    </span>
+                    <span class="text-theme-primary fw-bold">
+                        {{ pdata.top_buyers[:3]|map(attribute='code')|join(' • ') }}
+                    </span>
                 </div>
-                <div class="col-6">
-                    <div class="text-danger fw-bold small mb-1 d-flex align-items-center gap-1" style="font-size: 0.68rem;">
-                        <i class="bi bi-arrow-down-circle-fill"></i> TOP SELLERS (3)
-                    </div>
-                    <div class="d-flex flex-column gap-1">
-                        {% for s in pdata.top_sellers[:3] %}
-                        <div class="d-flex align-items-center justify-content-between py-1 px-2 rounded broksum-mini-row">
-                            <div class="d-flex align-items-center gap-1.5">
-                                <span class="badge-broker-code badge-broker-sell" style="font-size: 0.64rem; padding: 1px 5px;">{{ s.code }}</span>
-                                <span class="badge-broker-type {% if s.type == 'F' %}type-foreign{% else %}type-domestic{% endif %}" style="font-size: 0.58rem;">{{ s.type }}</span>
-                            </div>
-                            <span class="fw-bold text-danger" style="font-size: 0.70rem;">{{ s.val_str }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-danger fw-bold d-flex align-items-center gap-1">
+                        <i class="bi bi-arrow-down-circle-fill"></i> Bandar Sell (Top 3):
+                    </span>
+                    <span class="text-theme-primary fw-bold">
+                        {{ pdata.top_sellers[:3]|map(attribute='code')|join(' • ') }}
+                    </span>
                 </div>
             </div>
         </div>
