@@ -4,11 +4,12 @@
 [![Framework](https://img.shields.io/badge/framework-Flask-black.svg)](https://flask.palletsprojects.com/)
 [![Visualization](https://img.shields.io/badge/charts-Plotly-3F4F75.svg)](https://plotly.com/)
 [![Market Data](https://img.shields.io/badge/data-yfinance-green.svg)](https://github.com/ranaroussi/yfinance)
-[![UI Theme](https://img.shields.io/badge/Theme-Emerald%20%26%20Sage%20Wealth-2A835F.svg)](#deep-emerald--sage-wealth-design-system)
+[![UI Theme](https://img.shields.io/badge/Theme-Emerald%20%26%20Sage%20Wealth-2A835F.svg)](#11-deep-emerald--sage-wealth-design-system)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Deployment](https://img.shields.io/badge/deployment-Vercel%20Serverless-000000.svg)](https://vercel.com/)
+[![Portfolio Suite](https://img.shields.io/badge/suite-Portfolio%20Calculator-2A835F.svg)](https://stock-exchange-calculator.vercel.app/)
 
-StockPulse Pro is an institutional-grade Decision Support System (DSS) and Quantitative Stock Screener designed for equity market participants, quantitative analysts, portfolio managers, and private wealth investors. It integrates multi-indicator technical analytics, fundamental scoreboard metrics, quantitative trend scoring, multi-timeframe broker summary (volume concentration), net foreign flow tracking, risk-to-reward trade setup planning, portfolio return calculation, and an automated full-universe screener covering 760+ equities listed on the Indonesia Stock Exchange (IDX / IHSG) alongside global market instruments.
+StockPulse Pro is an institutional-grade Decision Support System (DSS) and Quantitative Stock Screener designed for equity market participants, quantitative analysts, portfolio managers, and private wealth investors. It seamlessly integrates multi-indicator technical analytics, fundamental scoreboard metrics, quantitative trend scoring, multi-timeframe broker summary (volume concentration & bandarmologi), net foreign flow tracking, risk-to-reward trade setup planning, portfolio return calculation, an automated full-universe screener covering 764 active equities on the Indonesia Stock Exchange (IDX / IHSG), dual-engine institutional report exporting (Vector PDF & Quantitative CSV), and full interoperability with the [StockPulse Portfolio & Dividend Calculator Suite](https://stock-exchange-calculator.vercel.app/).
 
 ---
 
@@ -30,6 +31,9 @@ StockPulse Pro is an institutional-grade Decision Support System (DSS) and Quant
     - *RSI Momentum Ranges* (Oversold, Neutral, Overbought)
     - *Volume Flow States* (Accumulation vs. Distribution)
     - *Foreign Flow Directions* (Net Inflow vs. Net Outflow)
+- **Institutional Dual-Engine Export Suite**:
+  - **Native Vector PDF Export**: Generates high-resolution A4 landscape executive reports featuring corporate Pine Teal headers, dynamic strategy summary ribbons, color-coded quantitative metrics, and automatic multi-page pagination.
+  - **Wall Street Quantitative CSV Export**: Produces machine-readable financial datasets with `#` metadata audit headers and 13 comprehensive technical/fundamental dimensions for quantitative analysis.
 - **Instant Client-Side Search**: Sub-millisecond filtering by ticker code or corporate name with instantaneous DOM updates.
 - **Smart Table Pagination**: Configurable rows per page (`15`, `25`, `50`, `100`, or `All`) with automatic page calculation and smooth jump-to-top scrolling.
 - **Pre-computed Disk Caching**: High-speed JSON cache (`screener_cache.json`) for 0.01s initial page loads with on-demand background market rescan (`/api/screener-data?refresh=1`).
@@ -49,11 +53,14 @@ StockPulse Pro is an institutional-grade Decision Support System (DSS) and Quant
   - `ASYMMETRIC RISK (WAIT PULLBACK)`
 - **Segmented Level Micro-Cards**: 5 distinct, high-contrast metric cards displaying precise mathematical support and resistance levels.
 
-### 4. Multi-Timeframe Broker Summary (Institutional Flow)
-- **Interactive Timeframe Switching**: Instant client-side switching between **1 Day (1D)**, **5 Days (5D)**, and **20 Days (20D)** trading horizons.
-- **Buyer vs. Seller Concentration Bar**: Dynamic visual power ratio bar comparing Net Buying Power vs. Net Selling Power.
-- **Top 5 Net Buyers & Top 5 Net Sellers Table**: Granular volume-weighted broker breakdown showing broker codes, accumulated volume (lot), average execution price, and total turnover value (IDR).
-- **Accumulation/Distribution Status**: Categorized institutional flow states (`BIG ACCUMULATION`, `NORMAL ACCUMULATION`, `NEUTRAL`, `NORMAL DISTRIBUTION`, `BIG DISTRIBUTION`).
+### 4. Advanced Broker Summary & Bandarmologi Engine (Stockbit Pro Style)
+- **Multi-Timeframe Horizon Switching**: Seamless client-side switching between **1 Day (1D)**, **5 Days (5D)**, and **20 Days (20D)** trading horizons.
+- **Institutional Concentration Metrics**: Quantitative Top 1, Top 3, and Top 5 concentration percentage analysis categorized into 5 institutional flow states (`BIG ACCUMULATION`, `NORMAL ACCUMULATION`, `NEUTRAL`, `NORMAL DISTRIBUTION`, `BIG DISTRIBUTION`).
+- **Bandar Average Cost Engine (VWAP)**: Automated volume-weighted average price calculation of major accumulating market makers alongside real-time price deviation percentages (`+X.XX% vs Modal Bandar`).
+- **Investor Type Categorization**: Automatic segmentation of foreign institutional capital (`[F]` - *J.P. Morgan, UBS, Macquarie, CLSA, Morgan Stanley, etc.*) versus domestic retail brokerages (`[D]` - *Mandiri Sekuritas, Indo Premier, Mirae Asset, Ajaib, etc.*).
+- **Dual-View Architecture**:
+  - **Compact Executive Dashboard Card**: Clean, zero-clutter widget highlighting Market Bias, Bandar Cost, Top 3 Concentration, Volume Power Ratio Bar, and Top 3 Bandar Identifiers.
+  - **Full-Width Institutional Detail Modal (`modal-xl`)**: Spacious dual-side buyer/seller tables detailing 4 primary dimensions (*Broker Code, Corporate Name, Volume in Lots, Average Execution Price, and Total Value in IDR*).
 
 ### 5. Net Foreign Flow Tracker (10-Day Cumulative Flow)
 - **10-Day Cumulative Net Flow**: Total net foreign inflow/outflow measured in Billions of IDR (`+Rp X.X B` or `-Rp X.X B`).
@@ -82,19 +89,23 @@ A composite scoring engine calculating real-time directional momentum and transl
   - `RISK EVALUATION / DISCIPLINARY STOP LOSS`
   - `DEFENSIVE STANCE (WAIT & SEE)`
 
-### 8. Executive KPI Financial Scoreboard & Corporate Profile
+### 8. Integrated Portfolio & Dividend Calculator Suite
+- Direct top-navigation link to the [StockPulse Portfolio & Dividend Calculator](https://stock-exchange-calculator.vercel.app/).
+- Enables portfolio rebalancing, average down scenario modeling, forward dividend yield estimations, and broker transaction fee computations.
+
+### 9. Executive KPI Financial Scoreboard & Corporate Profile
 - Comprehensive fundamentals: P/E Ratio, EPS (TTM), Dividend Yield, Market Capitalization, 52-Week Range, and Average Daily Volume.
 - Business overview, industry classification, corporate headquarters, benchmark currency, and official investor relations portal links.
 
-### 9. Bullish Watchlist Scanner & Dynamic Top Bullish Landing
+### 10. Bullish Watchlist Scanner & Dynamic Top Bullish Landing
 - Scans premier index constituents to detect stocks trading above their 20-day moving average.
 - Smart Default Landing: Automatically showcases the day's #1 strongest bullish stock upon first visit (fallback to `BBCA`).
 
-### 10. Deep Emerald & Sage Wealth Design System
+### 11. Deep Emerald & Sage Wealth Design System
 - **Curated Palette**: Utilizes Deep Slate `#080D1A`, Emerald Green `#2A835F`, Pine Teal `#12544F`, and Sage Mint `#8BBB92`.
-- **Dynamic Custom Logo Engine**: Automatic detection and rendering of user brand logos (`static/img/logo.png`, `logo.svg`, etc.) on both the header navigation and browser favicon.
+- **Dynamic Custom Logo & Vector Favicon**: Automatic rendering of brand assets (`static/img/logo.png`, `static/img/favicon.png`) with circular alpha masking.
 - **Adaptive Dual-Theme**: Clean, high-contrast **Light Mode by default** with a persistent toggle to **Executive Dark Mode**.
-- **Single-Row Integrated Header**: Slim, institutional top navigation bar uniting Brand Identity, Page Navigation (`Dashboard` vs `Screener`), Live Market Feed status, and Theme Controller.
+- **Single-Row Integrated Header**: Slim top navigation bar uniting Brand Identity, Page Navigation (`Dashboard`, `Screener`, `Portfolio Calculator`), Live Market Feed status, and Theme Controller.
 
 ---
 
@@ -105,6 +116,8 @@ A composite scoring engine calculating real-time directional momentum and transl
 | **Backend Engine** | Python 3.10+, Flask | WSGI controller, routing, and DSS synthesis |
 | **Data & Analytics** | `yfinance`, `pandas`, `math` | Historical time series, technical calculus & volume flow |
 | **Screener Universe** | Multi-batch Parallel Scanner | Chunked batch querying with local disk caching |
+| **Bandarmologi Engine** | Quantitative VWAP Reconstructor | Broker concentration, average cost & investor segmentation |
+| **Reporting Engine** | Native Client Vector PDF & CSV | A4 landscape institutional reports & tabular data export |
 | **Visualization** | `plotly` Graph Objects | Interactive financial charts with unified crosshair tooltips |
 | **Frontend Architecture** | Jinja2 Templates (Modular) | Atomic component partials with clean separation of concerns |
 | **Styling & Design** | CSS3 Custom Properties, Bootstrap 5 | Deep Emerald & Sage Wealth design tokens |
@@ -127,7 +140,7 @@ monitor stocks/
 │       ├── screener_cache.json   # High-speed pre-computed market cache for 760+ stocks
 │       ├── market_data.py        # yfinance ingestion, ticker normalization, fundamentals, news, scanner
 │       ├── indicators.py         # Technical indicators, trend strength calculus, S/R pivot trade setup
-│       ├── bandarmologi.py       # Multi-timeframe Broker Summary & Net Foreign Flow tracker
+│       ├── bandarmologi.py       # Stockbit Pro broker summary, concentration engine & foreign flow
 │       ├── chart_builder.py      # Plotly multi-panel Candlestick, MA20/MA50, and Volume charting
 │       └── dss_engine.py         # 3-Pillar DSS technical insight & dynamic portfolio decision engine
 ├── static/
@@ -136,13 +149,14 @@ monitor stocks/
 │   ├── js/
 │   │   └── app.js                # Theme switcher, Plotly theme sync & client helpers
 │   └── img/
-│       └── logo.png              # Custom brand logo & favicon asset
+│       ├── logo.png              # Custom brand logo asset
+│       └── favicon.png           # Circular antialiased vector favicon
 ├── templates/
 │   ├── base.html                 # Master layout shell (head, favicon link, fonts, scripts)
 │   ├── index.html                # Main dashboard view orchestrating component partials
-│   ├── screener.html             # Dual-mode 760+ IDX stock screener with smart pagination
+│   ├── screener.html             # Dual-mode 760+ IDX stock screener with PDF & CSV export
 │   └── components/               # Isolated modular Jinja2 partials
-│       ├── _header.html          # Single-row brand navbar, navigation tabs & theme switch
+│       ├── _header.html          # Single-row brand navbar, navigation tabs & calculator link
 │       ├── _search_form.html     # Ticker search, collapsible portfolio form & quick pills
 │       ├── _fundamental.html     # 6-card executive KPI financial scoreboard
 │       ├── _price_banner.html    # Stock price hero, day change & DSS signal badge
@@ -153,7 +167,7 @@ monitor stocks/
 │       ├── _company_profile.html # Business summary & sector classification
 │       ├── _trend_strength.html  # Trend strength power meter card
 │       ├── _bullish_scanner.html # Watchlist momentum scanner card
-│       ├── _broker_summary.html  # Multi-timeframe Bandarmologi flow (1D/5D/20D)
+│       ├── _broker_summary.html  # Compact widget + modal dialog Bandarmologi flow
 │       ├── _foreign_flow.html    # Net foreign flow tracker & 10-day histogram
 │       ├── _news.html            # Financial news wire feed
 │       ├── _indicator_guide.html # Technical methodology & reference documentation
@@ -161,7 +175,7 @@ monitor stocks/
 │       └── _footer.html          # Institutional disclaimer & copyright
 ├── requirements.txt              # Python package dependencies
 ├── vercel.json                   # Serverless edge function routing configuration
-├── LICENSE                       # MIT License
+├── LICENSE                       # GNU AGPLv3 License
 └── README.md                     # Comprehensive project documentation
 ```
 
@@ -175,7 +189,7 @@ monitor stocks/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/monitor-stocks.git
+git clone https://github.com/radityaarinanta/monitor-stocks.git
 cd monitor-stocks
 ```
 
@@ -203,6 +217,7 @@ python api/index.py
 Open your browser and navigate to:
 - **Dashboard**: `http://127.0.0.1:5000/`
 - **Full IDX Screener**: `http://127.0.0.1:5000/screener`
+- **Portfolio Calculator**: [https://stock-exchange-calculator.vercel.app/](https://stock-exchange-calculator.vercel.app/)
 
 ---
 
@@ -231,6 +246,10 @@ $$\text{Upper Band} = \text{MA20} + 2\sigma, \quad \text{Lower Band} = \text{MA2
 $$\text{RS} = \frac{\text{Average Gain}}{\text{Average Loss}}$$
 
 $$\text{RSI} = 100 - \left( \frac{100}{1 + \text{RS}} \right)$$
+
+### 4. Bandarmologi Concentration Ratio
+
+$$\text{Concentration}_{\text{Top } K} = \frac{\sum_{i=1}^{K} \text{Value}_{\text{Buyer } i}}{\sum_{j=1}^{N} \text{Value}_{\text{Buyer } j}} \times 100\%$$
 
 ---
 
