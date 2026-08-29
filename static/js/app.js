@@ -58,7 +58,65 @@ function updatePlotlyTheme(theme) {
     });
 }
 
-// 2. Simple One-Click Chart Timeframe & Zoom Controller
+function updateIDXMarketClock() {
+    const dotEl = document.getElementById('marketStatusDot');
+    const statusEl = document.getElementById('marketStatusText');
+    const clockEl = document.getElementById('idxClockText');
+    if (!clockEl || !statusEl || !dotEl) return;
+
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const wibDate = new Date(utc + (3600000 * 7));
+
+    const day = wibDate.getDay();
+    const hours = wibDate.getHours();
+    const minutes = wibDate.getMinutes();
+    const seconds = wibDate.getSeconds();
+    const timeVal = hours * 60 + minutes;
+
+    const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} WIB`;
+    clockEl.textContent = timeStr;
+
+    let isOpen = false;
+    let statusLabel = 'PASAR TUTUP';
+
+    if (day >= 1 && day <= 5) {
+        if (day === 5) {
+            if (timeVal >= 540 && timeVal < 690) {
+                isOpen = true;
+                statusLabel = 'SESI I AKTIF';
+            } else if (timeVal >= 690 && timeVal < 840) {
+                isOpen = false;
+                statusLabel = 'ISTIRAHAT SESI';
+            } else if (timeVal >= 840 && timeVal < 950) {
+                isOpen = true;
+                statusLabel = 'SESI II AKTIF';
+            }
+        } else {
+            if (timeVal >= 540 && timeVal < 690) {
+                isOpen = true;
+                statusLabel = 'SESI I AKTIF';
+            } else if (timeVal >= 690 && timeVal < 810) {
+                isOpen = false;
+                statusLabel = 'ISTIRAHAT SESI';
+            } else if (timeVal >= 810 && timeVal < 950) {
+                isOpen = true;
+                statusLabel = 'SESI II AKTIF';
+            }
+        }
+    }
+
+    if (isOpen) {
+        dotEl.className = 'status-pulse-dot online';
+        statusEl.textContent = statusLabel;
+        statusEl.className = 'fw-bold text-success';
+    } else {
+        dotEl.className = 'status-pulse-dot offline';
+        statusEl.textContent = statusLabel;
+        statusEl.className = 'fw-bold text-theme-muted';
+    }
+}
+
 function getPlotlyChartElement() {
     return document.querySelector('.chart-wrapper .plotly-graph-div') || document.querySelector('.chart-wrapper > div');
 }
@@ -119,9 +177,47 @@ function resetChartZoom() {
     if (allBtn) allBtn.classList.add('active');
 }
 
-// 3. DOM Ready Initialization
+function showLoading(text) {
+    const screen = document.getElementById('globalLoadingScreen');
+    const bar = document.getElementById('topLoadingBar');
+    const statusText = document.querySelector('.loading-status-text');
+    if (text && statusText) {
+        statusText.textContent = text;
+    }
+    if (bar) {
+        bar.classList.remove('finish');
+        bar.classList.add('active');
+    }
+    if (screen) {
+        screen.classList.add('active');
+    }
+}
+
+function hideLoading() {
+    const screen = document.getElementById('globalLoadingScreen');
+    const bar = document.getElementById('topLoadingBar');
+    if (bar) {
+        bar.classList.remove('active');
+        bar.classList.add('finish');
+    }
+    if (screen) {
+        screen.classList.remove('active');
+    }
+}
+
+window.addEventListener('pageshow', () => {
+    hideLoading();
+});
+
+window.addEventListener('load', () => {
+    hideLoading();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    hideLoading();
+    updateIDXMarketClock();
+    setInterval(updateIDXMarketClock, 1000);
     
     const themeBtn = document.getElementById('themeToggleBtn');
     if (themeBtn) {
@@ -132,6 +228,40 @@ document.addEventListener('DOMContentLoaded', () => {
     tickerInputs.forEach(input => {
         input.addEventListener('input', (e) => {
             e.target.value = e.target.value.toUpperCase();
+        });
+    });
+
+    const searchForms = document.querySelectorAll('form');
+    searchForms.forEach(f => {
+        f.addEventListener('submit', () => {
+            showLoading('MEMUAT ANALISIS SAHAM...');
+        });
+    });
+
+    document.querySelectorAll('.quick-ticker-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            showLoading('MEMUAT DATA SAHAM...');
+        });
+    });
+
+    document.querySelectorAll('.screener-btn-analisis').forEach(btn => {
+        btn.addEventListener('click', () => {
+            showLoading('MENYIAPKAN DASHBOARD...');
+        });
+    });
+
+    const refreshBtn = document.querySelector('.btn-refresh-screener');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+            showLoading('MEMINDAI 764 SAHAM IHSG...');
+        });
+    }
+
+    document.querySelectorAll('.enterprise-nav-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            if (!tab.classList.contains('active')) {
+                showLoading('MEMUAT HALAMAN...');
+            }
         });
     });
 });
