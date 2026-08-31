@@ -125,6 +125,7 @@ def index():
             broker_summary=analysis.get('broker_summary'),
             trade_setup=analysis.get('trade_setup'),
             foreign_flow=analysis.get('foreign_flow'),
+            condition_detail=analysis.get('condition_detail'),
             error_message=None
         )
 

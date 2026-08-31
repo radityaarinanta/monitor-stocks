@@ -42,24 +42,102 @@
         </div>
     </div>
 
-    <!-- Personal Portfolio Decision Recommendation (Active if user inputs Price & Lots) -->
+    <!-- ===== PORTFOLIO DECISION — 2-LAYER SECTION ===== -->
     {% if insight.portfolio_advice %}
-    <div class="p-3 rounded-2 mb-3" style="background: var(--bg-card); border: 1px solid var(--border-color); border-left: 3px solid var(--primary);">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2 pb-1.5 border-bottom border-color border-opacity-40">
-            <span class="font-mono fw-bold text-primary text-uppercase small" style="font-size: 0.76rem; letter-spacing: 0.06em;">
-                [SARAN KEPUTUSAN PORTOFOLIO ANDA]:
-            </span>
-            {% if insight.portfolio_action_tag %}
-            <span class="badge-market-bias {% if portfolio.is_profit %}bias-bullish{% else %}bias-caution{% endif %}">
-                {{ insight.portfolio_action_tag }}
-            </span>
-            {% endif %}
+    <div class="mb-3" style="border-radius: 8px; border: 1px solid var(--border-color); border-left: 3px solid var(--primary); overflow: hidden;">
+
+        <!-- LAYER 1: Action Tag Header + Short Tactical Narrative -->
+        <div class="p-3" style="background: var(--bg-card);">
+            <!-- Action Tag Row -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2 pb-2 border-bottom border-color border-opacity-40">
+                <span class="font-mono fw-bold text-primary text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.07em;">
+                    [SARAN KEPUTUSAN PORTOFOLIO ANDA]:
+                </span>
+                {% if insight.portfolio_action_tag %}
+                <span class="badge-market-bias {% if portfolio and portfolio.is_profit %}bias-bullish{% elif insight.portfolio_action_tag and ('CUT LOSS' in insight.portfolio_action_tag or 'EXIT' in insight.portfolio_action_tag or 'DARURAT' in insight.portfolio_action_tag) %}bias-caution{% elif insight.portfolio_action_tag and ('REALISASI' in insight.portfolio_action_tag or 'LOCK' in insight.portfolio_action_tag or 'CAUTION' in insight.portfolio_action_tag or 'WASPADA' in insight.portfolio_action_tag) %}bias-warning{% elif insight.portfolio_action_tag and ('HOLD KUAT' in insight.portfolio_action_tag or 'AVERAGING DOWN TERUKUR' in insight.portfolio_action_tag or 'AKUMULASI' in insight.portfolio_action_tag) %}bias-buy{% else %}bias-neutral{% endif %}">
+                    {{ insight.portfolio_action_tag }}
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- Short Tactical Narrative (Layer 1 text) -->
+            <div class="text-theme-primary font-mono" style="font-size: 0.84rem; line-height: 1.65;">
+                {{ insight.portfolio_advice }}
+            </div>
         </div>
-        <div class="text-theme-primary font-mono" style="font-size: 0.84rem; line-height: 1.6;">
-            {{ insight.portfolio_advice }}
+
+        <!-- LAYER 2: Condition Detail — Collapsible Panel -->
+        {% if insight.condition_detail and insight.condition_detail['items'] %}
+        <div>
+            <!-- Toggle Button -->
+            <button
+                type="button"
+                class="w-100 d-flex justify-content-between align-items-center px-3 py-2 border-0 border-top border-color"
+                style="background: var(--bg-secondary, var(--bg-card)); cursor: pointer; font-size: 0.72rem; letter-spacing: 0.06em; color: var(--text-muted, #64748b);"
+                onclick="toggleConditionDetail(this)"
+                aria-expanded="false"
+                id="btnConditionDetailToggle"
+            >
+                <span class="font-mono fw-bold text-uppercase" style="letter-spacing: 0.07em;">
+                    DETAIL KONDISI PASAR TERDETEKSI
+                </span>
+                <span class="condition-toggle-icon font-mono fw-bold" style="font-size: 0.80rem; transition: transform 0.2s;">
+                    [LIHAT]
+                </span>
+            </button>
+
+            <!-- Collapsible Content -->
+            <div id="conditionDetailPanel" class="condition-detail-panel" style="display: none; border-top: 1px solid var(--border-color);">
+                <div class="p-3" style="background: var(--bg-secondary, var(--bg-card));">
+
+                    <!-- Divergence Warning (if any) -->
+                    {% if insight.condition_detail.divergence_warning %}
+                    <div class="mb-3 px-3 py-2 rounded-2 font-mono" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.30); font-size: 0.76rem; color: var(--text-warning, #d97706);">
+                        <span class="fw-bold">[PERINGATAN DIVERGENSI]</span>
+                        Sinyal Bandarmologi 1D dan 5D menunjukkan arah yang berlawanan. Kehati-hatian ekstra diperlukan sebelum mengambil keputusan posisi.
+                    </div>
+                    {% endif %}
+
+                    <!-- Condition Items Grid -->
+                    <div class="row g-2 mb-2">
+                        {% for item in insight.condition_detail['items'] %}
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-center gap-2 px-2.5 py-2 rounded-2"
+                                style="background: var(--bg-card); border: 1px solid var(--border-color); font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;">
+                                <!-- Sentiment Indicator Bar -->
+                                <span class="flex-shrink-0 rounded-1"
+                                    style="width: 4px; height: 24px; display: inline-block;
+                                    background: {% if item.sentiment == 'positive' %}#10b981{% elif item.sentiment == 'negative' %}#f43f5e{% elif item.sentiment == 'warning' %}#f59e0b{% else %}#64748b{% endif %};">
+                                </span>
+                                <!-- Label -->
+                                <span style="color: var(--text-primary, #1e293b); line-height: 1.4;">
+                                    {{ item.label }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Foreign Flow Note (narrative only) -->
+                    {% if insight.condition_detail.foreign_flow_note %}
+                    <div class="font-mono px-2.5 py-1.5 rounded-2" style="font-size: 0.72rem; color: var(--text-muted, #64748b); background: var(--bg-card); border: 1px solid var(--border-color);">
+                        <span class="fw-bold text-uppercase" style="letter-spacing: 0.05em;">Aliran Asing (Keterangan):</span>
+                        {{ insight.condition_detail.foreign_flow_note }}. Tidak digunakan sebagai faktor keputusan langsung.
+                    </div>
+                    {% endif %}
+
+                    <!-- Methodology Note -->
+                    <div class="mt-2 font-mono" style="font-size: 0.68rem; color: var(--text-muted, #94a3b8); line-height: 1.4;">
+                        Keputusan dihasilkan berdasarkan 8 faktor: Profit/Loss Tier, Struktur Tren, Zona RSI, Posisi Bollinger Bands, Volume Anomali, Bias Bandar 1D, Bias Bandar 5D, dan Modal Bandar vs Harga.
+                    </div>
+                </div>
+            </div>
         </div>
+        {% endif %}
+
     </div>
     {% endif %}
+    <!-- ===== END PORTFOLIO DECISION ===== -->
 
     <!-- Tactical Strategy Takeaway -->
     <div class="p-2.5 rounded-2 d-flex align-items-center flex-wrap gap-2.5 mb-2.5" style="background: var(--bg-card); border: 1px solid var(--border-color);">
@@ -71,8 +149,20 @@
         </span>
     </div>
 
-    <!-- DYOR Disclaimer (No Emotes, 100% Formal) -->
+    <!-- DYOR Disclaimer -->
     <div class="font-mono text-theme-muted pt-2 border-top border-color border-opacity-50" style="font-size: 0.70rem; line-height: 1.5; letter-spacing: 0.02em;">
         <span class="fw-bold text-warning">[DISCLAIMER DYOR]:</span> Seluruh analisis dan saran keputusan DSS ini bersifat indikatif berbasis algoritma kuantitatif dan bukan merupakan ajakan mutlak jual/beli. Sesuaikan selalu dengan profil risiko, horizon investasi, dan manajemen modal Anda.
     </div>
 </div>
+
+<script>
+function toggleConditionDetail(btn) {
+    var panel = document.getElementById('conditionDetailPanel');
+    var icon  = btn.querySelector('.condition-toggle-icon');
+    if (!panel) return;
+    var isHidden = panel.style.display === 'none';
+    panel.style.display = isHidden ? 'block' : 'none';
+    if (icon) icon.textContent = isHidden ? '[TUTUP]' : '[LIHAT]';
+    btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+}
+</script>

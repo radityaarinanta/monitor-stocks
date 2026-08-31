@@ -119,12 +119,13 @@ def analyze_stock(target_symbol: str, raw_ticker_input: str, avg_price: float = 
     trade_setup = calc_trade_setup(df, current_price)
     foreign_flow = calc_foreign_flow(df, ticker_display)
 
-    portfolio, portfolio_advice, portfolio_action_tag = generate_portfolio_decision(
-        avg_price, lots, current_price, latest_rsi, latest_upper, latest_lower, latest_ma20, latest_ma50, broker_summary, trade_setup
+    portfolio, portfolio_advice, portfolio_action_tag, condition_detail = generate_portfolio_decision(
+        avg_price, lots, current_price, latest_rsi, latest_upper, latest_lower, latest_ma20, latest_ma50, broker_summary, trade_setup, df
     )
 
     insight_data['portfolio_advice'] = portfolio_advice
     insight_data['portfolio_action_tag'] = portfolio_action_tag
+    insight_data['condition_detail'] = condition_detail
 
     info = stock.info if hasattr(stock, 'info') else {}
     fundamental = get_fundamental_data(info)
@@ -153,5 +154,6 @@ def analyze_stock(target_symbol: str, raw_ticker_input: str, avg_price: float = 
         'broker_summary': broker_summary,
         'trade_setup': trade_setup,
         'foreign_flow': foreign_flow,
+        'condition_detail': condition_detail,
         'error_message': None
     }
